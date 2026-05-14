@@ -480,11 +480,11 @@ label {
 }
 
 .entry-header-amount.unterhalt-amount {
-  color: #ff9800;
+  color: #000000;
 }
 
 .entry-header-amount.ofen-amount {
-  color: var(--success-color);
+  color: #000000;
 }
 
 .delete-entry-btn {
