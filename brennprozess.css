@@ -414,13 +414,13 @@ label {
 }
 
 .konto-label {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--gray-700);
   font-weight: 600;
 }
 
 .konto-value {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--gray-900);
   white-space: nowrap;
