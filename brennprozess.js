@@ -1152,6 +1152,28 @@ function formatInvoiceAmount(amount) {
   return `${amount.toFixed(2).replace('.', ',')} CHF`;
 }
 
+// === Unterhalt Calculation Functions ===
+function calculateUnterhaltTotalBeitrag() {
+  // Beiträge sind positive Einträge (Einnahmen)
+  return (unterhaltEntriesCache || [])
+    .filter(entry => entry.betrag >= 0)
+    .reduce((sum, entry) => sum + (Number(entry.betrag) || 0), 0);
+}
+
+function calculateUnterhaltTotalAusgaben() {
+  // Ausgaben sind negative Einträge (Kosten)
+  return (unterhaltEntriesCache || [])
+    .filter(entry => entry.betrag < 0)
+    .reduce((sum, entry) => sum + Math.abs(Number(entry.betrag) || 0), 0);
+}
+
+function calculateUnterhaltKontostand() {
+  // Kontostand = Beiträge - Ausgaben
+  const beitrag = calculateUnterhaltTotalBeitrag();
+  const ausgaben = calculateUnterhaltTotalAusgaben();
+  return beitrag - ausgaben;
+}
+
 // === Delete Modal Functions ===
 function openDeleteModal() {
   deleteModal.classList.remove('hidden');
@@ -1241,15 +1263,16 @@ function showExportError(message) {
 }
 
 function exportToExcel() {
-  const entries = getEntries();
+  const brennEntries = getEntries();
+  const unterhaltEntries = unterhaltEntriesCache || [];
 
-  if (entries.length === 0) {
+  if (brennEntries.length === 0 && unterhaltEntries.length === 0) {
     alert('Es gibt keine Einträge zum Exportieren.');
     return;
   }
 
-  // Daten für Excel vorbereiten
-  const excelData = entries.map(entry => ({
+  // Daten für Brennprozess-Blatt vorbereiten
+  const brennExcelData = brennEntries.map(entry => ({
     'Datum': entry.datum,
     'Verantwortliche Person': `${entry.vorname} ${entry.nachname}`,
     'Weitere Personen': entry.wPersonen || '-',
@@ -1264,35 +1287,79 @@ function exportToExcel() {
     'Gesamtbetrag (CHF)': calculateInvoiceAmount(entry).toFixed(2)
   }));
 
+  // Daten für Unterhalt-Blatt vorbereiten
+  const unterhaltExcelData = unterhaltEntries.map(entry => ({
+    'Datum': entry.datum || '',
+    'Verantwortliche Person': `${entry.vorname || ''} ${entry.nachname || ''}`.trim(),
+    'Betrag (CHF)': (entry.betrag || 0).toFixed(2),
+    'Bemerkungen': entry.bemerkungen || '-'
+  }));
+
   if (typeof XLSX !== 'undefined' && XLSX && XLSX.utils && typeof XLSX.writeFile === 'function') {
-    // Arbeitsblatt erstellen
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-
-    // Spaltenbreiten anpassen
-    worksheet['!cols'] = [
-      { wch: 12 },
-      { wch: 20 },
-      { wch: 20 },
-      { wch: 25 },
-      { wch: 14 },
-      { wch: 18 },
-      { wch: 14 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 18 },
-      { wch: 16 }
-    ];
-
     // Arbeitsmappe erstellen
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Brennprozesse');
+
+    // Brennprozess-Blatt
+    if (brennEntries.length > 0) {
+      const brennWorksheet = XLSX.utils.json_to_sheet(brennExcelData);
+      brennWorksheet['!cols'] = [
+        { wch: 12 },
+        { wch: 20 },
+        { wch: 20 },
+        { wch: 25 },
+        { wch: 14 },
+        { wch: 18 },
+        { wch: 14 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 18 },
+        { wch: 16 }
+      ];
+      XLSX.utils.book_append_sheet(workbook, brennWorksheet, 'Brennprozesse');
+    }
+
+    // Unterhalt-Blatt
+    if (unterhaltEntries.length > 0) {
+      const unterhaltWorksheet = XLSX.utils.json_to_sheet(unterhaltExcelData);
+      unterhaltWorksheet['!cols'] = [
+        { wch: 12 },
+        { wch: 20 },
+        { wch: 14 },
+        { wch: 25 }
+      ];
+      XLSX.utils.book_append_sheet(workbook, unterhaltWorksheet, 'Unterhalt-Ausgaben');
+
+      // Zusammenfassung für Unterhalt-Blatt hinzufügen
+      const summaryData = [
+        {},
+        { 'Datum': 'ZUSAMMENFASSUNG', 'Verantwortliche Person': '', 'Betrag (CHF)': '', 'Bemerkungen': '' },
+        { 'Datum': 'Gesamte Beiträge', 'Verantwortliche Person': '', 'Betrag (CHF)': (calculateUnterhaltTotalBeitrag()).toFixed(2), 'Bemerkungen': '' },
+        { 'Datum': 'Gesamte Ausgaben', 'Verantwortliche Person': '', 'Betrag (CHF)': (calculateUnterhaltTotalAusgaben()).toFixed(2), 'Bemerkungen': '' },
+        { 'Datum': 'Konto Unterhalt', 'Verantwortliche Person': '', 'Betrag (CHF)': (calculateUnterhaltKontostand()).toFixed(2), 'Bemerkungen': 'Kontostand' }
+      ];
+
+      // Zusammenfassungsdaten zum bestehenden Worksheet hinzufügen
+      const summaryStartRow = unterhaltExcelData.length + 2;
+      summaryData.forEach((row, idx) => {
+        Object.keys(row).forEach(key => {
+          const cellRef = XLSX.utils.encode_col(Object.keys(row).indexOf(key)) + (summaryStartRow + idx);
+          unterhaltWorksheet[cellRef] = { v: row[key], t: typeof row[key] === 'number' ? 'n' : 's' };
+        });
+      });
+    }
 
     // Datei speichern
     const timestamp = new Date().toISOString().split('T')[0];
     XLSX.writeFile(workbook, `Brennprozess_Archiv_${timestamp}.xlsx`);
   } else {
-    downloadCsv(excelData, 'Brennprozess_Archiv', 'csv');
+    // Fallback auf CSV für beide Datentypen
+    if (brennEntries.length > 0) {
+      downloadCsv(brennExcelData, 'Brennprozess_Archiv', 'csv');
+    }
+    if (unterhaltEntries.length > 0) {
+      downloadCsv(unterhaltExcelData, 'Unterhalt_Ausgaben', 'csv');
+    }
   }
 }
 
