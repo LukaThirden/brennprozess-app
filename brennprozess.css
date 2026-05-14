@@ -456,16 +456,18 @@ label {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+  color: var(--gray-900);
 }
 
 .konto-header-row h2 {
   margin-bottom: 0;
+  color: inherit;
 }
 
 .konto-value {
   font-size: 18px;
   font-weight: 700;
-  color: var(--gray-900);
+  color: inherit;
   white-space: nowrap;
 }
 
