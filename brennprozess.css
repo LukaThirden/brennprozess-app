@@ -395,12 +395,13 @@ label {
 }
 
 .konto-section {
-  margin-bottom: 14px;
+  margin-bottom: 0;
   border: 2px solid #d8e3f8;
   border-radius: 10px;
   background: #f9fbff;
   box-shadow: var(--box-shadow);
   overflow: hidden;
+  padding: 20px;
 }
 
 .konto-row {
@@ -408,7 +409,7 @@ label {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 12px 0;
   border-bottom: 1px solid #e4ebf8;
 }
 
