@@ -122,13 +122,19 @@ html, body {
 }
 
 #brennSection h2 {
-  color: #10b981;
+  background-color: #10b981;
+  color: #fff;
   border-bottom-color: #10b981;
+  padding: 8px 12px;
+  border-radius: 6px;
 }
 
 #unterhaltSection h2 {
-  color: #ff9800;
+  background-color: #ff9800;
+  color: #fff;
   border-bottom-color: #ff9800;
+  padding: 8px 12px;
+  border-radius: 6px;
 }
 
 /* Form Styles */
