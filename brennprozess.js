@@ -1264,6 +1264,19 @@ function showExportError(message) {
   exportPasswordError.classList.add('show');
 }
 
+// Wendet sz=12 auf alle Zellen an; Zeile 0 wird fett (boldRow1=true)
+function styleSheet(ws, boldRow1) {
+  if (!ws['!ref']) return;
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let r = range.s.r; r <= range.e.r; r++) {
+    for (let c = range.s.c; c <= range.e.c; c++) {
+      const addr = XLSX.utils.encode_cell({ r, c });
+      if (!ws[addr]) continue;
+      ws[addr].s = { font: { sz: 12, bold: (boldRow1 && r === 0) } };
+    }
+  }
+}
+
 function exportToExcel() {
   const brennEntries = getEntries();
   const unterhaltEntries = unterhaltEntriesCache || [];
@@ -1323,6 +1336,7 @@ function exportToExcel() {
         { wch: 18 },
         { wch: 16 }
       ];
+      styleSheet(brennWorksheet, true);
       XLSX.utils.book_append_sheet(workbook, brennWorksheet, 'Brennprozesse');
     }
 
@@ -1335,25 +1349,27 @@ function exportToExcel() {
         { wch: 14 },
         { wch: 25 }
       ];
+      styleSheet(unterhaltWorksheet, true);
       XLSX.utils.book_append_sheet(workbook, unterhaltWorksheet, 'Unterhalt-Ausgaben');
     }
 
     // Konto Unterhalt-Blatt
     const kontoWorksheet = XLSX.utils.aoa_to_sheet([
-      ['KONTOSTAND UNTERHALT', kontostand],
-      ['SUMME BEITRÄGE', totalBeitrag],
-      ['SUMME AUSGABEN', totalAusgaben]
+      ['SALDO UNTERHALT', kontostand],
+      ['EINNAHMEN', totalBeitrag],
+      ['AUSGABEN', totalAusgaben]
     ]);
     kontoWorksheet['!cols'] = [
       { wch: 22 },
       { wch: 14 }
     ];
+    styleSheet(kontoWorksheet, true);
 
     XLSX.utils.book_append_sheet(workbook, kontoWorksheet, 'Konto Unterhalt');
 
     // Datei speichern
     const timestamp = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(workbook, `Brennprozess_Archiv_${timestamp}.xlsx`);
+    XLSX.writeFile(workbook, `Brennprozess_Archiv_${timestamp}.xlsx`, { cellStyles: true });
   } else {
     // Fallback auf CSV für beide Datentypen
     if (brennEntries.length > 0) {
