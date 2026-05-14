@@ -75,11 +75,16 @@ let entryTypeToDelete = 'brennprozess'; // 'brennprozess' oder 'unterhalt'
 let brennEntriesCache = [];
 let unterhaltEntriesCache = [];
 let cloudSyncEnabled = false;
+let syncHealthCheckTimer = null;
+let syncHealthCheckInFlight = false;
+
+const SYNC_CHECK_INTERVAL_MS = 10000;
 
 // === Initialization ===
 document.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
   await initializeDataStore();
+  startSyncHealthChecks();
   checkAccess();
 });
 
@@ -141,6 +146,53 @@ function updateSyncStatus(enabled) {
     el.className = 'sync-status sync-local';
     el.title = 'Kein Cloud-Sync \u2013 Daten nur auf diesem Ger\u00e4t';
   }
+}
+
+async function checkSupabaseConnection() {
+  await Promise.all([
+    supabaseRequest(SB_BRENN_TABLE, { query: 'select=id&limit=1' }),
+    supabaseRequest(SB_UNTERHALT_TABLE, { query: 'select=id&limit=1' })
+  ]);
+}
+
+async function runSyncHealthCheck() {
+  if (syncHealthCheckInFlight || !SB_URL || !SB_ANON_KEY) {
+    return;
+  }
+
+  syncHealthCheckInFlight = true;
+  try {
+    await checkSupabaseConnection();
+
+    if (!cloudSyncEnabled) {
+      cloudSyncEnabled = true;
+      updateSyncStatus(true);
+      const remoteState = await fetchSupabaseState();
+      brennEntriesCache = remoteState.brennEntries;
+      unterhaltEntriesCache = remoteState.unterhaltEntries;
+      persistLocalCache();
+      loadEntries();
+      console.info('Supabase-Sync wieder aktiv.');
+    }
+  } catch (error) {
+    if (cloudSyncEnabled) {
+      cloudSyncEnabled = false;
+      updateSyncStatus(false);
+      console.warn('Supabase-Sync unterbrochen, wechsle auf lokalen Speicher.', error);
+    }
+  } finally {
+    syncHealthCheckInFlight = false;
+  }
+}
+
+function startSyncHealthChecks() {
+  if (syncHealthCheckTimer || !SB_URL || !SB_ANON_KEY) {
+    return;
+  }
+
+  syncHealthCheckTimer = setInterval(() => {
+    runSyncHealthCheck();
+  }, SYNC_CHECK_INTERVAL_MS);
 }
 
 async function initializeDataStore() {
