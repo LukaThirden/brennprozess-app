@@ -1017,7 +1017,7 @@ function createEntryElement(entry) {
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge" style="background-color: #ff9800;">Unterhalt</div>
         </div>
-        <div class="entry-header-amount unterhalt-amount">${formatInvoiceAmount(entry.betrag)} (Ausgabenbetrag)</div>
+        <div class="entry-header-amount unterhalt-amount">${formatInvoiceAmount(entry.betrag)} (Ausgabe)</div>
         <span class="entry-chevron">▼</span>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}" data-type="unterhalt">🗑 Löschen</button>
       </div>
@@ -1048,7 +1048,7 @@ function createEntryElement(entry) {
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge">Ofen-Nutzung</div>
         </div>
-        <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamtbetrag)</div>
+        <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamt)</div>
         <span class="entry-chevron">▼</span>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}">🗑 Löschen</button>
       </div>
