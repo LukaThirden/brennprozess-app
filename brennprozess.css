@@ -132,17 +132,17 @@ html, body {
 
 .export-inline-button {
   padding: 4px 8px;
-  background: #111111;
-  color: white;
+  background-color: #e5e7eb;
+  color: #374151;
   border: none;
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .export-inline-button:hover {
-  background: #333333;
+  background-color: #d1d5db;
 }
 
 #brennSection {
