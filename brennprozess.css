@@ -503,6 +503,20 @@ label {
   .entry-row {
     grid-template-columns: 1fr;
   }
+
+  .entry-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .entry-label {
+    min-width: 0;
+  }
+
+  .entry-value {
+    width: 100%;
+  }
 }
 
 .entry-field {
@@ -771,27 +785,122 @@ body.no-scroll {
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px;
   }
 
   .header h1 {
-    font-size: 24px;
+    font-size: 20px;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .header-right {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-button,
+  .sync-status {
+    width: 100%;
+    justify-content: center;
   }
 
   .main-container {
     grid-template-columns: 1fr;
-    padding: 16px;
-    gap: 16px;
+    padding: 12px;
+    gap: 12px;
   }
 
   .form-section,
   .entries-section {
-    padding: 16px;
+    padding: 12px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .submit-button,
+  .reset-button,
+  .delete-button {
+    width: 100%;
+  }
+
+  .text-input,
+  .textarea,
+  .select,
+  .date-input,
+  .number-input {
+    font-size: 16px;
+  }
+
+  .date-picker-wrapper {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .calendar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .summary-card {
+    min-width: 0;
+  }
+
+  .entry-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .entry-meta {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .delete-entry-btn {
+    align-self: flex-end;
   }
 
   .modal-content {
     width: 95%;
     max-width: 100%;
+  }
+
+  .modal-header,
+  .modal-body {
+    padding: 16px;
+  }
+
+  .access-panel {
+    padding: 18px;
+  }
+
+  .success-message {
+    width: min(92vw, 520px);
+    padding: 18px 14px;
+    font-size: clamp(18px, 5vw, 26px);
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .header h1 {
+    font-size: 18px;
+  }
+
+  .form-section h2,
+  .entries-section h2 {
+    font-size: 16px;
+  }
+
+  .entry-label,
+  .entry-value {
+    font-size: 11px;
   }
 }
