@@ -1031,7 +1031,7 @@ function createEntryElement(entry) {
       </div>
       <div class="entry-row">
         <div class="entry-field">
-          <div class="entry-label">Ausgaben CHF</div>
+          <div class="entry-label">Ausgabenbetrag</div>
           <div class="entry-value">${formatInvoiceAmount(entry.betrag)}</div>
         </div>
       </div>
