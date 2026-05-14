@@ -105,6 +105,8 @@ html, body {
   border-radius: 10px;
   padding: 20px;
   box-shadow: var(--box-shadow);
+  width: 50%;
+  justify-self: start;
 }
 
 .form-section h2,
@@ -387,6 +389,8 @@ label {
   box-shadow: var(--box-shadow);
   overflow: hidden;
   padding: 20px;
+  width: 50%;
+  justify-self: start;
 }
 
 .konto-row {
@@ -969,6 +973,12 @@ body.no-scroll {
 }
 
 @media (max-width: 420px) {
+  .form-section,
+  .entries-section,
+  .konto-section {
+    width: 100%;
+  }
+
   .header h1 {
     font-size: 18px;
   }
