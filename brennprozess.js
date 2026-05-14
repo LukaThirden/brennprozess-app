@@ -894,6 +894,7 @@ function updateUnterhaltSummary() {
   }
   if (unterhaltKontostand) {
     unterhaltKontostand.textContent = formatInvoiceAmount(kontostand);
+    unterhaltKontostand.style.color = kontostand < 0 ? '#dc2626' : '';
   }
 }
 
