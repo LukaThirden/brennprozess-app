@@ -1,0 +1,17 @@
+{
+  "name": "mp4-search-app",
+  "version": "1.0.0",
+  "description": "A small Electron app that searches for MP4 files on your computer.",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "electron .",
+    "cli": "node mp4-search.js",
+    "postinstall": "echo \"Installation complete. Run npm start to launch the app.\""
+  },
+  "devDependencies": {
+    "electron": "^26.0.0"
+  },
+  "keywords": ["mp4", "search", "electron", "desktop"],
+  "author": "",
+  "license": "MIT"
+}

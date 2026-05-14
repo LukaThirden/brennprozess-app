@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MP4 Search App</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>MP4 Search</h1>
+      <p>Find MP4 files on your computer with a simple desktop interface.</p>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="search-panel">
+      <label for="pathInput">Folder to search</label>
+      <div class="path-row">
+        <input id="pathInput" type="text" placeholder="Select a folder or enter a path" />
+        <button id="browseButton">Browse</button>
+      </div>
+
+      <label for="depthInput">Max recursion depth</label>
+      <input id="depthInput" type="number" min="0" placeholder="Leave empty for unlimited" />
+
+      <button id="searchButton" class="primary">Search MP4 files</button>
+    </section>
+
+    <section class="results-panel">
+      <div class="results-header">
+        <h2>Results</h2>
+        <span id="statusText">Idle</span>
+      </div>
+      <div id="resultsList" class="results-list"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

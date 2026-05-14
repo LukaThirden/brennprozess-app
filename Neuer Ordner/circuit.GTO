@@ -1,0 +1,13 @@
+%FSLAX46Y46*%
+%MOMM*%
+%LPD*%
+G01*
+%ADD10C,0.1*%
+D10*
+; Silkscreen for labels, e.g., component outlines.
+; Example: Text or lines for "LM393", "NE555"
+; X100000Y100000D02* (start)
+; G04 LM393*
+; But simplified.
+M02*</content>
+<parameter name="filePath">/Users/daniel.kurth@fhnw.ch/Privat/websit_AI/circuit.GTO

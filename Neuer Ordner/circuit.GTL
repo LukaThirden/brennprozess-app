@@ -1,0 +1,31 @@
+%FSLAX46Y46*%
+%MOMM*%
+%LPD*%
+G01*
+%ADD10C,0.8*%
+%ADD11C,1.0*%
+D10*
+X100000Y100000D02*
+X150000Y100000D01*
+D11*
+X200000Y200000D03*
+M02*
+
+; This is a simplified Gerber file for the top copper layer of the gate trigger PCB.
+; Coordinates in mm (scaled by 1000 for integers).
+; D10: Trace width 0.8mm
+; D11: Via or pad 1.0mm
+; Traces: From LM393 pin1 to NE555 pin2, etc.
+; Note: This is basic; use KiCad or Eagle for full Gerber export.
+; To use: Save as circuit.GTL, zip with other layers for manufacturing.
+
+; Example traces (approximate positions):
+; 5V rail: X0Y0 to X50000Y0
+; GND rail: X0Y30000 to X50000Y30000
+; Gate IN to LM393: X0Y15000 to X10000Y15000
+; LM393 out to 555: X15000Y15000 to X20000Y20000
+; 555 out: X25000Y20000 to X50000Y20000
+
+; Full Gerber would include all apertures and paths.
+; For production, generate properly in PCB software.</content>
+<parameter name="filePath">/Users/daniel.kurth@fhnw.ch/Privat/websit_AI/circuit.GTL

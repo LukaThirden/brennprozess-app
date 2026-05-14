@@ -1,0 +1,15 @@
+Sub Main()
+    ' Create a video player object
+    videoPlayer = CreateObject("roVideoPlayer")
+    
+    ' Set the video to loop
+    videoPlayer.SetLoopMode(true)
+    
+    ' Play the video file (replace with your video path)
+    videoPlayer.PlayFile("sd:/video.mp4")
+    
+    ' Keep the script running
+    while true
+        sleep(1000)
+    end while
+End Sub
