@@ -101,7 +101,8 @@ html, body {
 .form-section,
 .entries-section {
   background: white;
-  border-radius: var(--border-radius);
+  border: 2px solid #d8e3f8;
+  border-radius: 10px;
   padding: 20px;
   box-shadow: var(--box-shadow);
 }
