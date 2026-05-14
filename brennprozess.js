@@ -687,9 +687,6 @@ async function handleFormSubmit(e) {
 
   // Show success message
   showSuccessMessage('Eintrag erfolgreich erstellt!');
-  setTimeout(() => {
-    window.location.reload();
-  }, 250);
 }
 
 function resetForm() {
@@ -786,9 +783,6 @@ async function handleUnterhaltFormSubmit(e) {
 
   // Show success message
   showSuccessMessage('Ausgabe erfolgreich erfasst!');
-  setTimeout(() => {
-    window.location.reload();
-  }, 250);
 }
 
 function resetUnterhaltForm() {
