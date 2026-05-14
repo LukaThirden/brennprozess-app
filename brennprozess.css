@@ -479,6 +479,14 @@ label {
   margin-right: 0;
 }
 
+.entry-header-amount.unterhalt-amount {
+  color: #ff9800;
+}
+
+.entry-header-amount.ofen-amount {
+  color: var(--success-color);
+}
+
 .delete-entry-btn {
   background-color: #e5e7eb;
   color: #374151;
