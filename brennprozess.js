@@ -1298,18 +1298,6 @@ function exportToExcel() {
   }));
 
   // Daten für Konto Unterhalt-Blatt vorbereiten
-  const kontoBeitraege = brennEntries.map(entry => ({
-    'Datum': entry.datum,
-    'Person': `${entry.vorname} ${entry.nachname}`,
-    'Betrag (CHF)': calculateInvoiceAmount(entry, true).unterhaltsbeitrag.toFixed(2)
-  }));
-
-  const kontoAusgaben = unterhaltEntries.map(entry => ({
-    'Datum': entry.datum || '',
-    'Person': `${entry.vorname || ''} ${entry.nachname || ''}`.trim(),
-    'Betrag (CHF)': (entry.betrag || 0).toFixed(2)
-  }));
-
   const totalBeitrag = calculateUnterhaltTotalBeitrag();
   const totalAusgaben = calculateUnterhaltTotalAusgaben();
   const kontostand = calculateUnterhaltKontostand();
@@ -1351,79 +1339,16 @@ function exportToExcel() {
     }
 
     // Konto Unterhalt-Blatt
-    // Erstelle Array-of-Arrays für bessere Strukturierung
-    const kontoData = [];
-    
-    // Header Zeile
-    kontoData.push([
-      'Unterhalts-Beiträge',
-      '',
-      '',
-      '',
-      'Unterhalts-Ausgaben',
-      '',
-      ''
+    const kontoWorksheet = XLSX.utils.aoa_to_sheet([
+      ['KONTOSTAND UNTERHALT', kontostand],
+      ['SUMME BEITRÄGE', totalBeitrag],
+      ['SUMME AUSGABEN', totalAusgaben]
     ]);
-    
-    // Spalten-Header
-    kontoData.push([
-      'Datum',
-      'Person',
-      'Betrag (CHF)',
-      '',
-      'Datum',
-      'Person',
-      'Betrag (CHF)'
-    ]);
-    
-    // Maximal der längeren Liste folgen
-    const maxRows = Math.max(kontoBeitraege.length, kontoAusgaben.length);
-    
-    for (let i = 0; i < maxRows; i++) {
-      const row = [];
-      
-      // Beiträge
-      if (i < kontoBeitraege.length) {
-        row.push(kontoBeitraege[i]['Datum']);
-        row.push(kontoBeitraege[i]['Person']);
-        row.push(parseFloat(kontoBeitraege[i]['Betrag (CHF)']));
-      } else {
-        row.push('');
-        row.push('');
-        row.push('');
-      }
-      
-      row.push(''); // Leerzeile als Separator
-      
-      // Ausgaben
-      if (i < kontoAusgaben.length) {
-        row.push(kontoAusgaben[i]['Datum']);
-        row.push(kontoAusgaben[i]['Person']);
-        row.push(parseFloat(kontoAusgaben[i]['Betrag (CHF)']));
-      } else {
-        row.push('');
-        row.push('');
-        row.push('');
-      }
-      
-      kontoData.push(row);
-    }
-    
-    // Summen-Zeilen
-    kontoData.push(['', 'SUMME BEITRÄGE', totalBeitrag, '', '', 'SUMME AUSGABEN', totalAusgaben]);
-    kontoData.push(['', '', '', '', '', 'KONTOSTAND', kontostand]);
-    
-    const kontoWorksheet = XLSX.utils.aoa_to_sheet(kontoData);
     kontoWorksheet['!cols'] = [
-      { wch: 12 },
-      { wch: 20 },
-      { wch: 14 },
-      { wch: 3 },
-      { wch: 12 },
-      { wch: 20 },
+      { wch: 22 },
       { wch: 14 }
     ];
-    
+
     XLSX.utils.book_append_sheet(workbook, kontoWorksheet, 'Konto Unterhalt');
 
     // Datei speichern
