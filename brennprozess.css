@@ -124,7 +124,7 @@ html, body {
 }
 
 #brennSection {
-  background-color: rgba(16, 185, 129, 0.15);
+  background-color: var(--gray-100);
 }
 
 #unterhaltSection h2 {
@@ -136,7 +136,7 @@ html, body {
 }
 
 #unterhaltSection {
-  background-color: rgba(255, 152, 0, 0.15);
+  background-color: var(--gray-100);
 }
 
 /* Form Styles */
