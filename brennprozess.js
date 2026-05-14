@@ -26,6 +26,7 @@ const brennmodusSelect = document.getElementById('brennmodusSelect');
 const entriesList = document.getElementById('entriesList');
 const unterhaltBeitraegeTotal = document.getElementById('unterhaltBeitraegeTotal');
 const unterhaltAusgabenTotal = document.getElementById('unterhaltAusgabenTotal');
+const unterhaltKontostand = document.getElementById('unterhaltHeaderKontostand');
 const accessOverlay = document.getElementById('accessOverlay');
 const accessPasswordInput = document.getElementById('accessPassword');
 const accessButton = document.getElementById('accessButton');
@@ -890,6 +891,9 @@ function updateUnterhaltSummary() {
   }
   if (unterhaltAusgabenTotal) {
     unterhaltAusgabenTotal.textContent = formatInvoiceAmount(totalAusgaben);
+  }
+  if (unterhaltKontostand) {
+    unterhaltKontostand.textContent = formatInvoiceAmount(kontostand);
   }
 }
 
