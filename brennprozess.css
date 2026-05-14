@@ -391,6 +391,41 @@ label {
   gap: 10px;
 }
 
+.konto-section {
+  margin-bottom: 14px;
+  border: 2px solid #d8e3f8;
+  border-radius: 10px;
+  background: #f9fbff;
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+}
+
+.konto-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e4ebf8;
+}
+
+.konto-row:last-child {
+  border-bottom: none;
+}
+
+.konto-label {
+  font-size: 14px;
+  color: var(--gray-700);
+  font-weight: 600;
+}
+
+.konto-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-900);
+  white-space: nowrap;
+}
+
 .summary-bar {
   display: flex;
   gap: 10px;
@@ -554,6 +589,15 @@ label {
 }
 
 @media (max-width: 600px) {
+  .konto-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .konto-value {
+    width: 100%;
+  }
+
   .entry-row {
     grid-template-columns: 1fr;
   }
