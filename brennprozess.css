@@ -514,7 +514,7 @@ label {
 }
 
 .entry-label {
-  font-weight: 600;
+  font-weight: normal;
   min-width: 240px;
   color: var(--gray-700);
 }
