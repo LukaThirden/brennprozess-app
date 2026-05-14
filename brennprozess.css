@@ -502,11 +502,11 @@ label {
 }
 
 .entry-header-amount.unterhalt-amount {
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .entry-header-amount.ofen-amount {
-  color: var(--primary-color);
+  color: #000000;
 }
 
 .delete-entry-btn {
