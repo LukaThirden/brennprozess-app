@@ -528,6 +528,12 @@ label {
   margin-bottom: 8px;
 }
 
+.entry-row.total-row .entry-label,
+.entry-row.total-row .entry-value {
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
 /* Modal Styles */
 .modal,
 .modal-overlay {
