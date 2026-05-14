@@ -1032,14 +1032,12 @@ function createEntryElement(entry) {
           <div class="entry-value">${formatInvoiceAmount(entry.betrag)}</div>
         </div>
       </div>
-      ${entry.bemerkungen ? `
       <div class="entry-row">
         <div class="entry-field">
           <div class="entry-label">Bemerkungen</div>
-          <div class="entry-value">${escapeHtml(entry.bemerkungen)}</div>
+          <div class="entry-value">${entry.bemerkungen ? escapeHtml(entry.bemerkungen) : '-'}</div>
         </div>
       </div>
-      ` : ''}
     `;
   } else {
     // Brennprozess-Eintrag
