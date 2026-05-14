@@ -1351,7 +1351,69 @@ function exportToExcel() {
     }
 
     // Konto Unterhalt-Blatt
-    const kontoWorksheet = XLSX.utils.aoa_to_sheet([]);
+    // Erstelle Array-of-Arrays für bessere Strukturierung
+    const kontoData = [];
+    
+    // Header Zeile
+    kontoData.push([
+      'Unterhalts-Beiträge',
+      '',
+      '',
+      '',
+      'Unterhalts-Ausgaben',
+      '',
+      ''
+    ]);
+    
+    // Spalten-Header
+    kontoData.push([
+      'Datum',
+      'Person',
+      'Betrag (CHF)',
+      '',
+      'Datum',
+      'Person',
+      'Betrag (CHF)'
+    ]);
+    
+    // Maximal der längeren Liste folgen
+    const maxRows = Math.max(kontoBeitraege.length, kontoAusgaben.length);
+    
+    for (let i = 0; i < maxRows; i++) {
+      const row = [];
+      
+      // Beiträge
+      if (i < kontoBeitraege.length) {
+        row.push(kontoBeitraege[i]['Datum']);
+        row.push(kontoBeitraege[i]['Person']);
+        row.push(parseFloat(kontoBeitraege[i]['Betrag (CHF)']));
+      } else {
+        row.push('');
+        row.push('');
+        row.push('');
+      }
+      
+      row.push(''); // Leerzeile als Separator
+      
+      // Ausgaben
+      if (i < kontoAusgaben.length) {
+        row.push(kontoAusgaben[i]['Datum']);
+        row.push(kontoAusgaben[i]['Person']);
+        row.push(parseFloat(kontoAusgaben[i]['Betrag (CHF)']));
+      } else {
+        row.push('');
+        row.push('');
+        row.push('');
+      }
+      
+      kontoData.push(row);
+    }
+    
+    // Summen-Zeilen
+    kontoData.push(['', 'SUMME BEITRÄGE', totalBeitrag, '', '', 'SUMME AUSGABEN', totalAusgaben]);
+    kontoData.push(['', '', '', '', '', 'KONTOSTAND', kontostand]);
+    
+    const kontoWorksheet = XLSX.utils.aoa_to_sheet(kontoData);
     kontoWorksheet['!cols'] = [
       { wch: 12 },
       { wch: 20 },
@@ -1361,53 +1423,7 @@ function exportToExcel() {
       { wch: 20 },
       { wch: 14 }
     ];
-
-    // Header
-    let rowNum = 1;
-    kontoWorksheet['A' + rowNum] = { v: 'Unterhalts-Beiträge' };
-    kontoWorksheet['E' + rowNum] = { v: 'Unterhalts-Ausgaben' };
-    rowNum++;
-    kontoWorksheet['A' + rowNum] = { v: 'Datum' };
-    kontoWorksheet['B' + rowNum] = { v: 'Person' };
-    kontoWorksheet['C' + rowNum] = { v: 'Betrag (CHF)' };
-    kontoWorksheet['E' + rowNum] = { v: 'Datum' };
-    kontoWorksheet['F' + rowNum] = { v: 'Person' };
-    kontoWorksheet['G' + rowNum] = { v: 'Betrag (CHF)' };
-    rowNum++;
-
-    // Beiträge einfügen
-    kontoBeitraege.forEach(beitrag => {
-      kontoWorksheet['A' + rowNum] = { v: beitrag['Datum'] };
-      kontoWorksheet['B' + rowNum] = { v: beitrag['Person'] };
-      kontoWorksheet['C' + rowNum] = { v: parseFloat(beitrag['Betrag (CHF)']), t: 'n' };
-      rowNum++;
-    });
-
-    // Summe Beiträge
-    const summeRowNum = rowNum + 1;
-    kontoWorksheet['B' + summeRowNum] = { v: 'SUMME BEITRÄGE' };
-    kontoWorksheet['C' + summeRowNum] = { v: totalBeitrag, t: 'n' };
-    rowNum = summeRowNum + 2;
-
-    // Ausgaben einfügen
-    let ausgabenRowNum = 3; // Startet nach Header
-    kontoAusgaben.forEach(ausgabe => {
-      kontoWorksheet['E' + ausgabenRowNum] = { v: ausgabe['Datum'] };
-      kontoWorksheet['F' + ausgabenRowNum] = { v: ausgabe['Person'] };
-      kontoWorksheet['G' + ausgabenRowNum] = { v: parseFloat(ausgabe['Betrag (CHF)']), t: 'n' };
-      ausgabenRowNum++;
-    });
-
-    // Summe Ausgaben
-    const ausgabenSummeRow = ausgabenRowNum + 1;
-    kontoWorksheet['F' + ausgabenSummeRow] = { v: 'SUMME AUSGABEN' };
-    kontoWorksheet['G' + ausgabenSummeRow] = { v: totalAusgaben, t: 'n' };
-
-    // Kontostand
-    const kontostandRow = ausgabenSummeRow + 2;
-    kontoWorksheet['F' + kontostandRow] = { v: 'KONTOSTAND' };
-    kontoWorksheet['G' + kontostandRow] = { v: kontostand, t: 'n' };
-
+    
     XLSX.utils.book_append_sheet(workbook, kontoWorksheet, 'Konto Unterhalt');
 
     // Datei speichern
