@@ -1017,8 +1017,10 @@ function createEntryElement(entry) {
   if (entry.entryType === 'unterhalt') {
     div.innerHTML = `
       <div class="entry-header">
-        <div class="entry-date">${entry.datum}</div>
+        <div class="entry-meta">
+          <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge" style="background-color: #ff9800;">Unterhalt</div>
+        </div>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}" data-type="unterhalt">🗑 Löschen</button>
       </div>
       <div class="entry-row">
@@ -1050,8 +1052,10 @@ function createEntryElement(entry) {
 
     div.innerHTML = `
       <div class="entry-header">
-        <div class="entry-date">${entry.datum}</div>
-        <div class="entry-badge">Ofen-Nutzung</div>
+        <div class="entry-meta">
+          <div class="entry-date">${entry.datum}</div>
+          <div class="entry-badge">Ofen-Nutzung</div>
+        </div>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}">🗑 Löschen</button>
       </div>
       <div class="entry-row">

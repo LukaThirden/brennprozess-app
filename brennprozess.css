@@ -430,6 +430,12 @@ label {
   margin-bottom: 12px;
 }
 
+.entry-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .entry-date {
   font-weight: 700;
   color: var(--primary-color);
