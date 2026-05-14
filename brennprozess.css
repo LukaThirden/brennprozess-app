@@ -120,11 +120,11 @@ html, body {
 }
 
 #brennSection {
-  background-color: rgba(255, 152, 0, 0.15);
+  background-color: rgba(16, 185, 129, 0.15);
 }
 
 #unterhaltSection {
-  background-color: white;
+  background-color: rgba(255, 152, 0, 0.15);
 }
 
 /* Form Styles */
