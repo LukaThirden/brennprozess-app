@@ -132,14 +132,10 @@ html, body {
 }
 
 .unterhalt-header-saldo {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
-  color: #111111;
-  white-space: nowrap;
-}
-
-.unterhalt-header-saldo-label {
   color: inherit;
+  white-space: nowrap;
 }
 
 .form-section-chevron {
