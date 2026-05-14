@@ -90,17 +90,11 @@ html, body {
 /* Main Container */
 .main-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 18px;
   padding: 18px 24px;
   max-width: 1400px;
   margin: 0 auto;
-}
-
-@media (max-width: 1024px) {
-  .main-container {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Sections */
