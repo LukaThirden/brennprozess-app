@@ -450,6 +450,7 @@ label {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 240px;
 }
 
 .entry-date {
@@ -472,10 +473,10 @@ label {
   font-size: 14px;
   color: var(--primary-color);
   white-space: nowrap;
-  align-self: center;
+  align-self: flex-start;
   flex: 1;
-  text-align: right;
-  margin-right: 10px;
+  text-align: left;
+  margin-right: 0;
 }
 
 .delete-entry-btn {
@@ -872,6 +873,7 @@ body.no-scroll {
   .entry-meta {
     flex-wrap: wrap;
     gap: 6px;
+    min-width: 0;
   }
 
   .delete-entry-btn {
