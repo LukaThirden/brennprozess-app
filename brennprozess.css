@@ -119,6 +119,38 @@ html, body {
   padding-bottom: 0;
 }
 
+.form-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.form-section-toggle h2 {
+  margin-bottom: 0;
+}
+
+.form-section-chevron {
+  font-size: 10px;
+  color: var(--gray-600);
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+
+.form-section-toggle[aria-expanded='true'] .form-section-chevron {
+  transform: rotate(180deg);
+}
+
+.form-section-body {
+  display: none;
+  margin-top: 12px;
+}
+
+.form-section-body--open {
+  display: block;
+}
+
 .entries-section-header {
   display: flex;
   align-items: center;

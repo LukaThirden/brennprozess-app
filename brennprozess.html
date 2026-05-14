@@ -31,7 +31,11 @@
   <main class="main-container">
     <!-- Eingabeformular -->
     <section id="brennSection" class="form-section">
-      <h2>Ofen-Nutzung erfassen</h2>
+      <div class="form-section-toggle" data-target="brennSectionBody" role="button" tabindex="0" aria-expanded="false" aria-controls="brennSectionBody">
+        <h2>Ofen-Nutzung erfassen</h2>
+        <span class="form-section-chevron">▼</span>
+      </div>
+      <div id="brennSectionBody" class="form-section-body">
       <form id="brennForm" class="form">
         <!-- Datum -->
         <div class="form-group">
@@ -167,11 +171,16 @@
           <button type="reset" class="reset-button">Reset</button>
         </div>
       </form>
+      </div>
     </section>
 
     <!-- Ausgabenerfassung Unterhalt -->
     <section id="unterhaltSection" class="form-section">
-      <h2>Ausgaben für Unterhalt erfassen</h2>
+      <div class="form-section-toggle" data-target="unterhaltSectionBody" role="button" tabindex="0" aria-expanded="false" aria-controls="unterhaltSectionBody">
+        <h2>Ausgaben für Unterhalt erfassen</h2>
+        <span class="form-section-chevron">▼</span>
+      </div>
+      <div id="unterhaltSectionBody" class="form-section-body">
       <form id="unterhaltForm" class="form">
         <!-- Datum -->
         <div class="form-group">
@@ -247,6 +256,7 @@
           <button type="reset" class="reset-button">Reset</button>
         </div>
       </form>
+      </div>
     </section>
 
     <section class="konto-section" aria-label="Konto Unterhalt">

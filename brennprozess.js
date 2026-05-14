@@ -92,6 +92,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function setupEventListeners() {
+  setupFormSectionToggles();
+
   // Form
   form.addEventListener('submit', handleFormSubmit);
   form.addEventListener('reset', resetForm);
@@ -137,6 +139,32 @@ function setupEventListeners() {
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
   exportConfirmButton.addEventListener('click', handleExportConfirm);
+}
+
+function setupFormSectionToggles() {
+  const toggles = document.querySelectorAll('.form-section-toggle');
+
+  toggles.forEach((toggle) => {
+    const targetId = toggle.dataset.target;
+    const body = targetId ? document.getElementById(targetId) : null;
+
+    if (!body) {
+      return;
+    }
+
+    const toggleSection = () => {
+      const isOpen = body.classList.toggle('form-section-body--open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    toggle.addEventListener('click', toggleSection);
+    toggle.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleSection();
+      }
+    });
+  });
 }
 
 function updateSyncStatus(enabled) {
