@@ -459,6 +459,14 @@ label {
   transition: all 0.2s ease;
 }
 
+.entry-item.unterhalt-entry {
+  background: rgba(255, 152, 0, 0.15);
+}
+
+.entry-item.ofen-entry {
+  background: rgba(16, 185, 129, 0.15);
+}
+
 .entry-item:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -481,18 +489,6 @@ label {
   margin: 0 8px;
   transition: transform 0.2s ease;
   flex-shrink: 0;
-}
-
-.entry-header.unterhalt-header {
-  background-color: rgba(255, 152, 0, 0.15);
-  border-radius: var(--border-radius);
-  padding: 6px 8px;
-}
-
-.entry-header.ofen-header {
-  background-color: rgba(16, 185, 129, 0.15);
-  border-radius: var(--border-radius);
-  padding: 6px 8px;
 }
 
 .entry-body {

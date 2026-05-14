@@ -1007,12 +1007,12 @@ function loadEntries() {
 
 function createEntryElement(entry) {
   const div = document.createElement('div');
-  div.className = 'entry-item';
+  div.className = `entry-item ${entry.entryType === 'unterhalt' ? 'unterhalt-entry' : 'ofen-entry'}`;
 
   // Wenn es ein Unterhalt-Eintrag ist
   if (entry.entryType === 'unterhalt') {
     div.innerHTML = `
-      <div class="entry-header entry-toggle unterhalt-header">
+      <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge" style="background-color: #ff9800;">Unterhalt</div>
@@ -1043,7 +1043,7 @@ function createEntryElement(entry) {
     const grundkosten = totalAmount - breakdown.solibeitrag;
 
     div.innerHTML = `
-      <div class="entry-header entry-toggle ofen-header">
+      <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge">Ofen-Nutzung</div>
