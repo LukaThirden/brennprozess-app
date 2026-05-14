@@ -576,9 +576,16 @@ label {
   border-radius: 0;
   font-size: 12px;
   font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
+  display: none;
+}
+
+.entry-type-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 6px;
+  flex-shrink: 0;
 }
 
 .entry-header-amount {
