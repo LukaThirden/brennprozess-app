@@ -306,8 +306,8 @@ function normalizeBrennRecord(record) {
     bemerkungen: record.bemerkungen || '',
     vorname: record.vorname || '',
     nachname: record.nachname || '',
-    wPersonen: record.wPersonen || '',
-    anzahlExterne: String(record.anzahlExterne ?? '0'),
+    wPersonen: record.wpersonen || record.wPersonen || '',
+    anzahlExterne: String(record.anzahlexterne ?? record.anzahlExterne ?? '0'),
     brennzyklus: String(record.brennzyklus ?? '0'),
     brennmodus: record.brennmodus || '',
     timestamp: record.timestamp || record.created_at || new Date().toISOString()
@@ -345,8 +345,8 @@ function toSupabaseBrennPayload(entry) {
     bemerkungen: entry.bemerkungen || '',
     vorname: entry.vorname,
     nachname: entry.nachname,
-    wPersonen: entry.wPersonen || '',
-    anzahlExterne: Number(entry.anzahlExterne || 0),
+    wpersonen: entry.wPersonen || '',
+    anzahlexterne: Number(entry.anzahlExterne || 0),
     brennzyklus: Number(entry.brennzyklus || 0),
     brennmodus: entry.brennmodus,
     timestamp: entry.timestamp || new Date().toISOString()
