@@ -1068,12 +1068,6 @@ function createEntryElement(entry) {
           <div class="entry-value">${entry.wPersonen ? escapeHtml(entry.wPersonen) : '-'}</div>
         </div>
       </div>
-      <div class="entry-row total-row">
-        <div class="entry-field">
-          <div class="entry-label">Gesamtbetrag</div>
-          <div class="entry-value">${formatInvoiceAmount(totalAmount)}</div>
-        </div>
-      </div>
       <div class="entry-row grundkosten-row">
         <div class="entry-field">
           <div class="entry-label">davon Grundkosten (Alle)</div>
