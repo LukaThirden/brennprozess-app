@@ -137,13 +137,6 @@ html, body {
   border-radius: 4px;
 }
 
-#unterhaltSection {
-  width: fit-content;
-  min-width: 420px;
-  max-width: 100%;
-  justify-self: start;
-}
-
 /* Form Styles */
 .form {
   display: flex;
@@ -405,10 +398,6 @@ label {
   background: #f9fbff;
   box-shadow: var(--box-shadow);
   overflow: hidden;
-  width: fit-content;
-  min-width: 420px;
-  max-width: 100%;
-  justify-self: start;
 }
 
 .konto-row {
@@ -600,12 +589,6 @@ label {
 }
 
 @media (max-width: 600px) {
-  #unterhaltSection,
-  .konto-section {
-    width: 100%;
-    min-width: 0;
-  }
-
   .konto-row {
     flex-direction: column;
     align-items: flex-start;
