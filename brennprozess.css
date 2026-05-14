@@ -467,6 +467,17 @@ label {
   font-weight: 600;
 }
 
+.entry-header-amount {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--primary-color);
+  white-space: nowrap;
+  align-self: center;
+  flex: 1;
+  text-align: right;
+  margin-right: 10px;
+}
+
 .delete-entry-btn {
   background-color: #e5e7eb;
   color: #374151;
