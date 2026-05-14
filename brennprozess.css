@@ -121,6 +121,16 @@ html, body {
   padding-bottom: 10px;
 }
 
+#brennSection h2 {
+  color: #10b981;
+  border-bottom-color: #10b981;
+}
+
+#unterhaltSection h2 {
+  color: #ff9800;
+  border-bottom-color: #ff9800;
+}
+
 /* Form Styles */
 .form {
   display: flex;
