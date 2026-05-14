@@ -576,6 +576,9 @@ label {
   border-radius: 0;
   font-size: 12px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .entry-header-amount {
