@@ -123,6 +123,10 @@ html, body {
   border-radius: 4px;
 }
 
+#brennSection {
+  background-color: rgba(16, 185, 129, 0.15);
+}
+
 #unterhaltSection h2 {
   background-color: #ff9800;
   color: #fff;
