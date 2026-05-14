@@ -737,9 +737,9 @@ body.no-scroll {
   background-color: #ecfdf5;
   border: 1px solid #a7f3d0;
   color: #065f46;
-  padding: 14px 18px;
+  padding: 18px 24px;
   border-radius: var(--border-radius);
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.28);
   animation: toastIn 0.25s ease;
