@@ -1012,7 +1012,7 @@ function createEntryElement(entry) {
   // Wenn es ein Unterhalt-Eintrag ist
   if (entry.entryType === 'unterhalt') {
     div.innerHTML = `
-      <div class="entry-header entry-toggle">
+      <div class="entry-header entry-toggle unterhalt-header">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge" style="background-color: #ff9800;">Unterhalt</div>
@@ -1043,7 +1043,7 @@ function createEntryElement(entry) {
     const grundkosten = totalAmount - breakdown.solibeitrag;
 
     div.innerHTML = `
-      <div class="entry-header entry-toggle">
+      <div class="entry-header entry-toggle ofen-header">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge">Ofen-Nutzung</div>

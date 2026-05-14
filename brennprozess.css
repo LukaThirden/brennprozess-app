@@ -459,6 +459,18 @@ label {
   flex-shrink: 0;
 }
 
+.entry-header.unterhalt-header {
+  background-color: rgba(255, 152, 0, 0.15);
+  border-radius: var(--border-radius);
+  padding: 6px 8px;
+}
+
+.entry-header.ofen-header {
+  background-color: rgba(16, 185, 129, 0.15);
+  border-radius: var(--border-radius);
+  padding: 6px 8px;
+}
+
 .entry-body {
   display: none;
   margin-top: 12px;
