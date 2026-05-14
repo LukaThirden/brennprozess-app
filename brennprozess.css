@@ -119,6 +119,32 @@ html, body {
   padding-bottom: 0;
 }
 
+.entries-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.entries-section-header h2 {
+  margin-bottom: 0;
+}
+
+.export-inline-button {
+  padding: 5px 12px;
+  background: #111111;
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.export-inline-button:hover {
+  background: #333333;
+}
+
 #brennSection {
   background-color: white;
 }
