@@ -534,6 +534,11 @@ label {
   color: var(--gray-900);
 }
 
+.entry-row.grundkosten-row .entry-field,
+.entry-row.solibeitrag-row .entry-field {
+  padding-left: 14px;
+}
+
 /* Modal Styles */
 .modal,
 .modal-overlay {
