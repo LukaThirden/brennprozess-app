@@ -1053,7 +1053,7 @@ function createEntryElement(entry) {
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge">Ofen-Nutzung</div>
         </div>
-        <div class="entry-header-amount">Gesamtbetrag: ${formatInvoiceAmount(totalAmount)}</div>
+        <div class="entry-header-amount">${formatInvoiceAmount(totalAmount)}</div>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}">🗑 Löschen</button>
       </div>
       <div class="entry-row">
@@ -1070,13 +1070,13 @@ function createEntryElement(entry) {
       </div>
       <div class="entry-row grundkosten-row">
         <div class="entry-field">
-          <div class="entry-label">davon Grundkosten (Alle)</div>
+          <div class="entry-label">Grundkosten (Alle)</div>
           <div class="entry-value">${formatInvoiceAmount(grundkosten)}</div>
         </div>
       </div>
       <div class="entry-row solibeitrag-row">
         <div class="entry-field">
-          <div class="entry-label">davon Solibeitrag (Externe)</div>
+          <div class="entry-label">Solibeitrag (Externe)</div>
           <div class="entry-value">${formatInvoiceAmount(breakdown.solibeitrag)}</div>
         </div>
       </div>
