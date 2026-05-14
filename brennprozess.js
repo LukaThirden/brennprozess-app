@@ -1277,73 +1277,84 @@ function exportToExcel() {
   const totalAusgaben = calculateUnterhaltTotalAusgaben();
   const kontostand = calculateUnterhaltKontostand();
   const timestamp = new Date().toISOString().split('T')[0];
+  const FMT_NUM = '0.00';
+  const FMT_CHF = '_ [$CHF-807]\\ * #,##0.00_ ;_ [$CHF-807]\\ * \\-#,##0.00_ ;_ [$CHF-807]\\ * "-"??_ ;_ @_ ';
 
   const workbook = new ExcelJS.Workbook();
 
-  // Hilfsfunktion: Kopfzeile fett + sz 12, Datenzeilen sz 12
-  function addStyledSheet(wb, sheetName, headers, rows) {
-    const ws = wb.addWorksheet(sheetName);
-    // Spaltenbreiten
-    ws.columns = headers.map(h => ({ header: h, key: h, width: Math.max(h.length + 2, 14) }));
-    // Header-Zeile stylen
-    ws.getRow(1).eachCell(cell => {
-      cell.font = { bold: true, size: 12 };
-    });
-    // Datenzeilen
-    rows.forEach(rowData => {
-      const r = ws.addRow(headers.map(h => rowData[h] !== undefined ? rowData[h] : ''));
-      r.eachCell(cell => { cell.font = { size: 12 }; });
-    });
-    return ws;
-  }
-
   // Blatt 1: Brennprozesse
   if (brennEntries.length > 0) {
-    const brennHeaders = ['Datum','Verantwortliche Person','Weitere Personen','Bemerkungen',
+    const ws = workbook.addWorksheet('Brennprozesse');
+    // CHF-Spaltenindizes (0-basiert): H=7, I=8, J=9, K=10, L=11
+    const chfCols = new Set([7, 8, 9, 10, 11]);
+    const headers = ['Datum','Verantwortliche Person','Weitere Personen','Bemerkungen',
       'Anzahl Externe','Brenn-Zyklus (Stunden)','Brennmodus','Solibeitrag (CHF)',
       'Stromkosten (CHF)','Admingebühr (CHF)','Unterhalts-Beitrag (CHF)','Gesamtbetrag (CHF)'];
-    const brennRows = brennEntries.map(entry => ({
-      'Datum': entry.datum,
-      'Verantwortliche Person': `${entry.vorname} ${entry.nachname}`,
-      'Weitere Personen': entry.wPersonen || '-',
-      'Bemerkungen': entry.bemerkungen || '-',
-      'Anzahl Externe': entry.anzahlExterne,
-      'Brenn-Zyklus (Stunden)': entry.brennzyklus,
-      'Brennmodus': entry.brennmodus,
-      'Solibeitrag (CHF)': parseFloat(calculateInvoiceAmount(entry, true).solibeitrag.toFixed(2)),
-      'Stromkosten (CHF)': parseFloat(calculateInvoiceAmount(entry, true).stromkosten.toFixed(2)),
-      'Admingebühr (CHF)': parseFloat(calculateInvoiceAmount(entry, true).admingebuehr.toFixed(2)),
-      'Unterhalts-Beitrag (CHF)': parseFloat(calculateInvoiceAmount(entry, true).unterhaltsbeitrag.toFixed(2)),
-      'Gesamtbetrag (CHF)': parseFloat(calculateInvoiceAmount(entry).toFixed(2))
-    }));
-    addStyledSheet(workbook, 'Brennprozesse', brennHeaders, brennRows);
+    ws.columns = headers.map((h, i) => ({ width: chfCols.has(i) ? 18 : Math.max(h.length + 2, 12) }));
+    const headerRow = ws.addRow(headers);
+    headerRow.eachCell((cell, colNum) => {
+      cell.font = { bold: true, size: 12 };
+      if (chfCols.has(colNum - 1)) cell.numFmt = FMT_NUM;
+    });
+    brennEntries.forEach(entry => {
+      const bd = calculateInvoiceAmount(entry, true);
+      const vals = [
+        entry.datum,
+        `${entry.vorname} ${entry.nachname}`,
+        entry.wPersonen || '-',
+        entry.bemerkungen || '-',
+        Number(entry.anzahlExterne),
+        Number(entry.brennzyklus),
+        entry.brennmodus,
+        bd.solibeitrag,
+        bd.stromkosten,
+        bd.admingebuehr,
+        bd.unterhaltsbeitrag,
+        calculateInvoiceAmount(entry)
+      ];
+      const r = ws.addRow(vals);
+      r.eachCell((cell, colNum) => {
+        cell.font = { size: 12 };
+        if (chfCols.has(colNum - 1)) cell.numFmt = FMT_NUM;
+      });
+    });
   }
 
   // Blatt 2: Unterhalt-Ausgaben
   if (unterhaltEntries.length > 0) {
-    const uHeaders = ['Datum','Verantwortliche Person','Betrag (CHF)','Bemerkungen'];
-    const uRows = unterhaltEntries.map(entry => ({
-      'Datum': entry.datum || '',
-      'Verantwortliche Person': `${entry.vorname || ''} ${entry.nachname || ''}`.trim(),
-      'Betrag (CHF)': parseFloat((entry.betrag || 0).toFixed(2)),
-      'Bemerkungen': entry.bemerkungen || '-'
-    }));
-    addStyledSheet(workbook, 'Unterhalt-Ausgaben', uHeaders, uRows);
+    const ws = workbook.addWorksheet('Unterhalt-Ausgaben');
+    ws.columns = [{ width: 14 }, { width: 22 }, { width: 14 }, { width: 28 }];
+    const headerRow = ws.addRow(['Datum','Verantwortliche Person','Betrag (CHF)','Bemerkungen']);
+    headerRow.eachCell((cell, colNum) => {
+      cell.font = { bold: true, size: 12 };
+      if (colNum === 3) cell.numFmt = FMT_NUM;
+    });
+    unterhaltEntries.forEach(entry => {
+      const r = ws.addRow([
+        entry.datum || '',
+        `${entry.vorname || ''} ${entry.nachname || ''}`.trim(),
+        Number(entry.betrag) || 0,
+        entry.bemerkungen || '-'
+      ]);
+      r.eachCell((cell, colNum) => {
+        cell.font = { size: 12 };
+        if (colNum === 3) cell.numFmt = FMT_NUM;
+      });
+    });
   }
 
   // Blatt 3: Konto Unterhalt
   const kontoWs = workbook.addWorksheet('Konto Unterhalt');
-  kontoWs.columns = [{ width: 22 }, { width: 14 }];
-  const kontoRows = [
-    ['SALDO UNTERHALT', kontostand],
-    ['EINNAHMEN', totalBeitrag],
-    ['AUSGABEN', totalAusgaben]
-  ];
-  kontoRows.forEach((rowData, idx) => {
-    const r = kontoWs.addRow(rowData);
-    r.eachCell(cell => {
-      cell.font = { bold: idx === 0, size: 12 };
-    });
+  kontoWs.columns = [{ width: 22 }, { width: 18 }];
+  [
+    ['SALDO UNTERHALT', kontostand, true],
+    ['EINNAHMEN', totalBeitrag, false],
+    ['AUSGABEN', totalAusgaben, false]
+  ].forEach(([label, val, bold]) => {
+    const r = kontoWs.addRow([label, val]);
+    r.getCell(1).font = { bold, size: 12 };
+    r.getCell(2).font = { bold, size: 12 };
+    r.getCell(2).numFmt = FMT_CHF;
   });
 
   // Datei herunterladen
