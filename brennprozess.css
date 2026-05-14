@@ -528,31 +528,6 @@ label {
   margin-bottom: 8px;
 }
 
-.entry-row.total-row {
-  margin-left: 0;
-  padding-left: 0;
-}
-
-.entry-row.total-row .entry-label,
-.entry-row.total-row .entry-value {
-  font-weight: 700;
-  color: var(--gray-900);
-}
-
-.entry-row.total-row,
-.entry-row.grundkosten-row,
-.entry-row.solibeitrag-row {
-  background-color: rgba(59, 130, 246, 0.05);
-  border: 1px solid rgba(59, 130, 246, 0.18);
-  border-radius: 4px;
-  padding: 5px 8px;
-}
-
-.entry-row.grundkosten-row,
-.entry-row.solibeitrag-row {
-  color: var(--gray-900);
-}
-
 /* Modal Styles */
 .modal,
 .modal-overlay {
