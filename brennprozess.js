@@ -1297,6 +1297,23 @@ function exportToExcel() {
     'Bemerkungen': entry.bemerkungen || '-'
   }));
 
+  // Daten für Konto Unterhalt-Blatt vorbereiten
+  const kontoBeitraege = brennEntries.map(entry => ({
+    'Datum': entry.datum,
+    'Person': `${entry.vorname} ${entry.nachname}`,
+    'Betrag (CHF)': calculateInvoiceAmount(entry, true).unterhaltsbeitrag.toFixed(2)
+  }));
+
+  const kontoAusgaben = unterhaltEntries.map(entry => ({
+    'Datum': entry.datum || '',
+    'Person': `${entry.vorname || ''} ${entry.nachname || ''}`.trim(),
+    'Betrag (CHF)': (entry.betrag || 0).toFixed(2)
+  }));
+
+  const totalBeitrag = calculateUnterhaltTotalBeitrag();
+  const totalAusgaben = calculateUnterhaltTotalAusgaben();
+  const kontostand = calculateUnterhaltKontostand();
+
   if (typeof XLSX !== 'undefined' && XLSX && XLSX.utils && typeof XLSX.writeFile === 'function') {
     // Arbeitsmappe erstellen
     const workbook = XLSX.utils.book_new();
@@ -1331,25 +1348,67 @@ function exportToExcel() {
         { wch: 25 }
       ];
       XLSX.utils.book_append_sheet(workbook, unterhaltWorksheet, 'Unterhalt-Ausgaben');
-
-      // Zusammenfassung für Unterhalt-Blatt hinzufügen
-      const summaryData = [
-        {},
-        { 'Datum': 'ZUSAMMENFASSUNG', 'Verantwortliche Person': '', 'Betrag (CHF)': '', 'Bemerkungen': '' },
-        { 'Datum': 'Gesamte Beiträge', 'Verantwortliche Person': '', 'Betrag (CHF)': (calculateUnterhaltTotalBeitrag()).toFixed(2), 'Bemerkungen': '' },
-        { 'Datum': 'Gesamte Ausgaben', 'Verantwortliche Person': '', 'Betrag (CHF)': (calculateUnterhaltTotalAusgaben()).toFixed(2), 'Bemerkungen': '' },
-        { 'Datum': 'Konto Unterhalt', 'Verantwortliche Person': '', 'Betrag (CHF)': (calculateUnterhaltKontostand()).toFixed(2), 'Bemerkungen': 'Kontostand' }
-      ];
-
-      // Zusammenfassungsdaten zum bestehenden Worksheet hinzufügen
-      const summaryStartRow = unterhaltExcelData.length + 2;
-      summaryData.forEach((row, idx) => {
-        Object.keys(row).forEach(key => {
-          const cellRef = XLSX.utils.encode_col(Object.keys(row).indexOf(key)) + (summaryStartRow + idx);
-          unterhaltWorksheet[cellRef] = { v: row[key], t: typeof row[key] === 'number' ? 'n' : 's' };
-        });
-      });
     }
+
+    // Konto Unterhalt-Blatt
+    const kontoWorksheet = XLSX.utils.aoa_to_sheet([]);
+    kontoWorksheet['!cols'] = [
+      { wch: 12 },
+      { wch: 20 },
+      { wch: 14 },
+      { wch: 3 },
+      { wch: 12 },
+      { wch: 20 },
+      { wch: 14 }
+    ];
+
+    // Header
+    let rowNum = 1;
+    kontoWorksheet['A' + rowNum] = { v: 'Unterhalts-Beiträge' };
+    kontoWorksheet['E' + rowNum] = { v: 'Unterhalts-Ausgaben' };
+    rowNum++;
+    kontoWorksheet['A' + rowNum] = { v: 'Datum' };
+    kontoWorksheet['B' + rowNum] = { v: 'Person' };
+    kontoWorksheet['C' + rowNum] = { v: 'Betrag (CHF)' };
+    kontoWorksheet['E' + rowNum] = { v: 'Datum' };
+    kontoWorksheet['F' + rowNum] = { v: 'Person' };
+    kontoWorksheet['G' + rowNum] = { v: 'Betrag (CHF)' };
+    rowNum++;
+
+    // Beiträge einfügen
+    kontoBeitraege.forEach(beitrag => {
+      kontoWorksheet['A' + rowNum] = { v: beitrag['Datum'] };
+      kontoWorksheet['B' + rowNum] = { v: beitrag['Person'] };
+      kontoWorksheet['C' + rowNum] = { v: parseFloat(beitrag['Betrag (CHF)']), t: 'n' };
+      rowNum++;
+    });
+
+    // Summe Beiträge
+    const summeRowNum = rowNum + 1;
+    kontoWorksheet['B' + summeRowNum] = { v: 'SUMME BEITRÄGE' };
+    kontoWorksheet['C' + summeRowNum] = { v: totalBeitrag, t: 'n' };
+    rowNum = summeRowNum + 2;
+
+    // Ausgaben einfügen
+    let ausgabenRowNum = 3; // Startet nach Header
+    kontoAusgaben.forEach(ausgabe => {
+      kontoWorksheet['E' + ausgabenRowNum] = { v: ausgabe['Datum'] };
+      kontoWorksheet['F' + ausgabenRowNum] = { v: ausgabe['Person'] };
+      kontoWorksheet['G' + ausgabenRowNum] = { v: parseFloat(ausgabe['Betrag (CHF)']), t: 'n' };
+      ausgabenRowNum++;
+    });
+
+    // Summe Ausgaben
+    const ausgabenSummeRow = ausgabenRowNum + 1;
+    kontoWorksheet['F' + ausgabenSummeRow] = { v: 'SUMME AUSGABEN' };
+    kontoWorksheet['G' + ausgabenSummeRow] = { v: totalAusgaben, t: 'n' };
+
+    // Kontostand
+    const kontostandRow = ausgabenSummeRow + 2;
+    kontoWorksheet['F' + kontostandRow] = { v: 'KONTOSTAND' };
+    kontoWorksheet['G' + kontostandRow] = { v: kontostand, t: 'n' };
+
+    XLSX.utils.book_append_sheet(workbook, kontoWorksheet, 'Konto Unterhalt');
 
     // Datei speichern
     const timestamp = new Date().toISOString().split('T')[0];
