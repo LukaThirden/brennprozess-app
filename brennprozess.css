@@ -116,24 +116,8 @@ html, body {
   padding-bottom: 10px;
 }
 
-#brennSection h2 {
-  background-color: #10b981;
-  color: #fff;
-  border-bottom-color: #10b981;
-  padding: 8px 12px;
-  border-radius: 4px;
-}
-
 #brennSection {
   background-color: var(--gray-100);
-}
-
-#unterhaltSection h2 {
-  background-color: #ff9800;
-  color: #fff;
-  border-bottom-color: #ff9800;
-  padding: 8px 12px;
-  border-radius: 4px;
 }
 
 #unterhaltSection {
