@@ -110,7 +110,9 @@ function setupEventListeners() {
   unterhaltBemerkungenInput.addEventListener('input', updateCharCount);
 
   // Admin
-  adminButton.addEventListener('click', openAdminModal);
+  if (adminButton) {
+    adminButton.addEventListener('click', openAdminModal);
+  }
   modalClose.addEventListener('click', closeAdminModal);
   modalOverlay.addEventListener('click', closeAdminModal);
   adminLoginButton.addEventListener('click', handleAdminLogin);
