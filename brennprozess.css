@@ -135,6 +135,10 @@ html, body {
   border-radius: 4px;
 }
 
+#unterhaltSection {
+  background-color: rgba(255, 152, 0, 0.15);
+}
+
 /* Form Styles */
 .form {
   display: flex;
