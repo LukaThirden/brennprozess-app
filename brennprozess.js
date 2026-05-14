@@ -1154,17 +1154,19 @@ function formatInvoiceAmount(amount) {
 
 // === Unterhalt Calculation Functions ===
 function calculateUnterhaltTotalBeitrag() {
-  // Beiträge sind positive Einträge (Einnahmen)
-  return (unterhaltEntriesCache || [])
-    .filter(entry => entry.betrag >= 0)
-    .reduce((sum, entry) => sum + (Number(entry.betrag) || 0), 0);
+  // Beiträge = sum of Unterhaltsbeitrag from Brennprozess entries
+  const brennEntries = getEntries();
+  return brennEntries.reduce((sum, entry) => {
+    const unterhalt = Number(calculateInvoiceAmount(entry, true).unterhaltsbeitrag || 0);
+    return sum + unterhalt;
+  }, 0);
 }
 
 function calculateUnterhaltTotalAusgaben() {
-  // Ausgaben sind negative Einträge (Kosten)
-  return (unterhaltEntriesCache || [])
-    .filter(entry => entry.betrag < 0)
-    .reduce((sum, entry) => sum + Math.abs(Number(entry.betrag) || 0), 0);
+  // Ausgaben = sum of Betrag from Unterhalt entries
+  return (unterhaltEntriesCache || []).reduce((sum, entry) => {
+    return sum + (Number(entry.betrag) || 0);
+  }, 0);
 }
 
 function calculateUnterhaltKontostand() {
