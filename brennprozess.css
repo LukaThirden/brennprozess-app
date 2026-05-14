@@ -446,7 +446,7 @@ label {
 }
 
 .delete-entry-btn {
-  background-color: var(--danger-color);
+  background-color: #6b7280;
   color: white;
   border: none;
   padding: 6px 12px;
@@ -458,7 +458,7 @@ label {
 }
 
 .delete-entry-btn:hover {
-  background-color: #dc2626;
+  background-color: #4b5563;
 }
 
 .entry-row {
@@ -660,7 +660,7 @@ body.no-scroll {
 }
 
 .delete-button {
-  background-color: var(--danger-color);
+  background-color: #6b7280;
   color: white;
   border: none;
   padding: 6px 12px;
@@ -671,7 +671,15 @@ body.no-scroll {
 }
 
 .delete-button:hover {
-  background-color: #dc2626;
+  background-color: #4b5563;
+}
+
+#deleteConfirmButton {
+  background-color: #6b7280;
+}
+
+#deleteConfirmButton:hover {
+  background-color: #4b5563;
 }
 
 /* Success Message */
