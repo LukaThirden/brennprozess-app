@@ -1069,7 +1069,7 @@ function createEntryElement(entry) {
       <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
-          <div class="entry-badge">Ofen-Nutzung</div>
+          <div class="entry-badge">Nutzung</div>
         </div>
         <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamt)</div>
         <span class="entry-chevron">▼</span>
