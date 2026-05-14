@@ -3,6 +3,8 @@ const ADMIN_PASSWORD = 'admin123'; // Sollte in einer echten App verschlüsselt 
 const STORAGE_KEY = 'brennprozess_entries';
 const UNTERHALT_STORAGE_KEY = 'unterhalt_entries';
 const ACCESS_PASSWORD = 'ADW11';
+const ACCESS_VALID_UNTIL_KEY = 'brennprozess_access_valid_until';
+const ACCESS_REAUTH_MS = 5 * 60 * 1000;
 const SUPABASE_CONFIG = window.SUPABASE_CONFIG || {};
 const SB_URL = (SUPABASE_CONFIG.url || '').replace(/\/+$/, '');
 const SB_ANON_KEY = SUPABASE_CONFIG.anonKey || '';
@@ -77,6 +79,7 @@ let unterhaltEntriesCache = [];
 let cloudSyncEnabled = false;
 let syncHealthCheckTimer = null;
 let syncHealthCheckInFlight = false;
+let accessReauthTimer = null;
 
 const SYNC_CHECK_INTERVAL_MS = 10000;
 
@@ -397,7 +400,48 @@ function parseDate(dateString) {
 }
 
 function checkAccess() {
+  const validUntil = getAccessValidUntil();
+  if (validUntil > Date.now()) {
+    hideAccessOverlay();
+    scheduleAccessReauth(validUntil);
+    return;
+  }
+
+  clearAccessValidity();
   showAccessOverlay();
+}
+
+function getAccessValidUntil() {
+  const raw = sessionStorage.getItem(ACCESS_VALID_UNTIL_KEY);
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function setAccessValidUntil(timestamp) {
+  sessionStorage.setItem(ACCESS_VALID_UNTIL_KEY, String(timestamp));
+}
+
+function clearAccessValidity() {
+  sessionStorage.removeItem(ACCESS_VALID_UNTIL_KEY);
+}
+
+function scheduleAccessReauth(validUntil) {
+  if (accessReauthTimer) {
+    clearTimeout(accessReauthTimer);
+    accessReauthTimer = null;
+  }
+
+  const remainingMs = validUntil - Date.now();
+  if (remainingMs <= 0) {
+    clearAccessValidity();
+    showAccessOverlay();
+    return;
+  }
+
+  accessReauthTimer = setTimeout(() => {
+    clearAccessValidity();
+    showAccessOverlay();
+  }, remainingMs);
 }
 
 function showAccessOverlay() {
@@ -424,7 +468,10 @@ function handleAccessSubmit() {
 
   const password = accessPasswordInput.value.trim();
   if (password === ACCESS_PASSWORD) {
+    const validUntil = Date.now() + ACCESS_REAUTH_MS;
+    setAccessValidUntil(validUntil);
     hideAccessOverlay();
+    scheduleAccessReauth(validUntil);
     accessPasswordInput.value = '';
     if (accessError) {
       accessError.textContent = '';
