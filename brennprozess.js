@@ -1420,5 +1420,5 @@ function showSuccessMessage(message) {
 
   setTimeout(() => {
     msgElement.remove();
-  }, 2000);
+  }, 4000);
 }
