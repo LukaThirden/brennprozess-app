@@ -117,11 +117,11 @@ html, body {
 }
 
 #brennSection {
-  background-color: var(--gray-100);
+  background-color: white;
 }
 
 #unterhaltSection {
-  background-color: var(--gray-100);
+  background-color: white;
 }
 
 /* Form Styles */
@@ -382,7 +382,7 @@ label {
   margin-bottom: 0;
   border: 2px solid #d8e3f8;
   border-radius: 10px;
-  background: #f9fbff;
+  background: white;
   box-shadow: var(--box-shadow);
   overflow: hidden;
   padding: 20px;
