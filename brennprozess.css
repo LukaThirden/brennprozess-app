@@ -442,8 +442,30 @@ label {
 .entry-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 18px;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.entry-header.entry-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.entry-chevron {
+  font-size: 10px;
+  color: var(--gray-500);
+  margin: 0 8px;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.entry-body {
+  display: none;
+  margin-top: 12px;
+}
+
+.entry-body--open {
+  display: block;
 }
 
 .entry-meta {

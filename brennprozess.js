@@ -1012,24 +1012,27 @@ function createEntryElement(entry) {
   // Wenn es ein Unterhalt-Eintrag ist
   if (entry.entryType === 'unterhalt') {
     div.innerHTML = `
-      <div class="entry-header">
+      <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge" style="background-color: #ff9800;">Unterhalt</div>
         </div>
         <div class="entry-header-amount unterhalt-amount">${formatInvoiceAmount(entry.betrag)} (Ausgabenbetrag)</div>
+        <span class="entry-chevron">▼</span>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}" data-type="unterhalt">🗑 Löschen</button>
       </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Name</div>
-          <div class="entry-value">${entry.vorname} ${entry.nachname}</div>
+      <div class="entry-body">
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Name</div>
+            <div class="entry-value">${entry.vorname} ${entry.nachname}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Bemerkungen</div>
-          <div class="entry-value">${entry.bemerkungen ? escapeHtml(entry.bemerkungen) : '-'}</div>
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Bemerkungen</div>
+            <div class="entry-value">${entry.bemerkungen ? escapeHtml(entry.bemerkungen) : '-'}</div>
+          </div>
         </div>
       </div>
     `;
@@ -1040,63 +1043,79 @@ function createEntryElement(entry) {
     const grundkosten = totalAmount - breakdown.solibeitrag;
 
     div.innerHTML = `
-      <div class="entry-header">
+      <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge">Ofen-Nutzung</div>
         </div>
         <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamtbetrag)</div>
+        <span class="entry-chevron">▼</span>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}">🗑 Löschen</button>
       </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Verantwortliche Person</div>
-          <div class="entry-value">${escapeHtml(entry.vorname)} ${escapeHtml(entry.nachname)}</div>
+      <div class="entry-body">
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Verantwortliche Person</div>
+            <div class="entry-value">${escapeHtml(entry.vorname)} ${escapeHtml(entry.nachname)}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Weitere Personen</div>
-          <div class="entry-value">${entry.wPersonen ? escapeHtml(entry.wPersonen) : '-'}</div>
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Weitere Personen</div>
+            <div class="entry-value">${entry.wPersonen ? escapeHtml(entry.wPersonen) : '-'}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row grundkosten-row">
-        <div class="entry-field">
-          <div class="entry-label">Grundkosten (für Alle)</div>
-          <div class="entry-value">${formatInvoiceAmount(grundkosten)}</div>
+        <div class="entry-row grundkosten-row">
+          <div class="entry-field">
+            <div class="entry-label">Grundkosten (für Alle)</div>
+            <div class="entry-value">${formatInvoiceAmount(grundkosten)}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row solibeitrag-row">
-        <div class="entry-field">
-          <div class="entry-label">Solibeitrag (für Externe)</div>
-          <div class="entry-value">${formatInvoiceAmount(breakdown.solibeitrag)}</div>
+        <div class="entry-row solibeitrag-row">
+          <div class="entry-field">
+            <div class="entry-label">Solibeitrag (für Externe)</div>
+            <div class="entry-value">${formatInvoiceAmount(breakdown.solibeitrag)}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Anzahl externe Personen</div>
-          <div class="entry-value">${entry.anzahlExterne}</div>
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Anzahl externe Personen</div>
+            <div class="entry-value">${entry.anzahlExterne}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Brennmodus</div>
-          <div class="entry-value">${escapeHtml(entry.brennmodus)}</div>
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Brennmodus</div>
+            <div class="entry-value">${escapeHtml(entry.brennmodus)}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Brenn-Zyklus (Betriebsstunden)</div>
-          <div class="entry-value">${entry.brennzyklus}</div>
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Brenn-Zyklus (Betriebsstunden)</div>
+            <div class="entry-value">${entry.brennzyklus}</div>
+          </div>
         </div>
-      </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Bemerkungen</div>
-          <div class="entry-value">${entry.bemerkungen ? escapeHtml(entry.bemerkungen) : '-'}</div>
+        <div class="entry-row">
+          <div class="entry-field">
+            <div class="entry-label">Bemerkungen</div>
+            <div class="entry-value">${entry.bemerkungen ? escapeHtml(entry.bemerkungen) : '-'}</div>
+          </div>
         </div>
       </div>
     `;
+  }
+
+  // Toggle-Logik: Klick auf Header klappt Details aus/ein
+  const toggle = div.querySelector('.entry-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', (e) => {
+      // Klick auf Löschen-Button nicht abfangen
+      if (e.target.closest('.delete-entry-btn')) return;
+      const body = div.querySelector('.entry-body');
+      const chevron = div.querySelector('.entry-chevron');
+      const isOpen = body.classList.toggle('entry-body--open');
+      chevron.style.transform = isOpen ? 'rotate(180deg)' : '';
+    });
   }
 
   // Event-Listener für Delete-Button
