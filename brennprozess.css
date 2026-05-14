@@ -534,9 +534,9 @@ label {
   color: var(--gray-900);
 }
 
-.entry-row.grundkosten-row .entry-field,
-.entry-row.solibeitrag-row .entry-field {
-  padding-left: 14px;
+.entry-row.grundkosten-row .entry-label,
+.entry-row.solibeitrag-row .entry-label {
+  text-indent: 14px;
 }
 
 /* Modal Styles */
