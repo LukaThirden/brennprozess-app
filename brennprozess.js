@@ -1017,19 +1017,12 @@ function createEntryElement(entry) {
           <div class="entry-date">${entry.datum}</div>
           <div class="entry-badge" style="background-color: #ff9800;">Unterhalt</div>
         </div>
-        <div class="entry-header-amount">Ausgabe: ${formatInvoiceAmount(entry.betrag)}</div>
         <button type="button" class="delete-entry-btn" data-id="${entry.id}" data-type="unterhalt">🗑 Löschen</button>
       </div>
       <div class="entry-row">
         <div class="entry-field">
           <div class="entry-label">Name</div>
           <div class="entry-value">${entry.vorname} ${entry.nachname}</div>
-        </div>
-      </div>
-      <div class="entry-row">
-        <div class="entry-field">
-          <div class="entry-label">Ausgabenbetrag</div>
-          <div class="entry-value">${formatInvoiceAmount(entry.betrag)}</div>
         </div>
       </div>
       <div class="entry-row">
