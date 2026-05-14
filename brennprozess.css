@@ -141,19 +141,19 @@ html, body {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 @media (max-width: 600px) {
@@ -165,7 +165,7 @@ html, body {
 label {
   font-weight: 600;
   color: var(--gray-700);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .required {
@@ -177,10 +177,10 @@ label {
 .select,
 .date-input,
 .number-input {
-  padding: 7px 9px;
+  padding: 6px 8px;
   border: 1px solid var(--gray-300);
   border-radius: var(--border-radius);
-  font-size: 13px;
+  font-size: 12px;
   font-family: inherit;
   transition: all 0.2s ease;
 }
@@ -197,7 +197,7 @@ label {
 
 .textarea {
   resize: vertical;
-  min-height: 64px;
+  min-height: 52px;
 }
 
 .char-count {
@@ -237,12 +237,12 @@ label {
 }
 
 .calendar-button {
-  padding: 10px 16px;
+  padding: 8px 12px;
   background-color: var(--gray-200);
   border: 1px solid var(--gray-300);
   border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   transition: all 0.2s ease;
 }
 
@@ -471,10 +471,10 @@ label {
   background-color: #e5e7eb;
   color: #374151;
   border: none;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: var(--border-radius);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -685,9 +685,9 @@ body.no-scroll {
   background-color: #e5e7eb;
   color: #374151;
   border: none;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
