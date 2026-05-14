@@ -22,7 +22,7 @@
 }
 
 html, body {
-  font-family: 'Intel One Mono', monospace;
+  font-family: 'Space Mono', monospace;
   background-color: var(--gray-100);
   color: var(--gray-800);
   line-height: 1.45;
