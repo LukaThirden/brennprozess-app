@@ -1410,13 +1410,15 @@ function escapeHtml(text) {
 }
 
 function showSuccessMessage(message) {
+  document.querySelectorAll('.success-message').forEach(el => el.remove());
+
   const msgElement = document.createElement('div');
   msgElement.className = 'success-message';
   msgElement.textContent = message;
 
-  form.insertBefore(msgElement, form.firstChild);
+  document.body.appendChild(msgElement);
 
   setTimeout(() => {
     msgElement.remove();
-  }, 3000);
+  }, 2000);
 }
