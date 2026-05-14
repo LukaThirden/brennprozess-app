@@ -11,7 +11,7 @@
   --gray-700: #374151;
   --gray-800: #1f2937;
   --gray-900: #111827;
-  --border-radius: 0;
+  --border-radius: 4px;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -69,7 +69,7 @@ html, body {
   align-items: center;
   font-size: 13px;
   padding: 6px 12px;
-  border-radius: 0;
+  border-radius: 4px;
   font-weight: 500;
   white-space: nowrap;
   user-select: none;
@@ -126,7 +126,7 @@ html, body {
   color: #fff;
   border-bottom-color: #10b981;
   padding: 8px 12px;
-  border-radius: 0;
+  border-radius: 4px;
 }
 
 #unterhaltSection h2 {
@@ -134,7 +134,7 @@ html, body {
   color: #fff;
   border-bottom-color: #ff9800;
   padding: 8px 12px;
-  border-radius: 0;
+  border-radius: 4px;
 }
 
 /* Form Styles */
@@ -314,7 +314,7 @@ label {
 .day {
   padding: 8px;
   text-align: center;
-  border-radius: 0;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
   background-color: white;
@@ -462,7 +462,7 @@ label {
   background-color: var(--success-color);
   color: white;
   padding: 3px 10px;
-  border-radius: 0;
+  border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
 }
@@ -655,7 +655,7 @@ body.no-scroll {
   padding: 12px;
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
-  border-radius: 0;
+  border-radius: 4px;
   margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
@@ -686,7 +686,7 @@ body.no-scroll {
   color: #374151;
   border: none;
   padding: 6px 12px;
-  border-radius: 0;
+  border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
