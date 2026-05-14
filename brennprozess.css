@@ -125,13 +125,13 @@ html, body {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .form-row {
@@ -149,7 +149,7 @@ html, body {
 label {
   font-weight: 600;
   color: var(--gray-700);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .required {
@@ -161,10 +161,10 @@ label {
 .select,
 .date-input,
 .number-input {
-  padding: 8px 10px;
+  padding: 7px 9px;
   border: 1px solid var(--gray-300);
   border-radius: var(--border-radius);
-  font-size: 14px;
+  font-size: 13px;
   font-family: inherit;
   transition: all 0.2s ease;
 }
@@ -181,7 +181,7 @@ label {
 
 .textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 64px;
 }
 
 .char-count {
@@ -330,15 +330,15 @@ label {
 .form-actions {
   display: flex;
   gap: 10px;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .submit-button,
 .reset-button {
-  padding: 10px 18px;
+  padding: 8px 14px;
   border: none;
   border-radius: var(--border-radius);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
