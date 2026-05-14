@@ -1271,8 +1271,13 @@ function styleSheet(ws, boldRow1) {
   for (let r = range.s.r; r <= range.e.r; r++) {
     for (let c = range.s.c; c <= range.e.c; c++) {
       const addr = XLSX.utils.encode_cell({ r, c });
-      if (!ws[addr]) continue;
-      ws[addr].s = { font: { sz: 12, bold: (boldRow1 && r === 0) } };
+      if (!ws[addr]) ws[addr] = { t: 's', v: '' };
+      ws[addr].s = {
+        font: {
+          sz: 12,
+          bold: !!(boldRow1 && r === 0)
+        }
+      };
     }
   }
 }
