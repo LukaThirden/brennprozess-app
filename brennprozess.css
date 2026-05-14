@@ -107,7 +107,8 @@ html, body {
 }
 
 .form-section h2,
-.entries-section h2 {
+.entries-section h2,
+.konto-section h2 {
   font-size: 18px;
   margin-bottom: 16px;
   color: var(--gray-900);
