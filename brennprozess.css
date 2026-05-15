@@ -162,6 +162,54 @@ html, body {
   margin-bottom: 0;
 }
 
+.monitor-section {
+  background: white;
+  border: 1px solid #cccccc;
+  border-radius: 0;
+  padding: 20px;
+  box-shadow: var(--box-shadow);
+  width: 50%;
+  justify-self: start;
+}
+
+.monitor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.monitor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(156, 163, 175, 0.25);
+}
+
+.monitor-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.monitor-item--strong .monitor-label,
+.monitor-item--strong .monitor-value {
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.monitor-label {
+  font-size: 13px;
+  color: var(--gray-700);
+}
+
+.monitor-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-900);
+  white-space: nowrap;
+}
+
 .export-inline-button {
   padding: 5px 12px;
   background-color: #e5e7eb;
@@ -987,6 +1035,11 @@ body.no-scroll {
 
   .form-section,
   .entries-section {
+    padding: 12px;
+  }
+
+  .monitor-section {
+    width: 100%;
     padding: 12px;
   }
 

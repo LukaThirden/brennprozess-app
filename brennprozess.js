@@ -66,6 +66,15 @@ const exportConfirmButton = document.getElementById('exportConfirmButton');
 const exportCancelButton = document.getElementById('exportCancelButton');
 const exportPasswordError = document.getElementById('exportPasswordError');
 
+// Monitor
+const monitorEinnahmen = document.getElementById('monitorEinnahmen');
+const monitorAdminFees = document.getElementById('monitorAdminFees');
+const monitorStromkosten = document.getElementById('monitorStromkosten');
+const monitorSolibeitrag = document.getElementById('monitorSolibeitrag');
+const monitorUnterhaltsbeitrag = document.getElementById('monitorUnterhaltsbeitrag');
+const monitorUnterhaltAusgaben = document.getElementById('monitorUnterhaltAusgaben');
+const monitorSaldoUnterhalt = document.getElementById('monitorSaldoUnterhalt');
+
 // Entry Preview
 const entryPreviewModal = document.getElementById('entryPreviewModal');
 const entryPreviewTitle = document.getElementById('entryPreviewTitle');
@@ -136,6 +145,7 @@ function setupEventListeners() {
   });
 
   // Export
+    updateMonitorSummary();
   exportButton.addEventListener('click', openExportModal);
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
@@ -931,6 +941,42 @@ function updateUnterhaltSummary() {
   }
   if (unterhaltAusgabenTotal) {
     unterhaltAusgabenTotal.textContent = formatInvoiceAmount(totalAusgaben);
+  }
+}
+
+function updateMonitorSummary() {
+  const brennEntries = getEntries();
+  const unterhaltEntries = getUnterhaltEntries();
+
+  const totalEinnahmen = brennEntries.reduce((sum, entry) => sum + Number(calculateInvoiceAmount(entry) || 0), 0);
+  const totalAdminFees = brennEntries.length * 3;
+  const totalStromkosten = brennEntries.reduce((sum, entry) => sum + Number(calculateInvoiceAmount(entry, true).stromkosten || 0), 0);
+  const totalSolibeitrag = brennEntries.reduce((sum, entry) => sum + Number(calculateInvoiceAmount(entry, true).solibeitrag || 0), 0);
+  const totalUnterhaltsbeitrag = brennEntries.reduce((sum, entry) => sum + Number(calculateInvoiceAmount(entry, true).unterhaltsbeitrag || 0), 0);
+  const totalUnterhaltAusgaben = unterhaltEntries.reduce((sum, entry) => sum + (Number(entry.betrag) || 0), 0);
+  const saldoUnterhalt = totalUnterhaltsbeitrag - totalUnterhaltAusgaben;
+
+  if (monitorEinnahmen) {
+    monitorEinnahmen.textContent = formatInvoiceAmount(totalEinnahmen);
+  }
+  if (monitorAdminFees) {
+    monitorAdminFees.textContent = formatInvoiceAmount(totalAdminFees);
+  }
+  if (monitorStromkosten) {
+    monitorStromkosten.textContent = formatInvoiceAmount(totalStromkosten);
+  }
+  if (monitorSolibeitrag) {
+    monitorSolibeitrag.textContent = formatInvoiceAmount(totalSolibeitrag);
+  }
+  if (monitorUnterhaltsbeitrag) {
+    monitorUnterhaltsbeitrag.textContent = formatInvoiceAmount(totalUnterhaltsbeitrag);
+  }
+  if (monitorUnterhaltAusgaben) {
+    monitorUnterhaltAusgaben.textContent = formatInvoiceAmount(totalUnterhaltAusgaben);
+  }
+  if (monitorSaldoUnterhalt) {
+    monitorSaldoUnterhalt.textContent = formatInvoiceAmount(saldoUnterhalt);
+    monitorSaldoUnterhalt.style.color = saldoUnterhalt < 0 ? '#dc2626' : '';
   }
 }
 
