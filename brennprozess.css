@@ -762,6 +762,19 @@ body.no-scroll {
   max-width: 760px;
 }
 
+#entryPreviewModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10002;
+  padding: 24px;
+  background-color: transparent;
+}
+
+#entryPreviewModal.hidden {
+  display: none;
+}
+
 .entry-preview-container {
   margin: 14px 0 18px;
 }

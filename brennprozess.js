@@ -148,11 +148,6 @@ function setupEventListeners() {
 }
 
 function handleModalOverlayClick() {
-  if (!entryPreviewModal.classList.contains('hidden')) {
-    closeEntryPreviewModal();
-    return;
-  }
-
   if (!exportModal.classList.contains('hidden')) {
     closeExportModal();
     return;
@@ -827,12 +822,10 @@ function openEntryPreviewModal(entry, entryType) {
   entryPreviewTitle.textContent = entryType === 'unterhalt' ? 'Vorschau Unterhalts-Ausgabe' : 'Vorschau Ofen-Nutzung';
 
   entryPreviewModal.classList.remove('hidden');
-  modalOverlay.classList.remove('hidden');
 }
 
 function closeEntryPreviewModal() {
   entryPreviewModal.classList.add('hidden');
-  modalOverlay.classList.add('hidden');
   entryPreviewContainer.innerHTML = '';
   pendingPreviewEntry = null;
   pendingPreviewType = null;
