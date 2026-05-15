@@ -1361,6 +1361,26 @@ body.no-scroll {
     padding: 10px 0;
     flex-wrap: wrap;
     gap: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .entry-header-left {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .entry-header-amount {
+    flex: 1;
+  }
+
+  .entry-chevron {
+    order: 2;
   }
 
   .entry-meta {
