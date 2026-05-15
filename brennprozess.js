@@ -15,9 +15,7 @@ const SB_UNTERHALT_TABLE = SUPABASE_CONFIG.unterhaltTable || 'unterhalt_entries'
 const form = document.getElementById('brennForm');
 const datumInput = document.getElementById('datumInput');
 const bemerkungenInput = document.getElementById('bemerkungenInput');
-const bemerkungenCount = document.getElementById('bemerkungenCount');
 const wPersonenInput = document.getElementById('wPersonenInput');
-const wPersonenCount = document.getElementById('wPersonenCount');
 const vornameInput = document.getElementById('vornameInput');
 const nachnameInput = document.getElementById('nachnameInput');
 const anzahlExterneSelect = document.getElementById('anzahlExterneSelect');
@@ -38,7 +36,6 @@ const unterhaltNachnameInput = document.getElementById('unterhaltNachnameInput')
 const unterhaltDatumInput = document.getElementById('unterhaltDatumInput');
 const unterhaltBetragInput = document.getElementById('unterhaltBetragInput');
 const unterhaltBemerkungenInput = document.getElementById('unterhaltBemerkungenInput');
-const unterhaltBemerkungenCount = document.getElementById('unterhaltBemerkungenCount');
 
 // Admin
 const adminButton = document.getElementById('adminButton');
@@ -100,15 +97,10 @@ function setupEventListeners() {
   // Datum-Eingabe beim Verlassen normalisieren
   datumInput.addEventListener('blur', normalizeDatumInput);
 
-  // Character counters
-  bemerkungenInput.addEventListener('input', updateCharCount);
-  wPersonenInput.addEventListener('input', updateCharCount);
-
   // Unterhalt Form
   unterhaltForm.addEventListener('submit', handleUnterhaltFormSubmit);
   unterhaltForm.addEventListener('reset', resetUnterhaltForm);
   unterhaltDatumInput.addEventListener('blur', normalizeUnterhaltDatumInput);
-  unterhaltBemerkungenInput.addEventListener('input', updateCharCount);
 
   // Admin
   if (adminButton) {
@@ -571,24 +563,6 @@ function normalizeDatumInput() {
   datumInput.value = value;
 }
 
-// === Character Counter ===
-function updateCharCount(e) {
-  const input = e.target;
-  let countElement;
-  
-  if (input === bemerkungenInput) {
-    countElement = bemerkungenCount;
-  } else if (input === wPersonenInput) {
-    countElement = wPersonenCount;
-  } else if (input === unterhaltBemerkungenInput) {
-    countElement = unterhaltBemerkungenCount;
-  }
-  
-  if (countElement) {
-    countElement.textContent = input.value.length;
-  }
-}
-
 // === Form Validation ===
 function validateForm() {
   clearAllErrors();
@@ -710,8 +684,6 @@ async function handleFormSubmit(e) {
 
   await addEntry(entry);
   form.reset();
-  bemerkungenCount.textContent = '0';
-  wPersonenCount.textContent = '0';
   datumInput.value = '';
 
   // Show success message
@@ -720,8 +692,6 @@ async function handleFormSubmit(e) {
 
 function resetForm() {
   clearAllErrors();
-  bemerkungenCount.textContent = '0';
-  wPersonenCount.textContent = '0';
   datumInput.value = '';
 }
 
@@ -808,7 +778,6 @@ async function handleUnterhaltFormSubmit(e) {
   unterhaltDatumInput.value = '';
   unterhaltBetragInput.value = '';
   unterhaltBemerkungenInput.value = '';
-  unterhaltBemerkungenCount.textContent = '0';
 
   // Show success message
   showSuccessMessage('Ausgabe erfolgreich erfasst!');
@@ -821,7 +790,6 @@ function resetUnterhaltForm() {
   unterhaltDatumInput.value = '';
   unterhaltBetragInput.value = '';
   unterhaltBemerkungenInput.value = '';
-  unterhaltBemerkungenCount.textContent = '0';
 }
 
 function validateUnterhaltForm() {
