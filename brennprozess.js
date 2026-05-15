@@ -66,6 +66,14 @@ const exportConfirmButton = document.getElementById('exportConfirmButton');
 const exportCancelButton = document.getElementById('exportCancelButton');
 const exportPasswordError = document.getElementById('exportPasswordError');
 
+// Entry Preview
+const entryPreviewModal = document.getElementById('entryPreviewModal');
+const entryPreviewTitle = document.getElementById('entryPreviewTitle');
+const entryPreviewContainer = document.getElementById('entryPreviewContainer');
+const entryPreviewClose = document.getElementById('entryPreviewClose');
+const entryPreviewConfirmButton = document.getElementById('entryPreviewConfirmButton');
+const entryPreviewCancelButton = document.getElementById('entryPreviewCancelButton');
+
 // === State ===
 let isAdminLoggedIn = false;
 let entryIdToDelete = null;
@@ -76,6 +84,8 @@ let cloudSyncEnabled = false;
 let syncHealthCheckTimer = null;
 let syncHealthCheckInFlight = false;
 let accessReauthTimer = null;
+let pendingPreviewEntry = null;
+let pendingPreviewType = null;
 
 const SYNC_CHECK_INTERVAL_MS = 10000;
 
@@ -107,7 +117,7 @@ function setupEventListeners() {
     adminButton.addEventListener('click', openAdminModal);
   }
   modalClose.addEventListener('click', closeAdminModal);
-  modalOverlay.addEventListener('click', closeAdminModal);
+  modalOverlay.addEventListener('click', handleModalOverlayClick);
   adminLoginButton.addEventListener('click', handleAdminLogin);
   adminLogoutButton.addEventListener('click', handleAdminLogout);
 
@@ -130,6 +140,27 @@ function setupEventListeners() {
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
   exportConfirmButton.addEventListener('click', handleExportConfirm);
+
+  // Entry preview
+  entryPreviewClose.addEventListener('click', closeEntryPreviewModal);
+  entryPreviewCancelButton.addEventListener('click', closeEntryPreviewModal);
+  entryPreviewConfirmButton.addEventListener('click', handleEntryPreviewConfirm);
+}
+
+function handleModalOverlayClick() {
+  if (!entryPreviewModal.classList.contains('hidden')) {
+    closeEntryPreviewModal();
+    return;
+  }
+
+  if (!exportModal.classList.contains('hidden')) {
+    closeExportModal();
+    return;
+  }
+
+  if (!adminModal.classList.contains('hidden')) {
+    closeAdminModal();
+  }
 }
 
 function setupFormSectionToggles() {
@@ -682,12 +713,7 @@ async function handleFormSubmit(e) {
     timestamp: new Date().toISOString()
   };
 
-  await addEntry(entry);
-  form.reset();
-  datumInput.value = '';
-
-  // Show success message
-  showSuccessMessage('Eintrag erfolgreich erstellt!');
+  openEntryPreviewModal(entry, 'brennprozess');
 }
 
 function resetForm() {
@@ -771,16 +797,70 @@ async function handleUnterhaltFormSubmit(e) {
     timestamp: new Date().toISOString()
   };
 
-  await addUnterhaltEntry(entry);
-  unterhaltForm.reset();
-  unterhaltVornameInput.value = '';
-  unterhaltNachnameInput.value = '';
-  unterhaltDatumInput.value = '';
-  unterhaltBetragInput.value = '';
-  unterhaltBemerkungenInput.value = '';
+  openEntryPreviewModal(entry, 'unterhalt');
+}
 
-  // Show success message
-  showSuccessMessage('Ausgabe erfolgreich erfasst!');
+function openEntryPreviewModal(entry, entryType) {
+  pendingPreviewEntry = { ...entry };
+  pendingPreviewType = entryType;
+
+  const previewSource = createEntryElement({ ...entry, entryType });
+  const previewCard = previewSource.cloneNode(true);
+
+  const deleteBtn = previewCard.querySelector('.delete-entry-btn');
+  if (deleteBtn) {
+    deleteBtn.remove();
+  }
+
+  const chevron = previewCard.querySelector('.entry-chevron');
+  if (chevron) {
+    chevron.remove();
+  }
+
+  const body = previewCard.querySelector('.entry-body');
+  if (body) {
+    body.classList.add('entry-body--open');
+  }
+
+  entryPreviewContainer.innerHTML = '';
+  entryPreviewContainer.appendChild(previewCard);
+  entryPreviewTitle.textContent = entryType === 'unterhalt' ? 'Vorschau Unterhalts-Ausgabe' : 'Vorschau Ofen-Nutzung';
+
+  entryPreviewModal.classList.remove('hidden');
+  modalOverlay.classList.remove('hidden');
+}
+
+function closeEntryPreviewModal() {
+  entryPreviewModal.classList.add('hidden');
+  modalOverlay.classList.add('hidden');
+  entryPreviewContainer.innerHTML = '';
+  pendingPreviewEntry = null;
+  pendingPreviewType = null;
+}
+
+async function handleEntryPreviewConfirm() {
+  if (!pendingPreviewEntry || !pendingPreviewType) {
+    closeEntryPreviewModal();
+    return;
+  }
+
+  if (pendingPreviewType === 'unterhalt') {
+    await addUnterhaltEntry(pendingPreviewEntry);
+    unterhaltForm.reset();
+    unterhaltVornameInput.value = '';
+    unterhaltNachnameInput.value = '';
+    unterhaltDatumInput.value = '';
+    unterhaltBetragInput.value = '';
+    unterhaltBemerkungenInput.value = '';
+    showSuccessMessage('Ausgabe erfolgreich erfasst!');
+  } else {
+    await addEntry(pendingPreviewEntry);
+    form.reset();
+    datumInput.value = '';
+    showSuccessMessage('Eintrag erfolgreich erstellt!');
+  }
+
+  closeEntryPreviewModal();
 }
 
 function resetUnterhaltForm() {

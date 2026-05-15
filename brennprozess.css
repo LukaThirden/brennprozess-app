@@ -758,6 +758,23 @@ body.no-scroll {
   overflow-y: auto;
 }
 
+.preview-modal-content {
+  max-width: 760px;
+}
+
+.entry-preview-container {
+  margin: 14px 0 18px;
+}
+
+.entry-preview-container .entry-item {
+  margin-bottom: 0;
+  cursor: default;
+}
+
+.entry-preview-container .entry-body {
+  display: block;
+}
+
 #deleteModal {
   background-color: rgba(15, 23, 42, 0.9);
   display: flex;

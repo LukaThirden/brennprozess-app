@@ -317,6 +317,24 @@
     </div>
   </div>
 
+  <!-- Entry Preview Modal -->
+  <div id="entryPreviewModal" class="modal hidden">
+    <div class="modal-content preview-modal-content">
+      <div class="modal-header">
+        <h2 id="entryPreviewTitle">Eintrag Vorschau</h2>
+        <button type="button" class="modal-close" id="entryPreviewClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Bitte prüfen Sie den Eintrag. Erst nach Bestätigung wird er gespeichert.</p>
+        <div id="entryPreviewContainer" class="entry-preview-container"></div>
+        <div class="form-actions">
+          <button type="button" id="entryPreviewConfirmButton" class="submit-button">Bestätigen</button>
+          <button type="button" id="entryPreviewCancelButton" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Admin-Modal -->
   <div id="adminModal" class="modal hidden">
     <div class="modal-content">
