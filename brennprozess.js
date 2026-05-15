@@ -22,6 +22,8 @@ const anzahlExterneSelect = document.getElementById('anzahlExterneSelect');
 const brennzyklusSelect = document.getElementById('brennzyklusSelect');
 const brennmodusSelect = document.getElementById('brennmodusSelect');
 const entriesList = document.getElementById('entriesList');
+const deleteSelectedButton = document.getElementById('deleteSelectedButton');
+const selectAllEntriesCheckbox = document.getElementById('selectAllEntriesCheckbox');
 const unterhaltBeitraegeTotal = document.getElementById('unterhaltBeitraegeTotal');
 const unterhaltAusgabenTotal = document.getElementById('unterhaltAusgabenTotal');
 const accessOverlay = document.getElementById('accessOverlay');
@@ -74,6 +76,7 @@ const monitorSolibeitrag = document.getElementById('monitorSolibeitrag');
 const monitorUnterhaltsbeitrag = document.getElementById('monitorUnterhaltsbeitrag');
 const monitorUnterhaltAusgaben = document.getElementById('monitorUnterhaltAusgaben');
 const monitorSaldoUnterhalt = document.getElementById('monitorSaldoUnterhalt');
+const monitorDateStamp = document.getElementById('monitorDateStamp');
 
 // Entry Preview
 const entryPreviewModal = document.getElementById('entryPreviewModal');
@@ -87,6 +90,9 @@ const entryPreviewCancelButton = document.getElementById('entryPreviewCancelButt
 let isAdminLoggedIn = false;
 let entryIdToDelete = null;
 let entryTypeToDelete = 'brennprozess'; // 'brennprozess' oder 'unterhalt'
+let pendingDeleteTargets = [];
+const selectedEntryKeys = new Set();
+let currentEntrySelectionKeys = [];
 let brennEntriesCache = [];
 let unterhaltEntriesCache = [];
 let cloudSyncEnabled = false;
@@ -129,11 +135,29 @@ function setupEventListeners() {
   modalOverlay.addEventListener('click', handleModalOverlayClick);
   adminLoginButton.addEventListener('click', handleAdminLogin);
   adminLogoutButton.addEventListener('click', handleAdminLogout);
+  adminPassword.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAdminLogin();
+    }
+  });
 
   // Delete
   deleteModalClose.addEventListener('click', closeDeleteModal);
   deleteCancelButton.addEventListener('click', closeDeleteModal);
   deleteConfirmButton.addEventListener('click', handleDeleteConfirm);
+  if (deleteSelectedButton) {
+    deleteSelectedButton.addEventListener('click', handleDeleteSelected);
+  }
+  if (selectAllEntriesCheckbox) {
+    selectAllEntriesCheckbox.addEventListener('change', handleSelectAllEntriesChange);
+  }
+  deletePassword.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleDeleteConfirm();
+    }
+  });
 
   // Access Control
   accessButton.addEventListener('click', handleAccessSubmit);
@@ -149,6 +173,12 @@ function setupEventListeners() {
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
   exportConfirmButton.addEventListener('click', handleExportConfirm);
+  exportPassword.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleExportConfirm();
+    }
+  });
 
   // Entry preview
   entryPreviewClose.addEventListener('click', closeEntryPreviewModal);
@@ -454,6 +484,40 @@ function parseDate(dateString) {
     return null;
   }
   return date;
+}
+
+function getCurrentDateLabel() {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = String(now.getFullYear());
+  return `${day}/${month}/${year}`;
+}
+
+function getLatestEntryDateLabel(brennEntries, unterhaltEntries) {
+  const allEntries = [
+    ...brennEntries.map((entry) => ({ ...entry, entryType: 'brennprozess' })),
+    ...unterhaltEntries.map((entry) => ({ ...entry, entryType: 'unterhalt' }))
+  ];
+
+  if (allEntries.length === 0) {
+    return getCurrentDateLabel();
+  }
+
+  allEntries.sort((a, b) => {
+    const dateA = parseDate(a.datum);
+    const dateB = parseDate(b.datum);
+
+    if (dateA && dateB && dateB.getTime() !== dateA.getTime()) {
+      return dateB - dateA;
+    }
+
+    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+    return timeB - timeA;
+  });
+
+  return allEntries[0].datum || getCurrentDateLabel();
 }
 
 function checkAccess() {
@@ -812,11 +876,6 @@ function openEntryPreviewModal(entry, entryType) {
   const previewSource = createEntryElement({ ...entry, entryType });
   const previewCard = previewSource.cloneNode(true);
 
-  const deleteBtn = previewCard.querySelector('.delete-entry-btn');
-  if (deleteBtn) {
-    deleteBtn.remove();
-  }
-
   const chevron = previewCard.querySelector('.entry-chevron');
   if (chevron) {
     chevron.remove();
@@ -978,6 +1037,9 @@ function updateMonitorSummary() {
     monitorSaldoUnterhalt.textContent = formatInvoiceAmount(saldoUnterhalt);
     monitorSaldoUnterhalt.style.color = saldoUnterhalt < 0 ? '#dc2626' : '';
   }
+  if (monitorDateStamp) {
+    monitorDateStamp.textContent = getCurrentDateLabel();
+  }
 }
 
 function saveUnterhaltEntries(entries) {
@@ -1101,9 +1163,18 @@ function loadEntries() {
     return timeB - timeA;
   });
 
+  currentEntrySelectionKeys = allEntries.map((entry) => getEntrySelectionKey(entry.id, entry.entryType || 'brennprozess'));
+  const validSelectionKeys = new Set(currentEntrySelectionKeys);
+  selectedEntryKeys.forEach((key) => {
+    if (!validSelectionKeys.has(key)) {
+      selectedEntryKeys.delete(key);
+    }
+  });
+
   entriesList.innerHTML = '';
   updateUnterhaltSummary();
   updateMonitorSummary();
+  updateSelectionControls();
 
   if (allEntries.length === 0) {
     entriesList.innerHTML = '<p class="empty-message">Keine Einträge vorhanden.</p>';
@@ -1116,21 +1187,128 @@ function loadEntries() {
   });
 }
 
+function getEntrySelectionKey(entryId, entryType = 'brennprozess') {
+  return `${entryType}:${entryId}`;
+}
+
+function parseEntrySelectionKey(key) {
+  const separatorIndex = key.indexOf(':');
+  if (separatorIndex === -1) {
+    return null;
+  }
+
+  return {
+    entryType: key.slice(0, separatorIndex),
+    id: key.slice(separatorIndex + 1)
+  };
+}
+
+function updateDeleteSelectedButtonState() {
+  if (!deleteSelectedButton) {
+    return;
+  }
+
+  const selectedCount = selectedEntryKeys.size;
+  deleteSelectedButton.disabled = selectedCount === 0;
+  deleteSelectedButton.textContent = selectedCount > 0
+    ? `🗑 Einträge löschen (${selectedCount})`
+    : '🗑 Einträge löschen';
+}
+
+function updateSelectAllEntriesCheckboxState() {
+  if (!selectAllEntriesCheckbox) {
+    return;
+  }
+
+  const totalCount = currentEntrySelectionKeys.length;
+  const selectedCount = currentEntrySelectionKeys.reduce((sum, key) => sum + (selectedEntryKeys.has(key) ? 1 : 0), 0);
+
+  selectAllEntriesCheckbox.disabled = totalCount === 0;
+  selectAllEntriesCheckbox.checked = totalCount > 0 && selectedCount === totalCount;
+  selectAllEntriesCheckbox.indeterminate = selectedCount > 0 && selectedCount < totalCount;
+}
+
+function updateSelectionControls() {
+  updateDeleteSelectedButtonState();
+  updateExportButtonState();
+  updateSelectAllEntriesCheckboxState();
+}
+
+function updateExportButtonState() {
+  if (!exportButton) {
+    return;
+  }
+
+  const selectedCount = selectedEntryKeys.size;
+  exportButton.disabled = selectedCount === 0;
+  exportButton.textContent = selectedCount > 0
+    ? `📊 Exportieren (${selectedCount})`
+    : '📊 Exportieren';
+}
+
+function handleSelectAllEntriesChange() {
+  if (!selectAllEntriesCheckbox) {
+    return;
+  }
+
+  const shouldSelectAll = selectAllEntriesCheckbox.checked;
+  currentEntrySelectionKeys.forEach((key) => {
+    if (shouldSelectAll) {
+      selectedEntryKeys.add(key);
+    } else {
+      selectedEntryKeys.delete(key);
+    }
+  });
+
+  entriesList.querySelectorAll('.entry-select-checkbox').forEach((checkbox) => {
+    checkbox.checked = shouldSelectAll;
+  });
+
+  updateSelectionControls();
+}
+
+function handleDeleteSelected() {
+  if (selectedEntryKeys.size === 0) {
+    return;
+  }
+
+  const targets = [];
+  selectedEntryKeys.forEach((key) => {
+    const parsed = parseEntrySelectionKey(key);
+    if (parsed && parsed.id) {
+      targets.push(parsed);
+    }
+  });
+
+  if (targets.length === 0) {
+    return;
+  }
+
+  openDeleteModal(targets);
+}
+
 function createEntryElement(entry) {
   const div = document.createElement('div');
   div.className = `entry-item ${entry.entryType === 'unterhalt' ? 'unterhalt-entry' : 'ofen-entry'}`;
+  const entryType = entry.entryType || 'brennprozess';
+  const selectionKey = getEntrySelectionKey(entry.id, entryType);
+  const isSelected = selectedEntryKeys.has(selectionKey);
 
   // Wenn es ein Unterhalt-Eintrag ist
   if (entry.entryType === 'unterhalt') {
     div.innerHTML = `
       <div class="entry-header entry-toggle">
-        <div class="entry-meta">
-          <div class="entry-date">${entry.datum}</div>
-          <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #ff9800;"></span>Unterhalt</div>
+        <div class="entry-header-left">
+          <label class="entry-select-control">
+            <input type="checkbox" class="entry-select-checkbox" data-id="${entry.id}" data-type="unterhalt" ${isSelected ? 'checked' : ''} />
+          </label>
+          <div class="entry-meta">
+            <div class="entry-date">${entry.datum}</div>
+            <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #ff9800;"></span>Unterhalt</div>
+          </div>
         </div>
         <div class="entry-header-amount unterhalt-amount">${formatInvoiceAmount(entry.betrag)} (Ausgabe)</div>
         <span class="entry-chevron">▼</span>
-        <button type="button" class="delete-entry-btn" data-id="${entry.id}" data-type="unterhalt">🗑 Löschen</button>
       </div>
       <div class="entry-body">
         <div class="entry-row">
@@ -1155,13 +1333,17 @@ function createEntryElement(entry) {
 
     div.innerHTML = `
       <div class="entry-header entry-toggle">
-        <div class="entry-meta">
-          <div class="entry-date">${entry.datum}</div>
-          <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #2196f3;"></span>Nutzung</div>
+        <div class="entry-header-left">
+          <label class="entry-select-control">
+            <input type="checkbox" class="entry-select-checkbox" data-id="${entry.id}" data-type="brennprozess" ${isSelected ? 'checked' : ''} />
+          </label>
+          <div class="entry-meta">
+            <div class="entry-date">${entry.datum}</div>
+            <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #2196f3;"></span>Nutzung</div>
+          </div>
         </div>
         <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamt)</div>
         <span class="entry-chevron">▼</span>
-        <button type="button" class="delete-entry-btn" data-id="${entry.id}">🗑 Löschen</button>
       </div>
       <div class="entry-body">
         <div class="entry-row">
@@ -1220,8 +1402,7 @@ function createEntryElement(entry) {
   const toggle = div.querySelector('.entry-toggle');
   if (toggle) {
     toggle.addEventListener('click', (e) => {
-      // Klick auf Löschen-Button nicht abfangen
-      if (e.target.closest('.delete-entry-btn')) return;
+      if (e.target.closest('.entry-select-control')) return;
       const body = div.querySelector('.entry-body');
       const chevron = div.querySelector('.entry-chevron');
       const isOpen = body.classList.toggle('entry-body--open');
@@ -1229,14 +1410,15 @@ function createEntryElement(entry) {
     });
   }
 
-  // Event-Listener für Delete-Button
-  const deleteBtn = div.querySelector('.delete-entry-btn');
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      entryIdToDelete = entry.id;
-      entryTypeToDelete = entry.entryType || 'brennprozess';
-      openDeleteModal();
+  const selectCheckbox = div.querySelector('.entry-select-checkbox');
+  if (selectCheckbox) {
+    selectCheckbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        selectedEntryKeys.add(selectionKey);
+      } else {
+        selectedEntryKeys.delete(selectionKey);
+      }
+      updateSelectionControls();
     });
   }
 
@@ -1295,7 +1477,15 @@ function calculateUnterhaltKontostand() {
 }
 
 // === Delete Modal Functions ===
-function openDeleteModal() {
+function openDeleteModal(targets = null) {
+  if (Array.isArray(targets) && targets.length > 0) {
+    pendingDeleteTargets = targets;
+  } else if (entryIdToDelete !== null) {
+    pendingDeleteTargets = [{ id: entryIdToDelete, entryType: entryTypeToDelete || 'brennprozess' }];
+  } else {
+    pendingDeleteTargets = [];
+  }
+
   deleteModal.classList.remove('hidden');
   modalOverlay.classList.remove('hidden');
   deletePassword.value = '';
@@ -1309,10 +1499,15 @@ function closeDeleteModal() {
   deletePassword.value = '';
   deletePasswordError.classList.remove('show');
   entryIdToDelete = null;
+  entryTypeToDelete = 'brennprozess';
+  pendingDeleteTargets = [];
 }
 
 async function handleDeleteConfirm() {
   const password = deletePassword.value;
+  const targets = pendingDeleteTargets.length > 0
+    ? pendingDeleteTargets
+    : (entryIdToDelete !== null ? [{ id: entryIdToDelete, entryType: entryTypeToDelete || 'brennprozess' }] : []);
 
   if (!password) {
     showDeleteError('Kennwort erforderlich');
@@ -1325,15 +1520,24 @@ async function handleDeleteConfirm() {
     return;
   }
 
-  // Lösche den richtigen Eintrag-Typ
-  if (entryTypeToDelete === 'unterhalt') {
-    await deleteUnterhaltEntry(entryIdToDelete);
-  } else {
-    await deleteEntry(entryIdToDelete);
+  if (targets.length === 0) {
+    closeDeleteModal();
+    return;
   }
+
+  for (const target of targets) {
+    if (target.entryType === 'unterhalt') {
+      await deleteUnterhaltEntry(target.id);
+    } else {
+      await deleteEntry(target.id);
+    }
+  }
+
+  selectedEntryKeys.clear();
+  updateSelectionControls();
   
   closeDeleteModal();
-  showSuccessMessage('Eintrag wurde gelöscht!');
+  showSuccessMessage(targets.length > 1 ? `${targets.length} Einträge wurden gelöscht!` : 'Eintrag wurde gelöscht!');
 }
 
 function showDeleteError(message) {
@@ -1344,6 +1548,11 @@ function showDeleteError(message) {
 // === Export Modal Functions ===
 function openExportModal(e) {
   e.preventDefault();
+
+  if (selectedEntryKeys.size === 0) {
+    return;
+  }
+
   exportModal.classList.remove('hidden');
   modalOverlay.classList.remove('hidden');
   exportPassword.value = '';
@@ -1360,6 +1569,7 @@ function closeExportModal() {
 
 function handleExportConfirm() {
   const password = exportPassword.value;
+  const { brennEntries, unterhaltEntries } = getSelectedEntriesForExport();
 
   if (!password) {
     showExportError('Kennwort erforderlich');
@@ -1372,7 +1582,12 @@ function handleExportConfirm() {
     return;
   }
 
-  exportToExcel();
+  if (brennEntries.length === 0 && unterhaltEntries.length === 0) {
+    showExportError('Keine Einträge ausgewählt');
+    return;
+  }
+
+  exportToExcel({ brennEntries, unterhaltEntries });
   closeExportModal();
   showSuccessMessage('Archiv exportiert!');
 }
@@ -1382,18 +1597,86 @@ function showExportError(message) {
   exportPasswordError.classList.add('show');
 }
 
-function exportToExcel() {
-  const brennEntries = getEntries();
-  const unterhaltEntries = unterhaltEntriesCache || [];
+function getSelectedEntriesForExport() {
+  const selectedBrennIds = new Set();
+  const selectedUnterhaltIds = new Set();
 
-  if (brennEntries.length === 0 && unterhaltEntries.length === 0) {
+  selectedEntryKeys.forEach((key) => {
+    const parsed = parseEntrySelectionKey(key);
+    if (!parsed) {
+      return;
+    }
+
+    if (parsed.entryType === 'unterhalt') {
+      selectedUnterhaltIds.add(parsed.id);
+    } else {
+      selectedBrennIds.add(parsed.id);
+    }
+  });
+
+  const brennEntries = getEntries().filter((entry) => selectedBrennIds.has(String(entry.id)));
+  const unterhaltEntries = getUnterhaltEntries().filter((entry) => selectedUnterhaltIds.has(String(entry.id)));
+
+  return { brennEntries, unterhaltEntries };
+}
+
+function exportToExcel(selectedData = null) {
+  const allBrennEntries = getEntries();
+  const allUnterhaltEntries = getUnterhaltEntries();
+
+  const brennEntries = selectedData && Array.isArray(selectedData.brennEntries)
+    ? selectedData.brennEntries
+    : allBrennEntries;
+  const unterhaltEntries = selectedData && Array.isArray(selectedData.unterhaltEntries)
+    ? selectedData.unterhaltEntries
+    : allUnterhaltEntries;
+
+  const sortEntriesNewestFirst = (entries) => {
+    return [...entries].sort((a, b) => {
+      const dateA = parseDate(a.datum);
+      const dateB = parseDate(b.datum);
+
+      if (dateA && dateB && dateB.getTime() !== dateA.getTime()) {
+        return dateB - dateA;
+      }
+
+      const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+      const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+      return timeB - timeA;
+    });
+  };
+
+  const sortedBrennEntries = sortEntriesNewestFirst(brennEntries);
+  const sortedUnterhaltEntries = sortEntriesNewestFirst(unterhaltEntries);
+
+  if (sortedBrennEntries.length === 0 && sortedUnterhaltEntries.length === 0) {
     alert('Es gibt keine Einträge zum Exportieren.');
     return;
   }
 
-  const totalBeitrag = calculateUnterhaltTotalBeitrag();
-  const totalAusgaben = calculateUnterhaltTotalAusgaben();
-  const kontostand = calculateUnterhaltKontostand();
+  const totalEinnahmen = sortedBrennEntries.reduce((sum, entry) => {
+    return sum + Number(calculateInvoiceAmount(entry) || 0);
+  }, 0);
+  const totalAdminFees = sortedBrennEntries.length * 3;
+  const totalStromkosten = sortedBrennEntries.reduce((sum, entry) => {
+    return sum + Number(calculateInvoiceAmount(entry, true).stromkosten || 0);
+  }, 0);
+  const totalSolibeitrag = sortedBrennEntries.reduce((sum, entry) => {
+    return sum + Number(calculateInvoiceAmount(entry, true).solibeitrag || 0);
+  }, 0);
+  const totalUnterhaltsbeitrag = sortedBrennEntries.reduce((sum, entry) => {
+    return sum + Number(calculateInvoiceAmount(entry, true).unterhaltsbeitrag || 0);
+  }, 0);
+  const totalUnterhaltAusgaben = sortedUnterhaltEntries.reduce((sum, entry) => {
+    return sum + (Number(entry.betrag) || 0);
+  }, 0);
+  const saldoUnterhalt = totalUnterhaltsbeitrag - totalUnterhaltAusgaben;
+  const allSelected =
+    sortedBrennEntries.length === allBrennEntries.length &&
+    sortedUnterhaltEntries.length === allUnterhaltEntries.length;
+  const monitorDate = allSelected
+    ? getCurrentDateLabel()
+    : getLatestEntryDateLabel(sortedBrennEntries, sortedUnterhaltEntries);
   const timestamp = new Date().toISOString().split('T')[0];
   const FMT_NUM = '0.00';
   const FMT_CHF = '_ [$CHF-807]\\ * #,##0.00_ ;_ [$CHF-807]\\ * \\-#,##0.00_ ;_ [$CHF-807]\\ * "-"??_ ;_ @_ ';
@@ -1401,8 +1684,8 @@ function exportToExcel() {
   const workbook = new ExcelJS.Workbook();
 
   // Blatt 1: Brennprozesse
-  if (brennEntries.length > 0) {
-    const ws = workbook.addWorksheet('Brennprozesse');
+  if (sortedBrennEntries.length > 0) {
+    const ws = workbook.addWorksheet('Ofen-Nutzung');
     // CHF-Spaltenindizes (0-basiert): H=7, I=8, J=9, K=10, L=11
     const chfCols = new Set([7, 8, 9, 10, 11]);
     const headers = ['Datum','Verantwortliche Person','Weitere Personen','Bemerkungen',
@@ -1414,7 +1697,7 @@ function exportToExcel() {
       cell.font = { bold: true, size: 12 };
       if (chfCols.has(colNum - 1)) cell.numFmt = FMT_NUM;
     });
-    brennEntries.forEach(entry => {
+    sortedBrennEntries.forEach(entry => {
       const bd = calculateInvoiceAmount(entry, true);
       const vals = [
         entry.datum,
@@ -1438,41 +1721,82 @@ function exportToExcel() {
     });
   }
 
-  // Blatt 2: Unterhalt-Ausgaben
-  if (unterhaltEntries.length > 0) {
-    const ws = workbook.addWorksheet('Unterhalt-Ausgaben');
+  // Blatt 2: Unterhalts-Ausgaben
+  {
+    const ws = workbook.addWorksheet('Unterhalts-Ausgaben');
     ws.columns = [{ width: 14 }, { width: 22 }, { width: 14 }, { width: 28 }];
-    const headerRow = ws.addRow(['Datum','Verantwortliche Person','Betrag (CHF)','Bemerkungen']);
-    headerRow.eachCell((cell, colNum) => {
-      cell.font = { bold: true, size: 12 };
-      if (colNum === 3) cell.numFmt = FMT_NUM;
-    });
-    unterhaltEntries.forEach(entry => {
-      const r = ws.addRow([
-        entry.datum || '',
-        `${entry.vorname || ''} ${entry.nachname || ''}`.trim(),
-        Number(entry.betrag) || 0,
-        entry.bemerkungen || '-'
-      ]);
-      r.eachCell((cell, colNum) => {
-        cell.font = { size: 12 };
+    if (sortedUnterhaltEntries.length > 0) {
+      const headerRow = ws.addRow(['Datum','Verantwortliche Person','Betrag (CHF)','Bemerkungen']);
+      headerRow.eachCell((cell, colNum) => {
+        cell.font = { bold: true, size: 12 };
         if (colNum === 3) cell.numFmt = FMT_NUM;
       });
-    });
+      sortedUnterhaltEntries.forEach(entry => {
+        const r = ws.addRow([
+          entry.datum || '',
+          `${entry.vorname || ''} ${entry.nachname || ''}`.trim(),
+          Number(entry.betrag) || 0,
+          entry.bemerkungen || '-'
+        ]);
+        r.eachCell((cell, colNum) => {
+          cell.font = { size: 12 };
+          if (colNum === 3) cell.numFmt = FMT_NUM;
+        });
+      });
+    } else {
+      const hintRow = ws.addRow(['Kein Eintrag vorhanden']);
+      hintRow.getCell(1).font = { italic: true, size: 12 };
+    }
   }
 
-  // Blatt 3: Konto Unterhalt
-  const kontoWs = workbook.addWorksheet('Konto Unterhalt');
-  kontoWs.columns = [{ width: 22 }, { width: 18 }];
-  [
-    ['SALDO UNTERHALT', kontostand, true],
-    ['EINNAHMEN', totalBeitrag, false],
-    ['AUSGABEN', totalAusgaben, false]
-  ].forEach(([label, val, bold]) => {
-    const r = kontoWs.addRow([label, val]);
-    r.getCell(1).font = { bold, size: 12 };
-    r.getCell(2).font = { bold, size: 12 };
-    r.getCell(2).numFmt = FMT_CHF;
+  // Blatt 3: Monitor
+  const monitorWs = workbook.addWorksheet('Monitor');
+  monitorWs.columns = [{ width: 44 }, { width: 20 }];
+
+  const addMonitorRow = (label, val, options = {}) => {
+    const {
+      bold = false,
+      isCurrency = true,
+      topBorder = false,
+      bottomBorder = false,
+      valueColor = null
+    } = options;
+
+    const row = monitorWs.addRow([label, val]);
+    const borderStyle = {};
+    if (topBorder) {
+      borderStyle.top = { style: 'thin', color: { argb: 'FF111111' } };
+    }
+    if (bottomBorder) {
+      borderStyle.bottom = { style: 'thin', color: { argb: 'FF111111' } };
+    }
+
+    row.getCell(1).font = { bold, size: 12 };
+    row.getCell(2).font = valueColor
+      ? { bold, size: 12, color: { argb: valueColor } }
+      : { bold, size: 12 };
+    if (isCurrency) {
+      row.getCell(2).numFmt = FMT_CHF;
+    }
+    if (topBorder || bottomBorder) {
+      row.getCell(1).border = borderStyle;
+      row.getCell(2).border = borderStyle;
+    }
+
+    return row;
+  };
+
+  addMonitorRow(`Monitor per ${monitorDate}`, '', { bold: false, isCurrency: false });
+  monitorWs.addRow([]);
+  addMonitorRow('Einnahmen aus Ofen-Nutzung', totalEinnahmen, { bold: true });
+  addMonitorRow('Admingebühren (3.- pro Nutzung)', totalAdminFees);
+  addMonitorRow('Stromkosten (effektiv)', totalStromkosten);
+  addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag);
+  addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag);
+  addMonitorRow('Ausgaben für Unterhalt', totalUnterhaltAusgaben, { bold: true, topBorder: true, bottomBorder: true });
+  addMonitorRow('Saldo Unterhalt', saldoUnterhalt, {
+    bold: true,
+    valueColor: saldoUnterhalt < 0 ? 'FFC62828' : null
   });
 
   // Datei herunterladen
@@ -1618,5 +1942,5 @@ function showSuccessMessage(message) {
 
   setTimeout(() => {
     msgElement.remove();
-  }, 4000);
+  }, 2000);
 }

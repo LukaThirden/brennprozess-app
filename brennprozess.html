@@ -13,7 +13,6 @@
       <h2>Seitenzugang</h2>
       <p>Bitte geben Sie das Zugangskennwort ein, um fortzufahren.</p>
       <div class="form-group">
-        <label for="accessPassword">Zugangskennwort</label>
         <input
           type="password"
           id="accessPassword"
@@ -258,23 +257,26 @@
       </div>
       <div id="monitorBody" class="form-section-body">
       <div id="monitorList" class="monitor-list">
+        <div class="monitor-item monitor-item--strong monitor-item--no-line">
+          <div class="monitor-label"><span id="monitorDateStamp">(Datumsstempel)</span></div>
+        </div>
         <div class="monitor-item monitor-item--strong">
           <div class="monitor-label">Einnahmen aus Ofen-Nutzung</div>
           <div id="monitorEinnahmen" class="monitor-value">0,00 CHF</div>
         </div>
-        <div class="monitor-item monitor-item--indented">
+        <div class="monitor-item">
           <div class="monitor-label">Admingebühren (3.- pro Nutzung)</div>
           <div id="monitorAdminFees" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item monitor-item--indented">
+        <div class="monitor-item">
           <div class="monitor-label">Stromkosten (effektiv)</div>
           <div id="monitorStromkosten" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item monitor-item--indented">
+        <div class="monitor-item">
           <div class="monitor-label">Solibeiträge (10.- pro externe Person)</div>
           <div id="monitorSolibeitrag" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item monitor-item--indented monitor-item--separator">
+        <div class="monitor-item monitor-item--separator">
           <div class="monitor-label">Unterhaltsbeiträge (10.- pro Nutzung)</div>
           <div id="monitorUnterhaltsbeitrag" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
@@ -291,13 +293,27 @@
     </section>
 
     <!-- Einträge-Liste -->
-    <section class="entries-section">
-      <div class="entries-section-header">
-        <h2>Alle Einträge</h2>
-        <button id="exportButton" class="export-inline-button">📊 Exportieren</button>
+    <section class="entries-section form-section">
+      <div class="form-section-toggle" data-target="entriesBody" role="button" tabindex="0" aria-expanded="false" aria-controls="entriesBody">
+        <h2>Erfasste Einträge</h2>
+        <span class="form-section-chevron">▼</span>
       </div>
-      <div id="entriesList" class="entries-list">
-        <p class="empty-message">Keine Einträge vorhanden.</p>
+      <div id="entriesBody" class="form-section-body">
+        <div class="entries-selection-row">
+          <label class="entries-select-all-control">
+            <span class="entry-select-control">
+              <input type="checkbox" id="selectAllEntriesCheckbox" class="entry-select-checkbox" />
+            </span>
+            <span>Alles auswählen</span>
+          </label>
+          <div class="entries-section-actions">
+            <button id="deleteSelectedButton" class="delete-selected-button" disabled>🗑 Einträge löschen</button>
+            <button id="exportButton" class="delete-selected-button" disabled>📊 Exportieren</button>
+          </div>
+        </div>
+        <div id="entriesList" class="entries-list">
+          <p class="empty-message">Keine Einträge vorhanden.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -312,7 +328,6 @@
       <div class="modal-body">
         <p>Um das Archiv zu exportieren, geben Sie das Kennwort ein:</p>
         <div class="form-group">
-          <label for="exportPassword">Kennwort</label>
           <input 
             type="password" 
             id="exportPassword" 
@@ -340,7 +355,6 @@
       <div class="modal-body">
         <p>Um diesen Eintrag zu löschen, geben Sie das Kennwort ein:</p>
         <div class="form-group">
-          <label for="deletePassword">Kennwort</label>
           <input 
             type="password" 
             id="deletePassword" 
@@ -385,7 +399,6 @@
       <div class="modal-body">
         <div id="adminForm" class="admin-login">
           <div class="form-group">
-            <label for="adminPassword">Kennwort</label>
             <input 
               type="password" 
               id="adminPassword" 

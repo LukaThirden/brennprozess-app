@@ -158,6 +158,50 @@ html, body {
   margin-bottom: 16px;
 }
 
+.entries-section-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.entries-selection-row {
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.entries-select-all-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gray-700);
+  user-select: none;
+  margin-left: 12px;
+}
+
+.delete-selected-button {
+  padding: 5px 12px;
+  background-color: #e5e7eb;
+  color: #374151;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-selected-button:hover:not(:disabled) {
+  background-color: #d1d5db;
+}
+
+.delete-selected-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .entries-section-header h2 {
   margin-bottom: 0;
 }
@@ -193,6 +237,10 @@ html, body {
 
 .monitor-item--indented {
   padding-left: 18px;
+}
+
+.monitor-item--no-line {
+  border-bottom: none;
 }
 
 .monitor-item--separator {
@@ -480,7 +528,7 @@ label {
 }
 
 .submit-button:hover {
-  background-color: var(--primary-dark);
+  background-color: #2b2b2b;
 }
 
 .submit-button:active {
@@ -494,7 +542,11 @@ label {
 }
 
 .reset-button:hover {
-  background-color: var(--gray-400);
+  background-color: #e5e7eb;
+}
+
+.reset-button:active {
+  transform: scale(0.98);
 }
 
 /* Entries List */
@@ -597,6 +649,29 @@ label {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0;
+}
+
+.entry-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.entry-select-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.entry-select-checkbox {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
 }
 
 .entry-header.entry-toggle {
@@ -873,6 +948,26 @@ body.no-scroll {
   border: 1px solid #cccccc;
 }
 
+#exportModal {
+  background-color: rgba(15, 23, 42, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  padding: 24px;
+}
+
+#exportModal.hidden {
+  display: none;
+}
+
+#exportModal .modal-content {
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  border: 1px solid #cccccc;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -901,6 +996,14 @@ body.no-scroll {
 
 .modal-body {
   padding: 24px;
+}
+
+.modal-body > p + .form-group {
+  margin-top: 12px;
+}
+
+.access-panel > p {
+  margin-bottom: 12px;
 }
 
 .admin-login,
@@ -974,6 +1077,15 @@ body.no-scroll {
 }
 
 #deleteConfirmButton:hover {
+  background-color: #d1d5db;
+}
+
+#exportConfirmButton {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+#exportConfirmButton:hover {
   background-color: #d1d5db;
 }
 
@@ -1065,9 +1177,17 @@ body.no-scroll {
     gap: 8px;
   }
 
+  .entries-selection-row,
+  .entries-section-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
   .submit-button,
   .reset-button,
-  .delete-button {
+  .delete-button,
+  .delete-selected-button {
     width: 100%;
   }
 
