@@ -1419,7 +1419,7 @@ body.no-scroll {
   }
 
   .monitor-item {
-    padding: 8px 0;
+    padding: 8px 0 8px 18px;
     gap: 10px;
     flex-wrap: wrap;
   }
@@ -1563,7 +1563,7 @@ body.no-scroll {
   }
 
   .monitor-item {
-    padding: 6px 0;
+    padding: 6px 0 6px 18px;
     gap: 8px;
   }
 
