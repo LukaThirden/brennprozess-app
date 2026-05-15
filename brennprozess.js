@@ -1038,7 +1038,7 @@ function createEntryElement(entry) {
       <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
-          <span class="entry-type-indicator" style="background-color: #ff9800;"></span>Unterhalt
+          <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #ff9800;"></span>Unterhalt</div>
         </div>
         <div class="entry-header-amount unterhalt-amount">${formatInvoiceAmount(entry.betrag)} (Ausgabe)</div>
         <span class="entry-chevron">▼</span>
@@ -1069,7 +1069,7 @@ function createEntryElement(entry) {
       <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
-          <span class="entry-type-indicator" style="background-color: #2196f3;"></span>Nutzung
+          <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #2196f3;"></span>Nutzung</div>
         </div>
         <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamt)</div>
         <span class="entry-chevron">▼</span>
