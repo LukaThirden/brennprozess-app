@@ -251,39 +251,42 @@
     </section>
 
     <!-- Monitor -->
-    <section class="monitor-section">
-      <div class="entries-section-header">
+    <section class="monitor-section form-section">
+      <div class="form-section-toggle" data-target="monitorBody" role="button" tabindex="0" aria-expanded="false" aria-controls="monitorBody">
         <h2>Monitor</h2>
+        <span class="form-section-chevron">▼</span>
       </div>
+      <div id="monitorBody" class="form-section-body">
       <div id="monitorList" class="monitor-list">
         <div class="monitor-item monitor-item--strong">
-          <div class="monitor-label">Einnahmen aus Rechnungsbeträgen</div>
+          <div class="monitor-label">Einnahmen aus Ofen-Nutzung</div>
           <div id="monitorEinnahmen" class="monitor-value">0,00 CHF</div>
         </div>
-        <div class="monitor-item">
-          <div class="monitor-label">Admingebühren</div>
-          <div id="monitorAdminFees" class="monitor-value">0,00 CHF</div>
+        <div class="monitor-item monitor-item--indented">
+          <div class="monitor-label">Admingebühren (3.- pro Nutzung)</div>
+          <div id="monitorAdminFees" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item">
-          <div class="monitor-label">Stromkosten</div>
-          <div id="monitorStromkosten" class="monitor-value">0,00 CHF</div>
+        <div class="monitor-item monitor-item--indented">
+          <div class="monitor-label">Stromkosten (effektiv)</div>
+          <div id="monitorStromkosten" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item">
-          <div class="monitor-label">Solibeitrag</div>
-          <div id="monitorSolibeitrag" class="monitor-value">0,00 CHF</div>
+        <div class="monitor-item monitor-item--indented">
+          <div class="monitor-label">Solibeiträge (10.- pro externe Person)</div>
+          <div id="monitorSolibeitrag" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item">
-          <div class="monitor-label">Unterhaltsbeitrag</div>
-          <div id="monitorUnterhaltsbeitrag" class="monitor-value">0,00 CHF</div>
+        <div class="monitor-item monitor-item--indented monitor-item--separator">
+          <div class="monitor-label">Unterhaltsbeiträge (10.- pro Nutzung)</div>
+          <div id="monitorUnterhaltsbeitrag" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item">
+        <div class="monitor-item monitor-item--strong monitor-item--separator">
           <div class="monitor-label">Ausgaben für Unterhalt</div>
           <div id="monitorUnterhaltAusgaben" class="monitor-value">0,00 CHF</div>
         </div>
-        <div class="monitor-item">
+        <div class="monitor-item monitor-item--strong">
           <div class="monitor-label">Saldo Unterhalt</div>
           <div id="monitorSaldoUnterhalt" class="monitor-value">0,00 CHF</div>
         </div>
+      </div>
       </div>
     </section>
 

@@ -145,7 +145,6 @@ function setupEventListeners() {
   });
 
   // Export
-    updateMonitorSummary();
   exportButton.addEventListener('click', openExportModal);
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
@@ -154,6 +153,7 @@ function setupEventListeners() {
   // Entry preview
   entryPreviewClose.addEventListener('click', closeEntryPreviewModal);
   entryPreviewCancelButton.addEventListener('click', closeEntryPreviewModal);
+  updateMonitorSummary();
   entryPreviewConfirmButton.addEventListener('click', handleEntryPreviewConfirm);
 }
 
@@ -1103,6 +1103,7 @@ function loadEntries() {
 
   entriesList.innerHTML = '';
   updateUnterhaltSummary();
+  updateMonitorSummary();
 
   if (allEntries.length === 0) {
     entriesList.innerHTML = '<p class="empty-message">Keine Einträge vorhanden.</p>';

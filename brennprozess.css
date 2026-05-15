@@ -172,6 +172,10 @@ html, body {
   justify-self: start;
 }
 
+.monitor-section .form-section-body {
+  margin-top: 12px;
+}
+
 .monitor-list {
   display: flex;
   flex-direction: column;
@@ -185,6 +189,15 @@ html, body {
   gap: 16px;
   padding: 8px 0;
   border-bottom: 1px solid rgba(156, 163, 175, 0.25);
+}
+
+.monitor-item--indented {
+  padding-left: 18px;
+}
+
+.monitor-item--separator {
+  border-bottom: 2px solid rgba(17, 24, 39, 0.5);
+  padding-bottom: 10px;
 }
 
 .monitor-item:last-child {
@@ -208,6 +221,10 @@ html, body {
   font-weight: 600;
   color: var(--gray-900);
   white-space: nowrap;
+}
+
+.monitor-value--regular {
+  font-weight: 400;
 }
 
 .export-inline-button {
