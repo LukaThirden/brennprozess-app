@@ -1381,7 +1381,7 @@ body.no-scroll {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: 1;
+    flex: 0 0 auto;
     min-width: 0;
   }
 
@@ -1393,14 +1393,13 @@ body.no-scroll {
   .entry-type-label {
     font-size: 12px;
     text-align: left;
-    flex: 1;
-    text-align: right;
+    flex: 0 0 auto;
   }
 
   .entry-header-amount {
     text-align: left;
     font-size: 12px;
-    flex: 0 0 auto;
+    flex: 1;
   }
 
   .entry-chevron {
