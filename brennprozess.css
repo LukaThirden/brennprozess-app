@@ -1395,6 +1395,7 @@ body.no-scroll {
     grid-column: 3;
     grid-row: 1;
     text-align: right;
+    font-size: 12px;
   }
 
   .entry-chevron {
