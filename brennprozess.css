@@ -1358,12 +1358,11 @@ body.no-scroll {
   }
 
   .entry-header {
-    padding: 10px 0 10px 12px;
+    padding: 10px 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    margin-left: -12px;
   }
 
   .entry-header-left {
@@ -1455,7 +1454,7 @@ body.no-scroll {
 
   .entries-select-all-control {
     font-size: 12px;
-    margin-left: 0;
+    margin-left: 10px;
   }
 
   .entries-section-actions {
@@ -1582,5 +1581,9 @@ body.no-scroll {
 
   .entry-item {
     padding: 8px;
+  }
+
+  .entries-select-all-control {
+    margin-left: 8px;
   }
 }
