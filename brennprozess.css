@@ -1354,15 +1354,16 @@ body.no-scroll {
   /* Entries */
   .entry-item {
     margin-bottom: 10px;
-    padding: 10px 10px 10px 0;
+    padding: 10px;
   }
 
   .entry-header {
-    padding: 10px 0;
+    padding: 10px 0 10px 12px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
+    margin-left: -12px;
   }
 
   .entry-header-left {
@@ -1371,7 +1372,6 @@ body.no-scroll {
     align-items: center;
     gap: 8px;
     min-width: 0;
-    padding-left: 10px;
   }
 
   .entry-select-control {
