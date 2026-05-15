@@ -1291,8 +1291,8 @@ body.no-scroll {
   }
 
   .entry-label {
-    min-width: 160px;
-    max-width: 160px;
+    min-width: 185px;
+    max-width: 185px;
   }
 
   .entry-chevron {
@@ -1477,7 +1477,7 @@ body.no-scroll {
   }
 
   .entry-label {
-    min-width: 135px;
-    max-width: 135px;
+    min-width: 155px;
+    max-width: 155px;
   }
 }
