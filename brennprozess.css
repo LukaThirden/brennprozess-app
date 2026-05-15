@@ -1400,12 +1400,13 @@ body.no-scroll {
   .entry-header-amount {
     text-align: left;
     font-size: 12px;
-    flex: 1;
+    flex: 0 0 auto;
   }
 
   .entry-chevron {
     text-align: right;
     flex-shrink: 0;
+    margin-left: auto;
   }
 
   .entry-label,
