@@ -1359,50 +1359,53 @@ body.no-scroll {
 
   .entry-header {
     padding: 10px 0;
-    display: grid;
-    grid-template-columns: auto auto 1fr;
-    grid-template-rows: auto auto;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8px;
   }
 
   .entry-header-left {
-    display: contents;
+    flex: 0 0 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
   }
 
   .entry-select-control {
-    grid-column: 1;
-    grid-row: 1;
+    flex-shrink: 0;
   }
 
   .entry-meta {
-    display: contents;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
   }
 
   .entry-date {
-    grid-column: 2;
-    grid-row: 1;
     font-size: 12px;
+    flex-shrink: 0;
   }
 
   .entry-type-label {
-    grid-column: 3;
-    grid-row: 1;
     font-size: 12px;
+    text-align: left;
+    flex: 1;
     text-align: right;
   }
 
   .entry-header-amount {
-    grid-column: 1 / 2;
-    grid-row: 2;
     text-align: left;
     font-size: 12px;
+    flex: 1;
   }
 
   .entry-chevron {
-    grid-column: 3;
-    grid-row: 2;
     text-align: right;
+    flex-shrink: 0;
   }
 
   .entry-label,
