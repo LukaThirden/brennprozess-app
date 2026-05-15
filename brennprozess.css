@@ -200,11 +200,11 @@ html, body {
 
 .form-group--anzahl-externe {
   margin-top: 0;
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .form-group--brennmodus {
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .form-row {
