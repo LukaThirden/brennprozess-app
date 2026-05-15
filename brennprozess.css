@@ -1146,7 +1146,7 @@ body.no-scroll {
 
   /* Main */
   main {
-    padding: 10px;
+    padding: 8px;
   }
 
   /* Sections */
@@ -1154,32 +1154,32 @@ body.no-scroll {
   .entries-section,
   .konto-section,
   .monitor-section {
-    margin-bottom: 10px;
-    padding: 12px;
+    margin-bottom: 8px;
+    padding: 10px;
   }
 
   .form-section h2,
   .entries-section h2 {
-    font-size: 17px;
-    margin-bottom: 8px;
+    font-size: 16px;
+    margin-bottom: 6px;
   }
 
   .form-section-toggle {
-    padding: 10px 0;
+    padding: 8px 0;
   }
 
   /* Form Grid */
   .form-row {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 6px;
   }
 
   .form-group {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   label {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .text-input,
@@ -1187,9 +1187,9 @@ body.no-scroll {
   .select,
   .date-input,
   .number-input {
-    padding: 10px 11px;
-    font-size: 14px;
-    min-height: 42px;
+    padding: 9px 10px;
+    font-size: 13px;
+    min-height: 40px;
   }
 
   /* Buttons */
@@ -1197,31 +1197,31 @@ body.no-scroll {
   .reset-button,
   .delete-selected-button,
   .admin-button {
-    padding: 11px 14px;
-    font-size: 14px;
-    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 13px;
+    min-height: 42px;
     min-width: 120px;
   }
 
   .form-actions {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   /* Modals */
   .modal-content {
     width: 90vw;
     max-width: 480px;
-    padding: 16px;
+    padding: 14px;
   }
 
   .modal-body {
-    padding: 12px 0;
+    padding: 10px 0;
   }
 
   .modal-header {
-    padding: 12px 0;
-    margin-bottom: 12px;
+    padding: 10px 0;
+    margin-bottom: 10px;
   }
 
   .modal-header h2 {
@@ -1230,23 +1230,23 @@ body.no-scroll {
 
   /* Entries */
   .entry-item {
-    margin-bottom: 8px;
-    padding: 11px;
+    margin-bottom: 6px;
+    padding: 9px;
   }
 
   .entry-header {
-    padding: 8px 0;
+    padding: 6px 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
   }
 
   .entry-header-left {
     flex: 0 0 100%;
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     min-width: 0;
   }
 
@@ -1257,25 +1257,25 @@ body.no-scroll {
   .entry-meta {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     flex: 0 0 auto;
     min-width: 0;
   }
 
   .entry-date {
-    font-size: 13px;
+    font-size: 12px;
     flex-shrink: 0;
   }
 
   .entry-type-label {
-    font-size: 13px;
+    font-size: 12px;
     text-align: left;
     flex: 0 0 auto;
   }
 
   .entry-header-amount {
     text-align: left;
-    font-size: 13px;
+    font-size: 12px;
     flex: 1;
   }
 
@@ -1287,7 +1287,7 @@ body.no-scroll {
 
   .entry-label,
   .entry-value {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .entry-chevron {
@@ -1296,48 +1296,48 @@ body.no-scroll {
 
   /* Monitor */
   .monitor-section {
-    padding: 12px;
+    padding: 10px;
   }
 
   .monitor-item {
-    padding: 8px 0 8px 12px;
-    gap: 8px;
+    padding: 6px 0 6px 10px;
+    gap: 6px;
     flex-wrap: wrap;
   }
 
   .monitor-label {
-    font-size: 13px;
+    font-size: 12px;
     flex: 0 1 auto;
     min-width: 0;
   }
 
   .monitor-value {
-    font-size: 13px;
+    font-size: 12px;
     flex: 1;
     text-align: right;
     white-space: normal;
   }
 
   .monitor-list {
-    gap: 6px;
+    gap: 4px;
   }
 
   /* Entries Selection Row */
   .entries-selection-row {
     flex-direction: column;
-    gap: 9px;
-    margin-bottom: 10px;
+    gap: 7px;
+    margin-bottom: 8px;
   }
 
   .entries-select-all-control {
-    font-size: 13px;
-    margin-left: 12px;
+    font-size: 12px;
+    margin-left: 10px;
   }
 
   .entries-section-actions {
     width: 100%;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
   }
 
   .entries-section-actions .delete-selected-button {
@@ -1351,8 +1351,8 @@ body.no-scroll {
   /* Success Message */
   .success-message {
     width: min(92vw, 480px);
-    padding: 14px;
-    font-size: 13px;
+    padding: 12px;
+    font-size: 12px;
   }
 
   /* Preview Modal */
@@ -1361,7 +1361,7 @@ body.no-scroll {
   }
 
   .entry-header-amount {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   /* Form sections content */
@@ -1374,7 +1374,7 @@ body.no-scroll {
   }
 
   .entries-list {
-    gap: 7px;
+    gap: 6px;
   }
 }
 
@@ -1386,17 +1386,17 @@ body.no-scroll {
   }
 
   .header h1 {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .form-section h2,
   .entries-section h2 {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .entry-label,
   .entry-value {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   /* Extra compact for very small screens */
@@ -1405,33 +1405,33 @@ body.no-scroll {
   .select,
   .date-input,
   .number-input {
-    padding: 8px;
-    font-size: 13px;
-    min-height: 38px;
+    padding: 7px 8px;
+    font-size: 12px;
+    min-height: 36px;
   }
 
   .submit-button,
   .reset-button,
   .delete-selected-button {
-    padding: 10px;
+    padding: 9px;
     font-size: 12px;
-    min-height: 40px;
+    min-height: 38px;
   }
 
   main {
-    padding: 7px;
+    padding: 6px;
   }
 
   .form-section,
   .entries-section,
   .konto-section,
   .monitor-section {
-    padding: 9px;
-    margin-bottom: 8px;
+    padding: 8px;
+    margin-bottom: 7px;
   }
 
   .header {
-    padding: 12px;
+    padding: 10px;
   }
 
   .modal-content {
@@ -1440,34 +1440,34 @@ body.no-scroll {
   }
 
   .entries-selection-row {
-    gap: 7px;
+    gap: 6px;
   }
 
   .monitor-item {
-    padding: 6px 0 6px 9px;
-    gap: 7px;
+    padding: 5px 0 5px 8px;
+    gap: 6px;
   }
 
   .monitor-label {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .monitor-value {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .entry-item {
-    padding: 8px;
+    padding: 7px;
   }
 
   .entries-select-all-control {
-    margin-left: 9px;
-    font-size: 12px;
+    margin-left: 8px;
+    font-size: 11px;
   }
 
   .entry-date,
   .entry-type-label,
   .entry-header-amount {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
