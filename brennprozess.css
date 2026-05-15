@@ -1290,6 +1290,10 @@ body.no-scroll {
     font-size: 12px;
   }
 
+  .entry-value {
+    text-align: right;
+  }
+
   .entry-label {
     min-width: 185px;
     max-width: 185px;
@@ -1402,6 +1406,10 @@ body.no-scroll {
   .entry-label,
   .entry-value {
     font-size: 11px;
+  }
+
+  .entry-value {
+    text-align: right;
   }
 
   /* Extra compact for very small screens */
