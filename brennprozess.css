@@ -1414,17 +1414,31 @@ body.no-scroll {
   }
 
   /* Monitor */
+  .monitor-section {
+    padding: 12px;
+  }
+
   .monitor-item {
-    padding: 6px 0;
-    gap: 12px;
+    padding: 8px 0;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   .monitor-label {
     font-size: 12px;
+    flex: 0 1 auto;
+    min-width: 0;
   }
 
   .monitor-value {
     font-size: 12px;
+    flex: 1;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .monitor-list {
+    gap: 6px;
   }
 
   /* Entries Selection Row */
@@ -1549,7 +1563,16 @@ body.no-scroll {
   }
 
   .monitor-item {
-    padding: 4px 0;
+    padding: 6px 0;
+    gap: 8px;
+  }
+
+  .monitor-label {
+    font-size: 11px;
+  }
+
+  .monitor-value {
+    font-size: 11px;
   }
 
   .entry-item {
