@@ -1252,6 +1252,208 @@ body.no-scroll {
   }
 }
 
+@media (max-width: 768px) {
+  /* Header */
+  .header {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  /* Main */
+  main {
+    padding: 12px;
+  }
+
+  /* Sections */
+  .form-section,
+  .entries-section,
+  .konto-section,
+  .monitor-section {
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+
+  .form-section h2,
+  .entries-section h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .form-section-toggle {
+    padding: 10px 0;
+  }
+
+  /* Form Grid */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  label {
+    font-size: 11px;
+  }
+
+  .text-input,
+  .textarea,
+  .select,
+  .date-input,
+  .number-input {
+    padding: 10px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  /* Buttons */
+  .submit-button,
+  .reset-button,
+  .delete-selected-button,
+  .admin-button {
+    padding: 12px 16px;
+    font-size: 14px;
+    min-height: 44px;
+    min-width: 120px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Modals */
+  .modal-content {
+    width: 90vw;
+    max-width: 480px;
+    padding: 16px;
+  }
+
+  .modal-body {
+    padding: 12px 0;
+  }
+
+  .modal-header {
+    padding: 12px 0;
+    margin-bottom: 12px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  /* Entries */
+  .entry-item {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .entry-header {
+    padding: 10px 0;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .entry-meta {
+    gap: 6px;
+  }
+
+  .entry-date {
+    font-size: 12px;
+  }
+
+  .entry-type-label {
+    font-size: 12px;
+  }
+
+  .entry-label,
+  .entry-value {
+    font-size: 12px;
+  }
+
+  .entry-chevron {
+    font-size: 16px;
+  }
+
+  /* Monitor */
+  .monitor-item {
+    padding: 6px 0;
+    gap: 12px;
+  }
+
+  .monitor-label {
+    font-size: 12px;
+  }
+
+  .monitor-value {
+    font-size: 12px;
+  }
+
+  /* Entries Selection Row */
+  .entries-selection-row {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .entries-select-all-control {
+    font-size: 12px;
+    margin-left: 0;
+  }
+
+  .entries-section-actions {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .entries-section-actions .delete-selected-button {
+    width: 100%;
+  }
+
+  .entries-section-actions .delete-selected-button:last-child {
+    width: 100%;
+  }
+
+  /* Success Message */
+  .success-message {
+    width: min(92vw, 480px);
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  /* Preview Modal */
+  .entry-header-left {
+    gap: 8px;
+  }
+
+  .entry-header-amount {
+    font-size: 13px;
+  }
+
+  /* Form sections content */
+  .form-section-body {
+    padding: 0;
+  }
+
+  .monitor-list {
+    gap: 4px;
+  }
+
+  .entries-list {
+    gap: 8px;
+  }
+}
+
 @media (max-width: 420px) {
   .form-section,
   .entries-section,
@@ -1271,5 +1473,57 @@ body.no-scroll {
   .entry-label,
   .entry-value {
     font-size: 11px;
+  }
+
+  /* Extra compact for very small screens */
+  .text-input,
+  .textarea,
+  .select,
+  .date-input,
+  .number-input {
+    padding: 8px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .submit-button,
+  .reset-button,
+  .delete-selected-button {
+    padding: 10px 12px;
+    font-size: 12px;
+    min-height: 40px;
+  }
+
+  main {
+    padding: 8px;
+  }
+
+  .form-section,
+  .entries-section,
+  .konto-section,
+  .monitor-section {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  .header {
+    padding: 12px;
+  }
+
+  .modal-content {
+    width: 95vw;
+    max-width: 420px;
+  }
+
+  .entries-selection-row {
+    gap: 8px;
+  }
+
+  .monitor-item {
+    padding: 4px 0;
+  }
+
+  .entry-item {
+    padding: 8px;
   }
 }
