@@ -1384,7 +1384,7 @@ function createEntryElement(entry) {
         </div>
         <div class="entry-row">
           <div class="entry-field">
-            <div class="entry-label">Brenn-Zyklus (Betriebsstunden)</div>
+            <div class="entry-label">Brenn-Zyklus (Stunden)</div>
             <div class="entry-value">${entry.brennzyklus}</div>
           </div>
         </div>
