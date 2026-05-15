@@ -207,6 +207,10 @@ html, body {
   margin-top: 28px;
 }
 
+.form-group--brenn-bemerkungen {
+  margin-top: 28px;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
