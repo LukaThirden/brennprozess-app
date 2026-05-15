@@ -1360,13 +1360,13 @@ function createEntryElement(entry) {
         </div>
         <div class="entry-row grundkosten-row">
           <div class="entry-field">
-            <div class="entry-label">Grundkosten (für Alle)</div>
+            <div class="entry-label">Grundkosten (Alle)</div>
             <div class="entry-value">${formatInvoiceAmount(grundkosten)}</div>
           </div>
         </div>
         <div class="entry-row solibeitrag-row">
           <div class="entry-field">
-            <div class="entry-label">Solibeitrag (für Externe)</div>
+            <div class="entry-label">Solibeitrag (Externe)</div>
             <div class="entry-value">${formatInvoiceAmount(breakdown.solibeitrag)}</div>
           </div>
         </div>
