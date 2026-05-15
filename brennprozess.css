@@ -1129,129 +1129,6 @@ body.no-scroll {
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    padding: 14px;
-  }
-
-  .header h1 {
-    font-size: 20px;
-    line-height: 1.2;
-    text-align: center;
-  }
-
-  .header-right {
-    width: 100%;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .admin-button,
-  .sync-status {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .main-container {
-    grid-template-columns: 1fr;
-    padding: 12px;
-    gap: 12px;
-  }
-
-  .form-section,
-  .entries-section {
-    padding: 12px;
-  }
-
-  .monitor-section {
-    width: 100%;
-    padding: 12px;
-  }
-
-  .form-actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .entries-selection-row,
-  .entries-section-actions {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-  }
-
-  .submit-button,
-  .reset-button,
-  .delete-button,
-  .delete-selected-button {
-    width: 100%;
-  }
-
-  .text-input,
-  .textarea,
-  .select,
-  .date-input,
-  .number-input {
-    font-size: 16px;
-  }
-
-  .date-picker-wrapper {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .calendar {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .summary-card {
-    min-width: 0;
-  }
-
-  .entry-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .entry-meta {
-    display: grid;
-    grid-template-columns: 86px 1fr;
-    gap: 10px;
-    min-width: 0;
-  }
-
-  .delete-entry-btn {
-    align-self: flex-end;
-  }
-
-  .modal-content {
-    width: 95%;
-    max-width: 100%;
-  }
-
-  .modal-header,
-  .modal-body {
-    padding: 16px;
-  }
-
-  .access-panel {
-    padding: 18px;
-  }
-
-  .success-message {
-    width: min(92vw, 520px);
-    padding: 18px 14px;
-    font-size: clamp(18px, 5vw, 26px);
-    text-align: center;
-  }
-}
-
 @media (max-width: 768px) {
   /* Header */
   .header {
@@ -1269,7 +1146,7 @@ body.no-scroll {
 
   /* Main */
   main {
-    padding: 12px;
+    padding: 10px;
   }
 
   /* Sections */
@@ -1277,13 +1154,13 @@ body.no-scroll {
   .entries-section,
   .konto-section,
   .monitor-section {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     padding: 12px;
   }
 
   .form-section h2,
   .entries-section h2 {
-    font-size: 16px;
+    font-size: 17px;
     margin-bottom: 8px;
   }
 
@@ -1302,7 +1179,7 @@ body.no-scroll {
   }
 
   label {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .text-input,
@@ -1310,9 +1187,9 @@ body.no-scroll {
   .select,
   .date-input,
   .number-input {
-    padding: 10px;
+    padding: 10px 11px;
     font-size: 14px;
-    min-height: 40px;
+    min-height: 42px;
   }
 
   /* Buttons */
@@ -1320,7 +1197,7 @@ body.no-scroll {
   .reset-button,
   .delete-selected-button,
   .admin-button {
-    padding: 12px 16px;
+    padding: 11px 14px;
     font-size: 14px;
     min-height: 44px;
     min-width: 120px;
@@ -1353,23 +1230,23 @@ body.no-scroll {
 
   /* Entries */
   .entry-item {
-    margin-bottom: 10px;
-    padding: 10px;
+    margin-bottom: 8px;
+    padding: 11px;
   }
 
   .entry-header {
-    padding: 10px 0;
+    padding: 8px 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .entry-header-left {
     flex: 0 0 100%;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     min-width: 0;
   }
 
@@ -1380,25 +1257,25 @@ body.no-scroll {
   .entry-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     flex: 0 0 auto;
     min-width: 0;
   }
 
   .entry-date {
-    font-size: 12px;
+    font-size: 13px;
     flex-shrink: 0;
   }
 
   .entry-type-label {
-    font-size: 12px;
+    font-size: 13px;
     text-align: left;
     flex: 0 0 auto;
   }
 
   .entry-header-amount {
     text-align: left;
-    font-size: 12px;
+    font-size: 13px;
     flex: 1;
   }
 
@@ -1410,7 +1287,7 @@ body.no-scroll {
 
   .entry-label,
   .entry-value {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .entry-chevron {
@@ -1423,19 +1300,19 @@ body.no-scroll {
   }
 
   .monitor-item {
-    padding: 8px 0 8px 18px;
-    gap: 10px;
+    padding: 8px 0 8px 12px;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
   .monitor-label {
-    font-size: 12px;
+    font-size: 13px;
     flex: 0 1 auto;
     min-width: 0;
   }
 
   .monitor-value {
-    font-size: 12px;
+    font-size: 13px;
     flex: 1;
     text-align: right;
     white-space: normal;
@@ -1448,19 +1325,19 @@ body.no-scroll {
   /* Entries Selection Row */
   .entries-selection-row {
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 9px;
+    margin-bottom: 10px;
   }
 
   .entries-select-all-control {
-    font-size: 12px;
-    margin-left: 11px;
+    font-size: 13px;
+    margin-left: 12px;
   }
 
   .entries-section-actions {
     width: 100%;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
   }
 
   .entries-section-actions .delete-selected-button {
@@ -1474,8 +1351,8 @@ body.no-scroll {
   /* Success Message */
   .success-message {
     width: min(92vw, 480px);
-    padding: 16px;
-    font-size: 14px;
+    padding: 14px;
+    font-size: 13px;
   }
 
   /* Preview Modal */
@@ -1497,7 +1374,7 @@ body.no-scroll {
   }
 
   .entries-list {
-    gap: 8px;
+    gap: 7px;
   }
 }
 
@@ -1514,12 +1391,12 @@ body.no-scroll {
 
   .form-section h2,
   .entries-section h2 {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .entry-label,
   .entry-value {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   /* Extra compact for very small screens */
@@ -1530,26 +1407,26 @@ body.no-scroll {
   .number-input {
     padding: 8px;
     font-size: 13px;
-    min-height: 36px;
+    min-height: 38px;
   }
 
   .submit-button,
   .reset-button,
   .delete-selected-button {
-    padding: 10px 12px;
+    padding: 10px;
     font-size: 12px;
     min-height: 40px;
   }
 
   main {
-    padding: 8px;
+    padding: 7px;
   }
 
   .form-section,
   .entries-section,
   .konto-section,
   .monitor-section {
-    padding: 10px;
+    padding: 9px;
     margin-bottom: 8px;
   }
 
@@ -1563,20 +1440,20 @@ body.no-scroll {
   }
 
   .entries-selection-row {
-    gap: 8px;
+    gap: 7px;
   }
 
   .monitor-item {
-    padding: 6px 0 6px 18px;
-    gap: 8px;
+    padding: 6px 0 6px 9px;
+    gap: 7px;
   }
 
   .monitor-label {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .monitor-value {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .entry-item {
@@ -1585,5 +1462,12 @@ body.no-scroll {
 
   .entries-select-all-control {
     margin-left: 9px;
+    font-size: 12px;
+  }
+
+  .entry-date,
+  .entry-type-label,
+  .entry-header-amount {
+    font-size: 12px;
   }
 }
