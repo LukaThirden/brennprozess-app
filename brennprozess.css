@@ -560,7 +560,7 @@ label {
   display: grid;
   grid-template-columns: 86px 1fr;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
   min-width: 240px;
 }
 
@@ -1002,7 +1002,7 @@ body.no-scroll {
   .entry-meta {
     display: grid;
     grid-template-columns: 86px 1fr;
-    gap: 6px;
+    gap: 10px;
     min-width: 0;
   }
 
