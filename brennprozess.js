@@ -1069,7 +1069,7 @@ function createEntryElement(entry) {
       <div class="entry-header entry-toggle">
         <div class="entry-meta">
           <div class="entry-date">${entry.datum}</div>
-          <span class="entry-type-indicator" style="background-color: var(--success-color);"></span>Nutzung
+          <span class="entry-type-indicator" style="background-color: #2196f3;"></span>Nutzung
         </div>
         <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamt)</div>
         <span class="entry-chevron">▼</span>
