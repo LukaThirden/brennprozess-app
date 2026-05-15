@@ -198,19 +198,6 @@ html, body {
   gap: 2px;
 }
 
-.form-group--anzahl-externe {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.form-group--brennmodus {
-  margin-top: 28px;
-}
-
-.form-group--brenn-bemerkungen {
-  margin-top: 28px;
-}
-
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
