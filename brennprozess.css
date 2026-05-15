@@ -1290,6 +1290,11 @@ body.no-scroll {
     font-size: 12px;
   }
 
+  .entry-label {
+    min-width: 130px;
+    max-width: 130px;
+  }
+
   .entry-chevron {
     font-size: 16px;
   }
@@ -1469,5 +1474,10 @@ body.no-scroll {
   .entry-type-label,
   .entry-header-amount {
     font-size: 11px;
+  }
+
+  .entry-label {
+    min-width: 110px;
+    max-width: 110px;
   }
 }
