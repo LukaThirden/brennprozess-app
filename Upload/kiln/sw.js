@@ -1,13 +1,13 @@
 const CACHE_NAME = 'brennprozess-cache-v1';
 const ASSETS = [
-  '/index.html',
-  '/adw/kiln/',
-  '/brennprozess.html',
-  '/brennprozess.css',
-  '/brennprozess.js',
-  '/app.webmanifest',
-  '/icons/icon-192.svg',
-  '/icons/icon-512.svg'
+  './',
+  './index.html',
+  './brennprozess.html',
+  './brennprozess.css',
+  './brennprozess.js',
+  './app.webmanifest',
+  './icons/icon-192.svg',
+  './icons/icon-512.svg'
 ];
 
 self.addEventListener('install', (event) => {
