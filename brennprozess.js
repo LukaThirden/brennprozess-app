@@ -32,6 +32,8 @@ const accessOverlay = document.getElementById('accessOverlay');
 const accessPasswordInput = document.getElementById('accessPassword');
 const accessButton = document.getElementById('accessButton');
 const accessError = document.getElementById('accessError');
+const installAppButton = document.getElementById('installAppButton');
+const installAppHint = document.getElementById('installAppHint');
 
 // Unterhalt Form
 const unterhaltForm = document.getElementById('unterhaltForm');
@@ -118,12 +120,15 @@ let syncHealthCheckInFlight = false;
 let accessReauthTimer = null;
 let pendingPreviewEntry = null;
 let pendingPreviewType = null;
+let deferredInstallPrompt = null;
 
 const SYNC_CHECK_INTERVAL_MS = 10000;
 
 // === Initialization ===
 document.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
+  setupInstallAppSupport();
+  registerServiceWorker();
   await initializeDataStore();
   startSyncHealthChecks();
   checkAccess();
@@ -240,6 +245,74 @@ function setupEventListeners() {
   }
   updateMonitorSummary();
   entryPreviewConfirmButton.addEventListener('click', handleEntryPreviewConfirm);
+}
+
+function setupInstallAppSupport() {
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+    if (installAppButton) {
+      installAppButton.classList.add('hidden');
+    }
+    if (installAppHint) {
+      installAppHint.textContent = 'App ist bereits installiert.';
+    }
+    return;
+  }
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+
+    if (installAppButton) {
+      installAppButton.classList.remove('hidden');
+    }
+    if (installAppHint) {
+      installAppHint.textContent = '';
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    if (installAppButton) {
+      installAppButton.classList.add('hidden');
+    }
+    if (installAppHint) {
+      installAppHint.textContent = 'App wurde installiert.';
+    }
+  });
+
+  if (installAppButton) {
+    installAppButton.addEventListener('click', handleInstallAppClick);
+  }
+}
+
+async function handleInstallAppClick() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    return;
+  }
+
+  const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+  if (installAppHint) {
+    installAppHint.textContent = isIos
+      ? 'iOS: Teilen -> Zum Home-Bildschirm.'
+      : 'Browser-Menue: Als App installieren.';
+  }
+}
+
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    return;
+  }
+
+  if (!/^https?:$/i.test(window.location.protocol)) {
+    return;
+  }
+
+  navigator.serviceWorker.register('sw.js').catch((error) => {
+    console.warn('Service Worker Registrierung fehlgeschlagen.', error);
+  });
 }
 
 function handleResponsiveUiUpdate() {
