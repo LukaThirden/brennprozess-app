@@ -2035,7 +2035,13 @@ function exportToExcel(selectedData = null) {
   }, 0);
   const transferAmount = getMonitorTransferAmount();
   const saldoUnterhalt = totalUnterhaltsbeitrag - totalUnterhaltAusgaben + transferAmount;
+  const allSelected =
+    sortedBrennEntries.length === allBrennEntries.length &&
+    sortedUnterhaltEntries.length === allUnterhaltEntries.length;
   const monitorDateRange = getExportDateRangeLabel(sortedBrennEntries, sortedUnterhaltEntries);
+  const monitorHeaderLabel = allSelected
+    ? `Monitor von ${monitorDateRange}`
+    : 'Monitor von partieller Auswahl';
   const timestamp = new Date().toISOString().split('T')[0];
   const FMT_NUM = '0.00';
   const FMT_CHF = '_ [$CHF-807]\\ * #,##0.00_ ;_ [$CHF-807]\\ * \\-#,##0.00_ ;_ [$CHF-807]\\ * "-"??_ ;_ @_ ';
@@ -2145,7 +2151,7 @@ function exportToExcel(selectedData = null) {
     return row;
   };
 
-  addMonitorRow(`Monitor von ${monitorDateRange}`, '', { bold: false, isCurrency: false });
+  addMonitorRow(monitorHeaderLabel, '', { bold: false, isCurrency: false });
   monitorWs.addRow([]);
   addMonitorRow('Einnahmen aus Ofen-Nutzung', totalEinnahmen, { bold: true });
   addMonitorRow('Admingebühren (3.- pro Nutzung)', totalAdminFees);
