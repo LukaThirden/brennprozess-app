@@ -400,20 +400,39 @@
         <button type="button" class="modal-close" id="monitorTransferClose">&times;</button>
       </div>
       <div class="modal-body">
-        <p>Übertrag für den Saldo Unterhalt setzen (positiv oder negativ).</p>
-        <div class="form-group">
-          <input
-            type="number"
-            id="monitorTransferInput"
-            class="number-input"
-            placeholder="0.00"
-            step="0.05"
-          />
-          <div id="monitorTransferError" class="error-message"></div>
+        <div id="monitorTransferLogin" class="admin-login">
+          <p>Bitte Admin-Kennwort eingeben, um den Übertrag zu bearbeiten.</p>
+          <div class="form-group">
+            <input
+              type="password"
+              id="monitorTransferPassword"
+              class="text-input"
+              placeholder="Admin-Kennwort"
+            />
+            <div id="monitorTransferPasswordError" class="error-message"></div>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="monitorTransferLoginButton" class="submit-button">Anmelden</button>
+            <button type="button" id="monitorTransferCancel" class="reset-button">Abbrechen</button>
+          </div>
         </div>
-        <div class="form-actions">
-          <button type="button" id="monitorTransferSave" class="submit-button">Speichern</button>
-          <button type="button" id="monitorTransferCancel" class="reset-button">Abbrechen</button>
+
+        <div id="monitorTransferPanel" class="admin-panel hidden">
+          <p>Übertrag für den Saldo Unterhalt setzen (positiv oder negativ).</p>
+          <div class="form-group">
+            <input
+              type="number"
+              id="monitorTransferInput"
+              class="number-input"
+              placeholder="0.00"
+              step="0.05"
+            />
+            <div id="monitorTransferError" class="error-message"></div>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="monitorTransferSave" class="submit-button">Speichern</button>
+            <button type="button" id="monitorTransferPanelCancel" class="reset-button">Abbrechen</button>
+          </div>
         </div>
       </div>
     </div>

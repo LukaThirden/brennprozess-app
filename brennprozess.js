@@ -84,8 +84,14 @@ const monitorTransferModal = document.getElementById('monitorTransferModal');
 const monitorTransferInput = document.getElementById('monitorTransferInput');
 const monitorTransferSave = document.getElementById('monitorTransferSave');
 const monitorTransferCancel = document.getElementById('monitorTransferCancel');
+const monitorTransferPanelCancel = document.getElementById('monitorTransferPanelCancel');
 const monitorTransferClose = document.getElementById('monitorTransferClose');
 const monitorTransferError = document.getElementById('monitorTransferError');
+const monitorTransferLogin = document.getElementById('monitorTransferLogin');
+const monitorTransferPanel = document.getElementById('monitorTransferPanel');
+const monitorTransferPassword = document.getElementById('monitorTransferPassword');
+const monitorTransferPasswordError = document.getElementById('monitorTransferPasswordError');
+const monitorTransferLoginButton = document.getElementById('monitorTransferLoginButton');
 
 // Entry Preview
 const entryPreviewModal = document.getElementById('entryPreviewModal');
@@ -201,6 +207,20 @@ function setupEventListeners() {
   if (monitorTransferCancel) {
     monitorTransferCancel.addEventListener('click', closeMonitorTransferModal);
   }
+  if (monitorTransferPanelCancel) {
+    monitorTransferPanelCancel.addEventListener('click', closeMonitorTransferModal);
+  }
+  if (monitorTransferLoginButton) {
+    monitorTransferLoginButton.addEventListener('click', handleMonitorTransferLogin);
+  }
+  if (monitorTransferPassword) {
+    monitorTransferPassword.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleMonitorTransferLogin();
+      }
+    });
+  }
   if (monitorTransferSave) {
     monitorTransferSave.addEventListener('click', saveMonitorTransfer);
   }
@@ -259,13 +279,26 @@ function openMonitorTransferModal(e) {
   }
 
   monitorTransferInput.value = getMonitorTransferAmount().toFixed(2);
+  if (monitorTransferLogin && monitorTransferPanel) {
+    monitorTransferLogin.classList.remove('hidden');
+    monitorTransferPanel.classList.add('hidden');
+  }
+  if (monitorTransferPassword) {
+    monitorTransferPassword.value = '';
+  }
+  if (monitorTransferPasswordError) {
+    monitorTransferPasswordError.textContent = '';
+    monitorTransferPasswordError.classList.remove('show');
+  }
   if (monitorTransferError) {
     monitorTransferError.textContent = '';
     monitorTransferError.classList.remove('show');
   }
   monitorTransferModal.classList.remove('hidden');
   modalOverlay.classList.remove('hidden');
-  monitorTransferInput.focus();
+  if (monitorTransferPassword) {
+    monitorTransferPassword.focus();
+  }
 }
 
 function closeMonitorTransferModal() {
@@ -275,9 +308,44 @@ function closeMonitorTransferModal() {
 
   monitorTransferModal.classList.add('hidden');
   modalOverlay.classList.add('hidden');
+  if (monitorTransferPassword) {
+    monitorTransferPassword.value = '';
+  }
+  if (monitorTransferPasswordError) {
+    monitorTransferPasswordError.textContent = '';
+    monitorTransferPasswordError.classList.remove('show');
+  }
   if (monitorTransferError) {
     monitorTransferError.textContent = '';
     monitorTransferError.classList.remove('show');
+  }
+}
+
+function handleMonitorTransferLogin() {
+  if (!monitorTransferPassword || !monitorTransferLogin || !monitorTransferPanel) {
+    return;
+  }
+
+  const password = monitorTransferPassword.value.trim();
+  if (password !== ADMIN_PASSWORD) {
+    if (monitorTransferPasswordError) {
+      monitorTransferPasswordError.textContent = 'Kennwort falsch';
+      monitorTransferPasswordError.classList.add('show');
+    }
+    monitorTransferPassword.value = '';
+    monitorTransferPassword.focus();
+    return;
+  }
+
+  if (monitorTransferPasswordError) {
+    monitorTransferPasswordError.textContent = '';
+    monitorTransferPasswordError.classList.remove('show');
+  }
+
+  monitorTransferLogin.classList.add('hidden');
+  monitorTransferPanel.classList.remove('hidden');
+  if (monitorTransferInput) {
+    monitorTransferInput.focus();
   }
 }
 
