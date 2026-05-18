@@ -2,6 +2,7 @@
 const ADMIN_PASSWORD = 'admin123'; // Sollte in einer echten App verschlüsselt sein
 const STORAGE_KEY = 'brennprozess_entries';
 const UNTERHALT_STORAGE_KEY = 'unterhalt_entries';
+const MONITOR_TRANSFER_KEY = 'monitor_saldo_transfer';
 const ACCESS_PASSWORD = 'ADW11';
 const ACCESS_VALID_UNTIL_KEY = 'brennprozess_access_valid_until';
 const ACCESS_REAUTH_MS = 5 * 60 * 1000;
@@ -77,6 +78,14 @@ const monitorUnterhaltsbeitrag = document.getElementById('monitorUnterhaltsbeitr
 const monitorUnterhaltAusgaben = document.getElementById('monitorUnterhaltAusgaben');
 const monitorSaldoUnterhalt = document.getElementById('monitorSaldoUnterhalt');
 const monitorDateStamp = document.getElementById('monitorDateStamp');
+const monitorTransferInfo = document.getElementById('monitorTransferInfo');
+const monitorAdminButton = document.getElementById('monitorAdminButton');
+const monitorTransferModal = document.getElementById('monitorTransferModal');
+const monitorTransferInput = document.getElementById('monitorTransferInput');
+const monitorTransferSave = document.getElementById('monitorTransferSave');
+const monitorTransferCancel = document.getElementById('monitorTransferCancel');
+const monitorTransferClose = document.getElementById('monitorTransferClose');
+const monitorTransferError = document.getElementById('monitorTransferError');
 
 // Entry Preview
 const entryPreviewModal = document.getElementById('entryPreviewModal');
@@ -183,6 +192,26 @@ function setupEventListeners() {
   // Entry preview
   entryPreviewClose.addEventListener('click', closeEntryPreviewModal);
   entryPreviewCancelButton.addEventListener('click', closeEntryPreviewModal);
+  if (monitorAdminButton) {
+    monitorAdminButton.addEventListener('click', openMonitorTransferModal);
+  }
+  if (monitorTransferClose) {
+    monitorTransferClose.addEventListener('click', closeMonitorTransferModal);
+  }
+  if (monitorTransferCancel) {
+    monitorTransferCancel.addEventListener('click', closeMonitorTransferModal);
+  }
+  if (monitorTransferSave) {
+    monitorTransferSave.addEventListener('click', saveMonitorTransfer);
+  }
+  if (monitorTransferInput) {
+    monitorTransferInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        saveMonitorTransfer();
+      }
+    });
+  }
   updateMonitorSummary();
   entryPreviewConfirmButton.addEventListener('click', handleEntryPreviewConfirm);
 }
@@ -195,7 +224,82 @@ function handleModalOverlayClick() {
 
   if (!adminModal.classList.contains('hidden')) {
     closeAdminModal();
+    return;
   }
+
+  if (monitorTransferModal && !monitorTransferModal.classList.contains('hidden')) {
+    closeMonitorTransferModal();
+  }
+}
+
+function getMonitorTransferAmount() {
+  const raw = localStorage.getItem(MONITOR_TRANSFER_KEY);
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function setMonitorTransferAmount(amount) {
+  localStorage.setItem(MONITOR_TRANSFER_KEY, String(amount));
+}
+
+function formatSignedInvoiceAmount(amount) {
+  const sign = amount >= 0 ? '+' : '-';
+  const abs = Math.abs(amount);
+  return `${sign}${abs.toFixed(2).replace('.', ',')} CHF`;
+}
+
+function openMonitorTransferModal(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  if (!monitorTransferModal || !modalOverlay || !monitorTransferInput) {
+    return;
+  }
+
+  monitorTransferInput.value = getMonitorTransferAmount().toFixed(2);
+  if (monitorTransferError) {
+    monitorTransferError.textContent = '';
+    monitorTransferError.classList.remove('show');
+  }
+  monitorTransferModal.classList.remove('hidden');
+  modalOverlay.classList.remove('hidden');
+  monitorTransferInput.focus();
+}
+
+function closeMonitorTransferModal() {
+  if (!monitorTransferModal || !modalOverlay) {
+    return;
+  }
+
+  monitorTransferModal.classList.add('hidden');
+  modalOverlay.classList.add('hidden');
+  if (monitorTransferError) {
+    monitorTransferError.textContent = '';
+    monitorTransferError.classList.remove('show');
+  }
+}
+
+function saveMonitorTransfer() {
+  if (!monitorTransferInput) {
+    return;
+  }
+
+  const value = monitorTransferInput.value.trim();
+  const amount = value === '' ? 0 : Number(value);
+
+  if (!Number.isFinite(amount)) {
+    if (monitorTransferError) {
+      monitorTransferError.textContent = 'Bitte eine gültige Zahl eingeben.';
+      monitorTransferError.classList.add('show');
+    }
+    return;
+  }
+
+  setMonitorTransferAmount(amount);
+  updateMonitorSummary();
+  closeMonitorTransferModal();
 }
 
 function setupFormSectionToggles() {
@@ -1043,7 +1147,8 @@ function updateMonitorSummary() {
   const totalSolibeitrag = brennEntries.reduce((sum, entry) => sum + Number(calculateInvoiceAmount(entry, true).solibeitrag || 0), 0);
   const totalUnterhaltsbeitrag = brennEntries.reduce((sum, entry) => sum + Number(calculateInvoiceAmount(entry, true).unterhaltsbeitrag || 0), 0);
   const totalUnterhaltAusgaben = unterhaltEntries.reduce((sum, entry) => sum + (Number(entry.betrag) || 0), 0);
-  const saldoUnterhalt = totalUnterhaltsbeitrag - totalUnterhaltAusgaben;
+  const transferAmount = getMonitorTransferAmount();
+  const saldoUnterhalt = totalUnterhaltsbeitrag - totalUnterhaltAusgaben + transferAmount;
 
   if (monitorEinnahmen) {
     monitorEinnahmen.textContent = formatInvoiceAmount(totalEinnahmen);
@@ -1066,6 +1171,11 @@ function updateMonitorSummary() {
   if (monitorSaldoUnterhalt) {
     monitorSaldoUnterhalt.textContent = formatInvoiceAmount(saldoUnterhalt);
     monitorSaldoUnterhalt.style.color = saldoUnterhalt < 0 ? '#dc2626' : '';
+  }
+  if (monitorTransferInfo) {
+    monitorTransferInfo.textContent = transferAmount !== 0
+      ? `inkl. Übertrag (${formatSignedInvoiceAmount(transferAmount)})`
+      : '';
   }
   if (monitorDateStamp) {
     monitorDateStamp.textContent = getCurrentDateLabel();
@@ -1700,7 +1810,8 @@ function exportToExcel(selectedData = null) {
   const totalUnterhaltAusgaben = sortedUnterhaltEntries.reduce((sum, entry) => {
     return sum + (Number(entry.betrag) || 0);
   }, 0);
-  const saldoUnterhalt = totalUnterhaltsbeitrag - totalUnterhaltAusgaben;
+  const transferAmount = getMonitorTransferAmount();
+  const saldoUnterhalt = totalUnterhaltsbeitrag - totalUnterhaltAusgaben + transferAmount;
   const allSelected =
     sortedBrennEntries.length === allBrennEntries.length &&
     sortedUnterhaltEntries.length === allUnterhaltEntries.length;
@@ -1824,6 +1935,9 @@ function exportToExcel(selectedData = null) {
   addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag);
   addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag);
   addMonitorRow('Ausgaben für Unterhalt', totalUnterhaltAusgaben, { bold: true, topBorder: true, bottomBorder: true });
+  if (transferAmount !== 0) {
+    addMonitorRow('inkl. Übertrag', transferAmount);
+  }
   addMonitorRow('Saldo Unterhalt', saldoUnterhalt, {
     bold: true,
     valueColor: saldoUnterhalt < 0 ? 'FFC62828' : null

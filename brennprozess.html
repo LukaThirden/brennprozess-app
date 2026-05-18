@@ -259,6 +259,9 @@
       <div id="monitorList" class="monitor-list">
         <div class="monitor-item monitor-item--strong monitor-item--no-line">
           <div class="monitor-label"><span id="monitorDateStamp">(Datumsstempel)</span></div>
+          <div class="monitor-value monitor-date-actions">
+            <button type="button" id="monitorAdminButton" class="monitor-admin-button">Admin</button>
+          </div>
         </div>
         <div class="monitor-item monitor-item--strong">
           <div class="monitor-label">Einnahmen aus Ofen-Nutzung</div>
@@ -285,7 +288,7 @@
           <div id="monitorUnterhaltAusgaben" class="monitor-value">0,00 CHF</div>
         </div>
         <div class="monitor-item monitor-item--strong">
-          <div class="monitor-label">Saldo Unterhalt</div>
+          <div class="monitor-label">Saldo Unterhalt <span id="monitorTransferInfo" class="monitor-transfer-info"></span></div>
           <div id="monitorSaldoUnterhalt" class="monitor-value">0,00 CHF</div>
         </div>
       </div>
@@ -384,6 +387,33 @@
         <div class="form-actions">
           <button type="button" id="entryPreviewConfirmButton" class="submit-button">Bestätigen</button>
           <button type="button" id="entryPreviewCancelButton" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitor Übertrag Modal -->
+  <div id="monitorTransferModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Monitor Übertrag</h2>
+        <button type="button" class="modal-close" id="monitorTransferClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Übertrag für den Saldo Unterhalt setzen (positiv oder negativ).</p>
+        <div class="form-group">
+          <input
+            type="number"
+            id="monitorTransferInput"
+            class="number-input"
+            placeholder="0.00"
+            step="0.05"
+          />
+          <div id="monitorTransferError" class="error-message"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="monitorTransferSave" class="submit-button">Speichern</button>
+          <button type="button" id="monitorTransferCancel" class="reset-button">Abbrechen</button>
         </div>
       </div>
     </div>
