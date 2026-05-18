@@ -1528,7 +1528,7 @@ function updateDeleteSelectedButtonState() {
   }
 
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  const deleteLabel = isMobile ? 'Löschen' : 'Einträge löschen';
+  const deleteLabel = isMobile ? 'Löschen' : '🗑 Einträge löschen';
   const selectedCount = selectedEntryKeys.size;
   deleteSelectedButton.disabled = selectedCount === 0;
   deleteSelectedButton.textContent = selectedCount > 0
@@ -1560,11 +1560,13 @@ function updateExportButtonState() {
     return;
   }
 
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const exportLabel = isMobile ? 'Exportieren' : '📊 Exportieren';
   const selectedCount = selectedEntryKeys.size;
   exportButton.disabled = selectedCount === 0;
   exportButton.textContent = selectedCount > 0
-    ? `Exportieren (${selectedCount})`
-    : 'Exportieren';
+    ? `${exportLabel} (${selectedCount})`
+    : exportLabel;
 }
 
 function handleSelectAllEntriesChange() {
