@@ -2123,6 +2123,7 @@ function exportToExcel(selectedData = null) {
       bold = false,
       isCurrency = true,
       topBorder = false,
+      dashedTopBorder = false,
       bottomBorder = false,
       valueColor = null
     } = options;
@@ -2131,6 +2132,9 @@ function exportToExcel(selectedData = null) {
     const borderStyle = {};
     if (topBorder) {
       borderStyle.top = { style: 'thin', color: { argb: 'FF111111' } };
+    }
+    if (dashedTopBorder) {
+      borderStyle.top = { style: 'dashed', color: { argb: 'FF111111' } };
     }
     if (bottomBorder) {
       borderStyle.bottom = { style: 'thin', color: { argb: 'FF111111' } };
@@ -2157,7 +2161,7 @@ function exportToExcel(selectedData = null) {
   addMonitorRow('Admingebühren (3.- pro Nutzung)', totalAdminFees);
   addMonitorRow('Stromkosten (effektiv)', totalStromkosten);
   addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag);
-  addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag);
+  addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag, { dashedTopBorder: true });
   if (transferAmount !== 0) {
     addMonitorRow('inkl. Übertrag', transferAmount);
   }
