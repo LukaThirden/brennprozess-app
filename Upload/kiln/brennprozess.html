@@ -259,9 +259,7 @@
       <div id="monitorList" class="monitor-list">
         <div class="monitor-item monitor-item--strong monitor-item--no-line">
           <div class="monitor-label"><span id="monitorDateStamp">(Datumsstempel)</span></div>
-          <div class="monitor-value monitor-date-actions">
-            <button type="button" id="monitorAdminButton" class="monitor-admin-button">Admin</button>
-          </div>
+          <div class="monitor-value monitor-date-actions"></div>
         </div>
         <div class="monitor-item monitor-item--strong">
           <div class="monitor-label">Einnahmen aus Ofen-Nutzung</div>
@@ -283,9 +281,12 @@
           <div class="monitor-label">Unterhaltsbeiträge (10.- pro Nutzung)</div>
           <div id="monitorUnterhaltsbeitrag" class="monitor-value monitor-value--regular">0,00 CHF</div>
         </div>
-        <div class="monitor-item">
+        <div class="monitor-item monitor-item--separator">
           <div class="monitor-label">Übertrag</div>
-          <div id="monitorTransferValue" class="monitor-value monitor-value--regular">0,00 CHF</div>
+          <div class="monitor-value monitor-date-actions">
+            <button type="button" id="monitorAdminButton" class="monitor-admin-button">Übertrag</button>
+            <span id="monitorTransferValue" class="monitor-value--regular" style="margin-right: 8px;">0,00 CHF</span>
+          </div>
         </div>
         <div class="monitor-item monitor-item--strong monitor-item--separator">
           <div class="monitor-label">Ausgaben für Unterhalt</div>
