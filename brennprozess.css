@@ -97,34 +97,6 @@ html, body {
   margin: 0 auto;
 }
 
-.install-app-bar {
-  max-width: 1400px;
-  margin: 14px auto 0;
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.install-app-button {
-  background-color: #111111;
-  color: #ffffff;
-  border: 1px solid #111111;
-}
-
-.install-app-button:hover {
-  background-color: #1f2937;
-}
-
-.install-app-button.hidden {
-  display: none;
-}
-
-.install-app-hint {
-  font-size: 13px;
-  color: var(--gray-700);
-}
-
 /* Sections */
 .form-section,
 .entries-section {
@@ -1245,24 +1217,6 @@ body.no-scroll {
     padding: 8px;
   }
 
-  .install-app-bar {
-    padding: 0 8px;
-    margin-top: 8px;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .install-app-button {
-    min-width: 0;
-    padding: 8px 10px;
-    min-height: 36px;
-    font-size: 12px;
-  }
-
-  .install-app-hint {
-    font-size: 12px;
-  }
-
   /* Sections */
   .form-section,
   .entries-section,
@@ -1578,10 +1532,6 @@ body.no-scroll {
 
   main {
     padding: 6px;
-  }
-
-  .install-app-bar {
-    padding: 0 6px;
   }
 
   .form-section,
