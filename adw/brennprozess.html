@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brennprozess-Verwaltung</title>
+  <link rel="stylesheet" href="brennprozess.css" />
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+</head>
+<body>
+  <div id="accessOverlay" class="access-overlay">
+    <div class="access-panel">
+      <h2>Seitenzugang</h2>
+      <p>Bitte geben Sie das Zugangskennwort ein, um fortzufahren.</p>
+      <div class="form-group">
+        <input
+          type="password"
+          id="accessPassword"
+          class="text-input"
+          placeholder="Kennwort"
+        />
+        <div id="accessError" class="error-message"></div>
+      </div>
+      <div class="form-actions">
+        <button type="button" id="accessButton" class="submit-button">Zugriff erlauben</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-container">
+    <!-- Eingabeformular -->
+    <section id="brennSection" class="form-section">
+      <div class="form-section-toggle" data-target="brennSectionBody" role="button" tabindex="0" aria-expanded="false" aria-controls="brennSectionBody">
+        <h2>Ofen-Nutzung erfassen ✏️</h2>
+        <span class="form-section-chevron">▼</span>
+      </div>
+      <div id="brennSectionBody" class="form-section-body">
+      <form id="brennForm" class="form">
+        <!-- Datum -->
+        <div class="form-group">
+          <label for="datumInput">Datum <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="datumInput" 
+            class="date-input" 
+            placeholder="DD/MM/YYYY" 
+            required
+          />
+          <div id="datumError" class="error-message"></div>
+        </div>
+
+        <!-- Verantwortliche Person -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="vornameInput">Verantwortliche Person - Vorname <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="vornameInput" 
+              class="text-input" 
+              placeholder="Vorname"
+              required
+            />
+            <div id="vornameError" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="nachnameInput">Nachname <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="nachnameInput" 
+              class="text-input" 
+              placeholder="Nachname"
+              required
+            />
+            <div id="nachnameError" class="error-message"></div>
+          </div>
+        </div>
+
+        <!-- Weitere Personen -->
+        <div class="form-group">
+          <label for="wPersonenInput">Weitere Personen</label>
+          <textarea 
+            id="wPersonenInput" 
+            class="textarea" 
+            placeholder="Freier Text (max. 200 Zeichen)"
+            maxlength="200"
+          ></textarea>
+        </div>
+
+        <!-- Anzahl Externe -->
+        <div class="form-group">
+          <label for="anzahlExterneSelect">Anzahl externe Personen <span class="required">*</span></label>
+          <select id="anzahlExterneSelect" class="select" required>
+            <option value="">-- Bitte wählen --</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+          <div id="anzahlExterneError" class="error-message"></div>
+        </div>
+
+        <!-- Brennmodus -->
+        <div class="form-group">
+          <label for="brennmodusSelect">Brennmodus <span class="required">*</span></label>
+          <select id="brennmodusSelect" class="select" required>
+            <option value="">-- Bitte wählen --</option>
+            <option value="Hochbrand">Hochbrand</option>
+            <option value="Tiefbrand">Tiefbrand</option>
+          </select>
+          <div id="brennmodusError" class="error-message"></div>
+        </div>
+
+        <!-- Brennzyklus -->
+        <div class="form-group">
+          <label for="brennzyklusSelect">Brenn-Zyklus (Betriebsstunden) <span class="required">*</span></label>
+          <select id="brennzyklusSelect" class="select" required>
+            <option value="">-- Bitte wählen --</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+          </select>
+          <div id="brennzyklusError" class="error-message"></div>
+        </div>
+
+        <!-- Bemerkungen -->
+        <div class="form-group">
+          <label for="bemerkungenInput">Bemerkungen</label>
+          <textarea 
+            id="bemerkungenInput" 
+            class="textarea" 
+            placeholder="Freier Text (max. 200 Zeichen)"
+            maxlength="200"
+          ></textarea>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-actions">
+          <button type="submit" class="submit-button">Eintrag bestätigen</button>
+          <button type="reset" class="reset-button">Reset</button>
+        </div>
+      </form>
+      </div>
+    </section>
+
+    <!-- Ausgabenerfassung Unterhalt -->
+    <section id="unterhaltSection" class="form-section">
+      <div class="form-section-toggle" data-target="unterhaltSectionBody" role="button" tabindex="0" aria-expanded="false" aria-controls="unterhaltSectionBody">
+        <h2>Unterhalts-Ausgabe erfassen ✏️</h2>
+        <span class="form-section-chevron">▼</span>
+      </div>
+      <div id="unterhaltSectionBody" class="form-section-body">
+      <form id="unterhaltForm" class="form">
+        <!-- Datum -->
+        <div class="form-group">
+          <label for="unterhaltDatumInput">Datum <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="unterhaltDatumInput" 
+            class="date-input" 
+            placeholder="DD/MM/YYYY" 
+            required
+          />
+          <div id="unterhaltDatumError" class="error-message"></div>
+        </div>
+
+        <!-- Vorname und Nachname -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="unterhaltVornameInput">Vorname <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="unterhaltVornameInput" 
+              class="text-input" 
+              placeholder="Vorname"
+              required
+            />
+            <div id="unterhaltVornameError" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="unterhaltNachnameInput">Nachname <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="unterhaltNachnameInput" 
+              class="text-input" 
+              placeholder="Nachname"
+              required
+            />
+            <div id="unterhaltNachnameError" class="error-message"></div>
+          </div>
+        </div>
+
+        <!-- Ausgaben CHF -->
+        <div class="form-group">
+          <label for="unterhaltBetragInput">Ausgaben CHF <span class="required">*</span></label>
+          <input 
+            type="number" 
+            id="unterhaltBetragInput" 
+            class="number-input" 
+            placeholder="0.00" 
+            step="0.05"
+            min="0"
+            required
+          />
+          <div id="unterhaltBetragError" class="error-message"></div>
+        </div>
+
+        <!-- Bemerkungen -->
+        <div class="form-group">
+          <label for="unterhaltBemerkungenInput">Bemerkungen</label>
+          <textarea 
+            id="unterhaltBemerkungenInput" 
+            class="textarea" 
+            placeholder="Freier Text (max. 200 Zeichen)"
+            maxlength="200"
+          ></textarea>
+        </div>
+
+        <!-- Button -->
+        <div class="form-actions">
+          <button type="submit" class="submit-button">Eintrag bestätigen</button>
+          <button type="reset" class="reset-button">Reset</button>
+        </div>
+      </form>
+      </div>
+    </section>
+
+    <!-- Monitor -->
+    <section class="monitor-section form-section">
+      <div class="form-section-toggle" data-target="monitorBody" role="button" tabindex="0" aria-expanded="false" aria-controls="monitorBody">
+        <h2>Monitor 📈</h2>
+        <span class="form-section-chevron">▼</span>
+      </div>
+      <div id="monitorBody" class="form-section-body">
+      <div id="monitorList" class="monitor-list">
+        <div class="monitor-item monitor-item--strong monitor-item--no-line">
+          <div class="monitor-label"><span id="monitorDateStamp">(Datumsstempel)</span></div>
+          <div class="monitor-value monitor-date-actions">
+            <button type="button" id="monitorAdminButton" class="monitor-admin-button">Admin</button>
+          </div>
+        </div>
+        <div class="monitor-item monitor-item--strong">
+          <div class="monitor-label">Einnahmen aus Ofen-Nutzung</div>
+          <div id="monitorEinnahmen" class="monitor-value">0,00 CHF</div>
+        </div>
+        <div class="monitor-item">
+          <div class="monitor-label">Admingebühren (3.- pro Nutzung)</div>
+          <div id="monitorAdminFees" class="monitor-value monitor-value--regular">0,00 CHF</div>
+        </div>
+        <div class="monitor-item">
+          <div class="monitor-label">Stromkosten (effektiv)</div>
+          <div id="monitorStromkosten" class="monitor-value monitor-value--regular">0,00 CHF</div>
+        </div>
+        <div class="monitor-item">
+          <div class="monitor-label">Solibeiträge (10.- pro externe Person)</div>
+          <div id="monitorSolibeitrag" class="monitor-value monitor-value--regular">0,00 CHF</div>
+        </div>
+        <div class="monitor-item monitor-item--separator">
+          <div class="monitor-label">Unterhaltsbeiträge (10.- pro Nutzung)</div>
+          <div id="monitorUnterhaltsbeitrag" class="monitor-value monitor-value--regular">0,00 CHF</div>
+        </div>
+        <div class="monitor-item monitor-item--strong monitor-item--separator">
+          <div class="monitor-label">Ausgaben für Unterhalt</div>
+          <div id="monitorUnterhaltAusgaben" class="monitor-value">0,00 CHF</div>
+        </div>
+        <div class="monitor-item monitor-item--strong">
+          <div class="monitor-label">Saldo Unterhalt <span id="monitorTransferInfo" class="monitor-transfer-info"></span></div>
+          <div id="monitorSaldoUnterhalt" class="monitor-value">0,00 CHF</div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- Einträge-Liste -->
+    <section class="entries-section form-section">
+      <div class="form-section-toggle" data-target="entriesBody" role="button" tabindex="0" aria-expanded="false" aria-controls="entriesBody">
+        <h2>Erfasste Einträge 📋</h2>
+        <span class="form-section-chevron">▼</span>
+      </div>
+      <div id="entriesBody" class="form-section-body">
+        <div class="entries-selection-row">
+          <label class="entries-select-all-control">
+            <span class="entry-select-control">
+              <input type="checkbox" id="selectAllEntriesCheckbox" class="entry-select-checkbox" />
+            </span>
+            <span>Alles auswählen</span>
+          </label>
+          <div class="entries-section-actions">
+            <button id="deleteSelectedButton" class="delete-selected-button" disabled>🗑 Einträge löschen</button>
+            <button id="exportButton" class="delete-selected-button" disabled>📊 Exportieren</button>
+          </div>
+        </div>
+        <div id="entriesList" class="entries-list">
+          <p class="empty-message">Keine Einträge vorhanden.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Export Modal -->
+  <div id="exportModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Archiv exportieren</h2>
+        <button type="button" class="modal-close" id="exportModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Um das Archiv zu exportieren, geben Sie das Kennwort ein:</p>
+        <div class="form-group">
+          <input 
+            type="password" 
+            id="exportPassword" 
+            class="text-input" 
+            placeholder="Kennwort"
+          />
+          <div id="exportPasswordError" class="error-message"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="exportConfirmButton" class="submit-button">Exportieren</button>
+          <button type="button" id="exportCancelButton" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Entry Modal -->
+
+  <div id="deleteModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Eintrag löschen</h2>
+        <button type="button" class="modal-close" id="deleteModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Um diesen Eintrag zu löschen, geben Sie das Kennwort ein:</p>
+        <div class="form-group">
+          <input 
+            type="password" 
+            id="deletePassword" 
+            class="text-input" 
+            placeholder="Kennwort"
+          />
+          <div id="deletePasswordError" class="error-message"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="deleteConfirmButton" class="submit-button">Löschen</button>
+          <button type="button" id="deleteCancelButton" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entry Preview Modal -->
+  <div id="entryPreviewModal" class="modal hidden">
+    <div class="modal-content preview-modal-content">
+      <div class="modal-header">
+        <h2 id="entryPreviewTitle">Eintrag Vorschau</h2>
+        <button type="button" class="modal-close" id="entryPreviewClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Bitte prüfen Sie den Eintrag. Erst nach Bestätigung wird er gespeichert.</p>
+        <div id="entryPreviewContainer" class="entry-preview-container"></div>
+        <div class="form-actions">
+          <button type="button" id="entryPreviewConfirmButton" class="submit-button">Bestätigen</button>
+          <button type="button" id="entryPreviewCancelButton" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitor Übertrag Kennwort Modal -->
+  <div id="monitorTransferAuthModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Monitor Übertrag</h2>
+        <button type="button" class="modal-close" id="monitorTransferAuthClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Um den Übertrag zu bearbeiten, geben Sie das Kennwort ein:</p>
+        <div class="form-group">
+          <input
+            type="password"
+            id="monitorTransferPassword"
+            class="text-input"
+            placeholder="Kennwort"
+          />
+          <div id="monitorTransferPasswordError" class="error-message"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="monitorTransferLoginButton" class="submit-button">Weiter</button>
+          <button type="button" id="monitorTransferAuthCancel" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitor Übertrag Eingabe Modal -->
+  <div id="monitorTransferModal" class="modal hidden">
+    <div class="modal-content preview-modal-content">
+      <div class="modal-header">
+        <h2>Monitor Übertrag</h2>
+        <button type="button" class="modal-close" id="monitorTransferClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Übertrag für den Saldo Unterhalt setzen (positiv oder negativ).</p>
+        <div class="monitor-transfer-panel">
+          <div class="form-group">
+            <input
+              type="number"
+              id="monitorTransferInput"
+              class="number-input"
+              placeholder="0.00"
+              step="0.05"
+            />
+            <div id="monitorTransferError" class="error-message"></div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="monitorTransferSave" class="submit-button">Speichern</button>
+          <button type="button" id="monitorTransferCancel" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin-Modal -->
+  <div id="adminModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Admin-Bereich</h2>
+        <button type="button" class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="adminForm" class="admin-login">
+          <div class="form-group">
+            <input 
+              type="password" 
+              id="adminPassword" 
+              class="text-input" 
+              placeholder="Admin-Kennwort"
+            />
+            <div id="passwordError" class="error-message"></div>
+          </div>
+          <button type="button" id="adminLoginButton" class="submit-button">Anmelden</button>
+        </div>
+        <div id="adminPanel" class="admin-panel hidden">
+          <p>Admin-Panel: Sie können Einträge löschen oder bearbeiten.</p>
+          <div id="adminEntriesList" class="admin-entries-list"></div>
+          <button type="button" id="adminLogoutButton" class="reset-button">Abmelden</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalOverlay" class="modal-overlay hidden"></div>
+    <script>
+      window.SUPABASE_CONFIG = {
+        url: 'https://frmmliaknecdhkofdimy.supabase.co',
+        anonKey: 'sb_publishable_aTA4tCSNm5nL7JVkKWxucg_3vxhRoND',
+        brennTable: 'brennprozess_entries',
+        unterhaltTable: 'unterhalt_entries'
+      };
+    </script>
+  <script src="brennprozess.js"></script>
+</body>
+</html>

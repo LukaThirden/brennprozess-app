@@ -836,6 +836,35 @@ function getLatestEntryDateLabel(brennEntries, unterhaltEntries) {
   return allEntries[0].datum || getCurrentDateLabel();
 }
 
+function getExportDateRangeLabel(brennEntries, unterhaltEntries) {
+  const allEntries = [
+    ...brennEntries.map((entry) => ({ ...entry, entryType: 'brennprozess' })),
+    ...unterhaltEntries.map((entry) => ({ ...entry, entryType: 'unterhalt' }))
+  ];
+
+  if (allEntries.length === 0) {
+    const today = getCurrentDateLabel();
+    return `${today} bis ${today}`;
+  }
+
+  allEntries.sort((a, b) => {
+    const dateA = parseDate(a.datum);
+    const dateB = parseDate(b.datum);
+
+    if (dateA && dateB && dateA.getTime() !== dateB.getTime()) {
+      return dateA - dateB;
+    }
+
+    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+    return timeA - timeB;
+  });
+
+  const oldestDate = allEntries[0].datum || getCurrentDateLabel();
+  const newestDate = allEntries[allEntries.length - 1].datum || oldestDate;
+  return `${oldestDate} bis ${newestDate}`;
+}
+
 function checkAccess() {
   const validUntil = getAccessValidUntil();
   if (validUntil > Date.now()) {
@@ -1367,7 +1396,8 @@ function updateMonitorSummary() {
         : '';
   }
   if (monitorDateStamp) {
-    monitorDateStamp.textContent = getCurrentDateLabel();
+      const monitorDateRange = getExportDateRangeLabel(brennEntries, unterhaltEntries);
+      monitorDateStamp.textContent = `Von ${monitorDateRange}`;
   }
 }
 
@@ -2008,9 +2038,10 @@ function exportToExcel(selectedData = null) {
   const allSelected =
     sortedBrennEntries.length === allBrennEntries.length &&
     sortedUnterhaltEntries.length === allUnterhaltEntries.length;
-  const monitorDate = allSelected
-    ? getCurrentDateLabel()
-    : getLatestEntryDateLabel(sortedBrennEntries, sortedUnterhaltEntries);
+  const monitorDateRange = getExportDateRangeLabel(sortedBrennEntries, sortedUnterhaltEntries);
+  const monitorHeaderLabel = allSelected
+    ? `Gesamtauswahl von ${monitorDateRange}`
+    : 'Partielle Auswahl';
   const timestamp = new Date().toISOString().split('T')[0];
   const FMT_NUM = '0.00';
   const FMT_CHF = '_ [$CHF-807]\\ * #,##0.00_ ;_ [$CHF-807]\\ * \\-#,##0.00_ ;_ [$CHF-807]\\ * "-"??_ ;_ @_ ';
@@ -2128,13 +2159,7 @@ function exportToExcel(selectedData = null) {
     return row;
   };
 
-  addMonitorRow(
-    allSelected
-      ? `Gesamtauswahl von ${monitorDate}`
-      : 'Partielle Auswahl',
-    '',
-    { bold: false, isCurrency: false }
-  );
+  addMonitorRow(monitorHeaderLabel, '', { bold: false, isCurrency: false });
   monitorWs.addRow([]);
   addMonitorRow('Einnahmen aus Ofen-Nutzung', totalEinnahmen, { bold: true });
   addMonitorRow('Admingebühren (3.- pro Nutzung)', totalAdminFees);
