@@ -63,6 +63,7 @@ const deletePasswordError = document.getElementById('deletePasswordError');
 
 // Export
 const exportButton = document.getElementById('exportButton');
+const invoiceButton = document.getElementById('invoiceButton');
 const exportModal = document.getElementById('exportModal');
 const exportModalClose = document.getElementById('exportModalClose');
 const exportPassword = document.getElementById('exportPassword');
@@ -188,6 +189,9 @@ function setupEventListeners() {
 
   // Export
   exportButton.addEventListener('click', openExportModal);
+  if (invoiceButton) {
+    invoiceButton.addEventListener('click', generateInvoicePDF);
+  }
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
   exportConfirmButton.addEventListener('click', handleExportConfirm);
@@ -1590,6 +1594,7 @@ function updateSelectionControls() {
   updateDeleteSelectedButtonState();
   updateExportButtonState();
   updateSelectAllEntriesCheckboxState();
+  updateInvoiceButtonState();
 }
 
 function updateExportButtonState() {
@@ -2316,4 +2321,197 @@ function showSuccessMessage(message) {
   setTimeout(() => {
     msgElement.remove();
   }, 2000);
+}
+
+function updateInvoiceButtonState() {
+  if (!invoiceButton) return;
+  const selectedCount = selectedEntryKeys.size;
+  invoiceButton.disabled = selectedCount === 0;
+}
+
+function generateInvoicePDF() {
+  if (typeof window.jspdf === 'undefined') {
+    alert('PDF-Bibliothek nicht geladen. Bitte Seite neu laden.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const pageW = 210;
+  const marginL = 20;
+  const marginR = 190;
+  let y = 20;
+
+  // Collect selected entries
+  const selectedEntries = [];
+  selectedEntryKeys.forEach((key) => {
+    const parsed = parseEntrySelectionKey(key);
+    if (!parsed) return;
+    if (parsed.entryType === 'brennprozess') {
+      const entry = brennEntriesCache.find(e => e.id === parsed.id);
+      if (entry) selectedEntries.push({ ...entry, entryType: 'brennprozess' });
+    } else if (parsed.entryType === 'unterhalt') {
+      const entry = unterhaltEntriesCache.find(e => e.id === parsed.id);
+      if (entry) selectedEntries.push({ ...entry, entryType: 'unterhalt' });
+    }
+  });
+
+  if (selectedEntries.length === 0) return;
+
+  selectedEntries.sort((a, b) => {
+    const dateA = parseDate(a.datum);
+    const dateB = parseDate(b.datum);
+    if (dateA && dateB) return dateA - dateB;
+    return 0;
+  });
+
+  const addNewPageIfNeeded = (neededHeight) => {
+    if (y + neededHeight > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  };
+
+  // === Sender block ===
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.text('Verein ADW11', marginL, y);
+  doc.setFont('helvetica', 'normal');
+  y += 5.5;
+  doc.text('Auf dem Wolf 11', marginL, y);
+  y += 5.5;
+  doc.text('4052 Basel', marginL, y);
+  y += 5.5;
+  doc.text('IBAN: CH06 2349 6860 0097 9', marginL, y);
+
+  // Date top right
+  doc.setFontSize(10);
+  doc.text(`Basel, ${getCurrentDateLabel()}`, marginR, 20, { align: 'right' });
+
+  y += 14;
+
+  // === Title ===
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text('Rechnung', marginL, y);
+  y += 8;
+
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(0);
+  doc.line(marginL, y, marginR, y);
+  y += 8;
+
+  // === Entries ===
+  let totalAmount = 0;
+
+  selectedEntries.forEach((entry, index) => {
+    addNewPageIfNeeded(50);
+
+    if (entry.entryType === 'brennprozess') {
+      const breakdown = calculateInvoiceAmount(entry, true);
+      const amount = calculateInvoiceAmount(entry);
+      const grundkosten = amount - breakdown.solibeitrag;
+      totalAmount += amount;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`Ofen-Nutzung \u2013 ${entry.datum || '-'}`, marginL, y);
+      doc.text(formatInvoiceAmount(amount), marginR, y, { align: 'right' });
+      y += 5.5;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      const labelX = marginL + 4;
+      const valueX = 115;
+
+      const rows = [
+        ['Verantwortliche Person', `${entry.vorname || ''} ${entry.nachname || ''}`.trim()],
+        ['Weitere Personen', entry.wPersonen || '-'],
+        ['Grundkosten (Alle)', formatInvoiceAmount(grundkosten)],
+        ['Solibeitrag (Externe)', formatInvoiceAmount(breakdown.solibeitrag)],
+        ['Anzahl externe Personen', String(entry.anzahlExterne || 0)],
+        ['Brennmodus', entry.brennmodus || '-'],
+        ['Brenn-Zyklus (Stunden)', String(entry.brennzyklus || 0)],
+        ...(entry.bemerkungen ? [['Bemerkungen', entry.bemerkungen]] : []),
+      ];
+
+      rows.forEach(([label, value]) => {
+        addNewPageIfNeeded(6);
+        doc.setTextColor(100, 100, 100);
+        doc.text(label, labelX, y);
+        doc.setTextColor(0, 0, 0);
+        doc.text(String(value), valueX, y);
+        y += 5;
+      });
+
+    } else if (entry.entryType === 'unterhalt') {
+      const amount = Number(entry.betrag) || 0;
+      totalAmount += amount;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text(`Unterhaltsausgabe \u2013 ${entry.datum || '-'}`, marginL, y);
+      doc.text(formatInvoiceAmount(amount), marginR, y, { align: 'right' });
+      y += 5.5;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      const labelX = marginL + 4;
+      const valueX = 115;
+
+      const rows = [
+        ['Person', `${entry.vorname || ''} ${entry.nachname || ''}`.trim()],
+        ...(entry.bemerkungen ? [['Bemerkungen', entry.bemerkungen]] : []),
+      ];
+
+      rows.forEach(([label, value]) => {
+        addNewPageIfNeeded(6);
+        doc.setTextColor(100, 100, 100);
+        doc.text(label, labelX, y);
+        doc.setTextColor(0, 0, 0);
+        doc.text(String(value), valueX, y);
+        y += 5;
+      });
+    }
+
+    if (index < selectedEntries.length - 1) {
+      addNewPageIfNeeded(10);
+      y += 3;
+      doc.setLineWidth(0.2);
+      doc.setDrawColor(180, 180, 180);
+      doc.line(marginL, y, marginR, y);
+      doc.setDrawColor(0, 0, 0);
+      y += 5;
+    }
+  });
+
+  // === Total ===
+  y += 5;
+  addNewPageIfNeeded(30);
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(0);
+  doc.line(marginL, y, marginR, y);
+  y += 6;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.text('Total', marginL, y);
+  doc.text(formatInvoiceAmount(totalAmount), marginR, y, { align: 'right' });
+
+  // === IBAN box ===
+  y += 14;
+  addNewPageIfNeeded(25);
+  doc.setFillColor(245, 245, 245);
+  doc.roundedRect(marginL, y, marginR - marginL, 22, 2, 2, 'F');
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text('Bitte \xfcberweisen an:', marginL + 4, y + 7);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(0, 0, 0);
+  doc.text('IBAN: CH06 2349 6860 0097 9', marginL + 4, y + 15);
+
+  const dateStr = getCurrentDateLabel().replace(/\//g, '-');
+  doc.save(`Rechnung_ADW11_${dateStr}.pdf`);
 }

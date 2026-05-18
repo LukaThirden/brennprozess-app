@@ -6,6 +6,7 @@
   <title>Brennprozess-Verwaltung</title>
   <link rel="stylesheet" href="brennprozess.css" />
   <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <div id="accessOverlay" class="access-overlay">
@@ -319,6 +320,7 @@
           <div class="entries-section-actions">
             <button id="deleteSelectedButton" class="delete-selected-button" disabled>🗑 Einträge löschen</button>
             <button id="exportButton" class="delete-selected-button" disabled>📊 Exportieren</button>
+            <button id="invoiceButton" class="delete-selected-button" disabled>🧾 Rechnung erstellen</button>
           </div>
         </div>
         <div id="entriesList" class="entries-list">
