@@ -2040,8 +2040,8 @@ function exportToExcel(selectedData = null) {
     sortedUnterhaltEntries.length === allUnterhaltEntries.length;
   const monitorDateRange = getExportDateRangeLabel(sortedBrennEntries, sortedUnterhaltEntries);
   const monitorHeaderLabel = allSelected
-    ? `Monitor von ${monitorDateRange}`
-    : 'Monitor von partieller Auswahl';
+    ? `Gesamtauswahl von ${monitorDateRange}`
+    : 'Partielle Auswahl';
   const timestamp = new Date().toISOString().split('T')[0];
   const FMT_NUM = '0.00';
   const FMT_CHF = '_ [$CHF-807]\\ * #,##0.00_ ;_ [$CHF-807]\\ * \\-#,##0.00_ ;_ [$CHF-807]\\ * "-"??_ ;_ @_ ';
