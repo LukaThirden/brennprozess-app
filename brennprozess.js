@@ -876,6 +876,12 @@ function openEntryPreviewModal(entry, entryType) {
   const previewSource = createEntryElement({ ...entry, entryType });
   const previewCard = previewSource.cloneNode(true);
 
+  const previewCheckboxes = previewCard.querySelectorAll('.entry-select-checkbox');
+  previewCheckboxes.forEach((checkbox) => {
+    checkbox.disabled = true;
+    checkbox.tabIndex = -1;
+  });
+
   const chevron = previewCard.querySelector('.entry-chevron');
   if (chevron) {
     chevron.remove();
