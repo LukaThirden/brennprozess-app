@@ -4,7 +4,7 @@ const STORAGE_KEY = 'brennprozess_entries';
 const UNTERHALT_STORAGE_KEY = 'unterhalt_entries';
 const MONITOR_TRANSFER_STORAGE_KEY = 'monitor_transfer_entries';
 const MONITOR_TRANSFER_KEY = 'monitor_saldo_transfer';
-const ACCESS_PASSWORD = 'ADW11';
+const ACCESS_PASSWORDS = ['adw_kiln', 'admin1605'];
 const ACCESS_VALID_UNTIL_KEY = 'brennprozess_access_valid_until';
 const ACCESS_REAUTH_MS = 5 * 60 * 1000;
 const SUPABASE_CONFIG = window.SUPABASE_CONFIG || {};
@@ -904,7 +904,7 @@ function handleAccessSubmit() {
   }
 
   const password = accessPasswordInput.value.trim();
-  if (password === ACCESS_PASSWORD) {
+  if (ACCESS_PASSWORDS.includes(password)) {
     const validUntil = Date.now() + ACCESS_REAUTH_MS;
     setAccessValidUntil(validUntil);
     hideAccessOverlay();

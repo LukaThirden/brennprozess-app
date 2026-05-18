@@ -2,7 +2,7 @@
 const ADMIN_PASSWORD = 'admin123'; // Sollte in einer echten App verschlüsselt sein
 const STORAGE_KEY = 'brennprozess_entries';
 const UNTERHALT_STORAGE_KEY = 'unterhalt_entries';
-const ACCESS_PASSWORD = 'ADW11';
+const ACCESS_PASSWORDS = ['adw_kiln', 'admin1605'];
 
 // === DOM Elements ===
 const form = document.getElementById('brennForm');
@@ -161,7 +161,7 @@ function handleAccessSubmit() {
   }
 
   const password = accessPasswordInput.value.trim();
-  if (password === ACCESS_PASSWORD) {
+  if (ACCESS_PASSWORDS.includes(password)) {
     hideAccessOverlay();
     accessPasswordInput.value = '';
     if (accessError) {
