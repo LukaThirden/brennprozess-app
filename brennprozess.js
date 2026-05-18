@@ -1,5 +1,5 @@
 // === Konfiguration ===
-const ADMIN_PASSWORD = 'admin123'; // Sollte in einer echten App verschlüsselt sein
+const ADMIN_PASSWORD = 'admin1605'; // Sollte in einer echten App verschlüsselt sein
 const STORAGE_KEY = 'brennprozess_entries';
 const UNTERHALT_STORAGE_KEY = 'unterhalt_entries';
 const MONITOR_TRANSFER_STORAGE_KEY = 'monitor_transfer_entries';
