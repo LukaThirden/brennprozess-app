@@ -1,39 +1,15 @@
 {
-  "name": "brennprozess-app",
+  "name": "mp4-search-app",
   "version": "1.0.0",
-  "description": "Brennprozess desktop app.",
+  "description": "A small Electron app that searches for MP4 files on your computer.",
   "main": "electron-main.js",
   "scripts": {
     "start": "electron .",
     "cli": "node mp4-search.js",
-    "dist": "electron-builder",
-    "dist:mac": "electron-builder --mac",
     "postinstall": "echo \"Installation complete. Run npm start to launch the app.\""
   },
   "devDependencies": {
-    "electron": "^26.0.0",
-    "electron-builder": "^24.13.3"
-  },
-  "build": {
-    "appId": "ch.fhnw.brennprozess",
-    "productName": "Brennprozess",
-    "files": [
-      "brennprozess.html",
-      "brennprozess.css",
-      "brennprozess.js",
-      "electron-main.js",
-      "preload.js",
-      "mp4-search.js",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "category": "public.app-category.business"
-    }
+    "electron": "^26.0.0"
   },
   "keywords": ["mp4", "search", "electron", "desktop"],
   "author": "",

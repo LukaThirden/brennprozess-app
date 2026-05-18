@@ -13,7 +13,7 @@ function createMainWindow() {
     },
   });
 
-  win.loadFile(path.join(__dirname, 'brennprozess.html'));
+  win.loadFile(path.join(__dirname, 'app.html'));
 }
 
 app.whenReady().then(() => {
