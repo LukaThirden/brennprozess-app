@@ -2164,7 +2164,7 @@ function exportToExcel(selectedData = null) {
   addMonitorRow('Einnahmen aus Ofen-Nutzung', totalEinnahmen, { bold: true });
   addMonitorRow('Admingebühren (3.- pro Nutzung)', totalAdminFees);
   addMonitorRow('Stromkosten (effektiv)', totalStromkosten);
-  addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag, { dashedBottomBorder: true });
+  addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag);
   addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag);
   if (transferAmount !== 0) {
     addMonitorRow('Übertrag', transferAmount, { topBorder: true });
