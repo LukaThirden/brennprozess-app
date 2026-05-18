@@ -1424,28 +1424,36 @@ body.no-scroll {
 
   /* Entries Selection Row */
   .entries-selection-row {
-    flex-direction: column;
-    gap: 7px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
     margin-bottom: 8px;
   }
 
   .entries-select-all-control {
     font-size: 12px;
-    margin-left: 10px;
+    margin-left: 0;
+    flex-shrink: 0;
   }
 
   .entries-section-actions {
-    width: 100%;
-    flex-direction: column;
+    width: auto;
+    flex-direction: row;
     gap: 6px;
+    flex-shrink: 0;
   }
 
   .entries-section-actions .delete-selected-button {
-    width: 100%;
+    width: auto;
+    min-width: 0;
+    padding: 8px 10px;
+    min-height: 36px;
+    font-size: 12px;
   }
 
   .entries-section-actions .delete-selected-button:last-child {
-    width: 100%;
+    width: auto;
   }
 
   /* Success Message */
@@ -1544,7 +1552,8 @@ body.no-scroll {
   }
 
   .entries-selection-row {
-    gap: 6px;
+    gap: 5px;
+    flex-wrap: nowrap;
   }
 
   .monitor-item {
@@ -1570,7 +1579,17 @@ body.no-scroll {
   }
 
   .entries-select-all-control {
-    margin-left: 8px;
+    margin-left: 0;
+    font-size: 11px;
+  }
+
+  .entries-section-actions {
+    gap: 5px;
+  }
+
+  .entries-section-actions .delete-selected-button {
+    padding: 7px 8px;
+    min-height: 34px;
     font-size: 11px;
   }
 
