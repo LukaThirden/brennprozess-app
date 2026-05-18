@@ -1364,8 +1364,20 @@ body.no-scroll {
     font-size: 12px;
   }
 
+  .entry-row,
+  .entry-field,
+  .entry-value {
+    min-width: 0;
+  }
+
+  .entry-field {
+    grid-template-columns: minmax(0, 185px) minmax(0, 1fr);
+    width: 100%;
+  }
+
   .entry-value {
     text-align: right;
+    overflow-wrap: anywhere;
   }
 
   .entry-label {
@@ -1571,5 +1583,9 @@ body.no-scroll {
   .entry-label {
     min-width: 155px;
     max-width: 155px;
+  }
+
+  .entry-field {
+    grid-template-columns: minmax(0, 155px) minmax(0, 1fr);
   }
 }
