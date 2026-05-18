@@ -995,6 +995,47 @@ body.no-scroll {
   border: 1px solid #cccccc;
 }
 
+#monitorTransferAuthModal {
+  background-color: rgba(15, 23, 42, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  padding: 24px;
+}
+
+#monitorTransferAuthModal.hidden {
+  display: none;
+}
+
+#monitorTransferAuthModal .modal-content {
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  border: 1px solid #cccccc;
+}
+
+#monitorTransferModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10002;
+  padding: 24px;
+  background-color: transparent;
+}
+
+#monitorTransferModal.hidden {
+  display: none;
+}
+
+#monitorTransferModal .modal-content {
+  width: 100%;
+}
+
+.monitor-transfer-panel {
+  margin: 14px 0 18px;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;

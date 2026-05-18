@@ -427,15 +427,17 @@
       </div>
       <div class="modal-body">
         <p>Übertrag für den Saldo Unterhalt setzen (positiv oder negativ).</p>
-        <div class="form-group">
-          <input
-            type="number"
-            id="monitorTransferInput"
-            class="number-input"
-            placeholder="0.00"
-            step="0.05"
-          />
-          <div id="monitorTransferError" class="error-message"></div>
+        <div class="monitor-transfer-panel">
+          <div class="form-group">
+            <input
+              type="number"
+              id="monitorTransferInput"
+              class="number-input"
+              placeholder="0.00"
+              step="0.05"
+            />
+            <div id="monitorTransferError" class="error-message"></div>
+          </div>
         </div>
         <div class="form-actions">
           <button type="button" id="monitorTransferSave" class="submit-button">Speichern</button>
