@@ -76,10 +76,10 @@ const monitorAdminFees = document.getElementById('monitorAdminFees');
 const monitorStromkosten = document.getElementById('monitorStromkosten');
 const monitorSolibeitrag = document.getElementById('monitorSolibeitrag');
 const monitorUnterhaltsbeitrag = document.getElementById('monitorUnterhaltsbeitrag');
+const monitorTransferValue = document.getElementById('monitorTransferValue');
 const monitorUnterhaltAusgaben = document.getElementById('monitorUnterhaltAusgaben');
 const monitorSaldoUnterhalt = document.getElementById('monitorSaldoUnterhalt');
 const monitorDateStamp = document.getElementById('monitorDateStamp');
-const monitorTransferInfo = document.getElementById('monitorTransferInfo');
 const monitorAdminButton = document.getElementById('monitorAdminButton');
 const monitorTransferAuthModal = document.getElementById('monitorTransferAuthModal');
 const monitorTransferModal = document.getElementById('monitorTransferModal');
@@ -1382,18 +1382,15 @@ function updateMonitorSummary() {
   if (monitorUnterhaltsbeitrag) {
     monitorUnterhaltsbeitrag.textContent = formatInvoiceAmount(totalUnterhaltsbeitrag);
   }
+  if (monitorTransferValue) {
+    monitorTransferValue.textContent = formatInvoiceAmount(transferAmount);
+  }
   if (monitorUnterhaltAusgaben) {
     monitorUnterhaltAusgaben.textContent = formatInvoiceAmount(totalUnterhaltAusgaben);
   }
   if (monitorSaldoUnterhalt) {
     monitorSaldoUnterhalt.textContent = formatInvoiceAmount(saldoUnterhalt);
     monitorSaldoUnterhalt.style.color = saldoUnterhalt < 0 ? '#dc2626' : '';
-  }
-    if (monitorTransferInfo) {
-      const transferLabel = 'inkl. Übertrag';
-      monitorTransferInfo.textContent = transferAmount !== 0
-        ? `${transferLabel} (${formatSignedInvoiceAmount(transferAmount)})`
-        : '';
   }
   if (monitorDateStamp) {
       const monitorDateRange = getExportDateRangeLabel(brennEntries, unterhaltEntries);
