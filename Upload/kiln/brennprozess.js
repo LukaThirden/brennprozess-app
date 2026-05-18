@@ -2158,10 +2158,10 @@ function exportToExcel(selectedData = null) {
   addMonitorRow('Stromkosten (effektiv)', totalStromkosten);
   addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag);
   addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag);
-  addMonitorRow('Ausgaben für Unterhalt', totalUnterhaltAusgaben, { bold: true, topBorder: true, bottomBorder: true });
   if (transferAmount !== 0) {
     addMonitorRow('inkl. Übertrag', transferAmount);
   }
+  addMonitorRow('Ausgaben für Unterhalt', totalUnterhaltAusgaben, { bold: true, topBorder: true, bottomBorder: true });
   addMonitorRow('Saldo Unterhalt', saldoUnterhalt, {
     bold: true,
     valueColor: saldoUnterhalt < 0 ? 'FFC62828' : null
