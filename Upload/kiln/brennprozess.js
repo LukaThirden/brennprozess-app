@@ -1394,7 +1394,7 @@ function updateMonitorSummary() {
   }
   if (monitorDateStamp) {
       const monitorDateRange = getExportDateRangeLabel(brennEntries, unterhaltEntries);
-      monitorDateStamp.textContent = `Von ${monitorDateRange}`;
+      monitorDateStamp.textContent = monitorDateRange;
   }
 }
 
