@@ -169,6 +169,7 @@ function setupEventListeners() {
   if (selectAllEntriesCheckbox) {
     selectAllEntriesCheckbox.addEventListener('change', handleSelectAllEntriesChange);
   }
+  window.addEventListener('resize', updateDeleteSelectedButtonState);
   deletePassword.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -1526,11 +1527,13 @@ function updateDeleteSelectedButtonState() {
     return;
   }
 
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const deleteLabel = isMobile ? '🗑 Löschen' : '🗑 Einträge löschen';
   const selectedCount = selectedEntryKeys.size;
   deleteSelectedButton.disabled = selectedCount === 0;
   deleteSelectedButton.textContent = selectedCount > 0
-    ? `🗑 Einträge löschen (${selectedCount})`
-    : '🗑 Einträge löschen';
+    ? `${deleteLabel} (${selectedCount})`
+    : deleteLabel;
 }
 
 function updateSelectAllEntriesCheckboxState() {
