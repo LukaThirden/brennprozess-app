@@ -813,6 +813,53 @@ label {
   background-color: #d1d5db;
 }
 
+.entry-status-badge {
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+  align-self: center;
+}
+
+.entry-status-badge:hover {
+  opacity: 0.75;
+}
+
+.entry-status-badge--offen {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.entry-status-badge--abgeschlossen {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+#statusChangeModal {
+  background-color: rgba(15, 23, 42, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  padding: 24px;
+}
+
+#statusChangeModal.hidden {
+  display: none;
+}
+
+#statusChangeModal .modal-content {
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  border: 1px solid #cccccc;
+}
+
 .entry-row {
   display: grid;
   grid-template-columns: 1fr;

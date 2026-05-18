@@ -485,6 +485,63 @@
     </div>
   </div>
 
+  <!-- Rechnung Empfänger Modal -->
+  <div id="invoiceAddressModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Rechnungsempfänger</h2>
+        <button type="button" class="modal-close" id="invoiceAddressClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="invoiceAddrVorname">Vorname</label>
+          <input type="text" id="invoiceAddrVorname" class="text-input" placeholder="Vorname" />
+        </div>
+        <div class="form-group">
+          <label for="invoiceAddrNachname">Name</label>
+          <input type="text" id="invoiceAddrNachname" class="text-input" placeholder="Name" />
+        </div>
+        <div class="form-group">
+          <label for="invoiceAddrStrasse">Strasse und Nr.</label>
+          <input type="text" id="invoiceAddrStrasse" class="text-input" placeholder="Strasse und Nr." />
+        </div>
+        <div class="form-group">
+          <label for="invoiceAddrPlz">Postleitzahl</label>
+          <input type="text" id="invoiceAddrPlz" class="text-input" placeholder="Postleitzahl" />
+        </div>
+        <div class="form-group">
+          <label for="invoiceAddrOrt">Ort</label>
+          <input type="text" id="invoiceAddrOrt" class="text-input" placeholder="Ort" />
+        </div>
+        <div class="form-actions">
+          <button type="button" id="invoiceAddressConfirm" class="submit-button">Rechnung erstellen</button>
+          <button type="button" id="invoiceAddressCancel" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status ändern Modal -->
+  <div id="statusChangeModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Status ändern</h2>
+        <button type="button" class="modal-close" id="statusChangeModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="statusChangeModalInfo">Status ändern auf:</p>
+        <div class="form-group">
+          <input type="password" id="statusChangePassword" class="text-input" placeholder="Admin-Kennwort" />
+          <div id="statusChangePasswordError" class="error-message"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="statusChangeConfirmButton" class="submit-button">Bestätigen</button>
+          <button type="button" id="statusChangeCancelButton" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="modalOverlay" class="modal-overlay hidden"></div>
     <script>
       window.SUPABASE_CONFIG = {

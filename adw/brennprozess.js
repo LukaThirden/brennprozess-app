@@ -112,6 +112,15 @@ const entryPreviewClose = document.getElementById('entryPreviewClose');
 const entryPreviewConfirmButton = document.getElementById('entryPreviewConfirmButton');
 const entryPreviewCancelButton = document.getElementById('entryPreviewCancelButton');
 
+// Status Change
+const statusChangeModal = document.getElementById('statusChangeModal');
+const statusChangePassword = document.getElementById('statusChangePassword');
+const statusChangePasswordError = document.getElementById('statusChangePasswordError');
+const statusChangeModalInfo = document.getElementById('statusChangeModalInfo');
+const statusChangeConfirmButton = document.getElementById('statusChangeConfirmButton');
+const statusChangeCancelButton = document.getElementById('statusChangeCancelButton');
+const statusChangeModalClose = document.getElementById('statusChangeModalClose');
+
 // === State ===
 let isAdminLoggedIn = false;
 let entryIdToDelete = null;
@@ -128,6 +137,8 @@ let syncHealthCheckInFlight = false;
 let accessReauthTimer = null;
 let pendingPreviewEntry = null;
 let pendingPreviewType = null;
+let pendingStatusEntryId = null;
+let pendingStatusEntryType = null;
 
 const SYNC_CHECK_INTERVAL_MS = 10000;
 
@@ -204,6 +215,14 @@ function setupEventListeners() {
   if (invoiceAddressClose) invoiceAddressClose.addEventListener('click', closeInvoiceAddressModal);
   if (invoiceAddressCancel) invoiceAddressCancel.addEventListener('click', closeInvoiceAddressModal);
   if (invoiceAddressConfirm) invoiceAddressConfirm.addEventListener('click', confirmInvoicePDF);
+  if (statusChangeModalClose) statusChangeModalClose.addEventListener('click', closeStatusChangeModal);
+  if (statusChangeCancelButton) statusChangeCancelButton.addEventListener('click', closeStatusChangeModal);
+  if (statusChangeConfirmButton) statusChangeConfirmButton.addEventListener('click', confirmEntryStatusChange);
+  if (statusChangePassword) {
+    statusChangePassword.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); confirmEntryStatusChange(); }
+    });
+  }
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
   exportConfirmButton.addEventListener('click', handleExportConfirm);
@@ -290,6 +309,11 @@ function handleModalOverlayClick() {
 
   if (invoiceAddressModal && !invoiceAddressModal.classList.contains('hidden')) {
     closeInvoiceAddressModal();
+    return;
+  }
+
+  if (statusChangeModal && !statusChangeModal.classList.contains('hidden')) {
+    closeStatusChangeModal();
   }
 }
 
@@ -707,6 +731,7 @@ function normalizeBrennRecord(record) {
     anzahlExterne: String(record.anzahlexterne ?? record.anzahlExterne ?? '0'),
     brennzyklus: String(record.brennzyklus ?? '0'),
     brennmodus: record.brennmodus || '',
+    status: record.status || 'offen',
     timestamp: record.timestamp || record.created_at || new Date().toISOString()
   };
 }
@@ -720,6 +745,7 @@ function normalizeUnterhaltRecord(record) {
     betrag: Number(record.betrag || 0),
     bemerkungen: record.bemerkungen || '',
     type: record.type || 'unterhalt',
+    status: record.status || 'offen',
     timestamp: record.timestamp || record.created_at || new Date().toISOString()
   };
 }
@@ -761,6 +787,7 @@ function toSupabaseBrennPayload(entry) {
     anzahlexterne: Number(entry.anzahlExterne || 0),
     brennzyklus: Number(entry.brennzyklus || 0),
     brennmodus: entry.brennmodus,
+    status: entry.status || 'offen',
     timestamp: entry.timestamp || new Date().toISOString()
   };
 }
@@ -773,6 +800,7 @@ function toSupabaseUnterhaltPayload(entry) {
     betrag: Number(entry.betrag || 0),
     bemerkungen: entry.bemerkungen || '',
     type: 'unterhalt',
+    status: entry.status || 'offen',
     timestamp: entry.timestamp || new Date().toISOString()
   };
 }
@@ -796,6 +824,10 @@ async function createSupabaseRecord(table, payload) {
 
 async function deleteSupabaseRecord(table, id) {
   return supabaseRequest(table, { method: 'DELETE', query: `id=eq.${encodeURIComponent(id)}` });
+}
+
+async function patchSupabaseRecord(table, id, payload) {
+  return supabaseRequest(table, { method: 'PATCH', query: `id=eq.${encodeURIComponent(id)}`, body: payload });
 }
 
 async function migrateLocalDataToSupabase() {
@@ -1675,6 +1707,7 @@ function createEntryElement(entry) {
   const entryType = entry.entryType || 'brennprozess';
   const selectionKey = getEntrySelectionKey(entry.id, entryType);
   const isSelected = selectedEntryKeys.has(selectionKey);
+  const status = entry.status || 'offen';
 
   // Wenn es ein Unterhalt-Eintrag ist
   if (entry.entryType === 'unterhalt') {
@@ -1689,6 +1722,7 @@ function createEntryElement(entry) {
             <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #ff9800;"></span>Unterhalt</div>
           </div>
         </div>
+        <button type="button" class="entry-status-badge entry-status-badge--${status}" data-id="${entry.id}" data-type="unterhalt">${status}</button>
         <div class="entry-header-amount unterhalt-amount">${formatInvoiceAmount(entry.betrag)} (Ausgabe)</div>
         <span class="entry-chevron">▼</span>
       </div>
@@ -1724,6 +1758,7 @@ function createEntryElement(entry) {
             <div class="entry-type-label"><span class="entry-type-indicator" style="background-color: #2196f3;"></span>Nutzung</div>
           </div>
         </div>
+        <button type="button" class="entry-status-badge entry-status-badge--${status}" data-id="${entry.id}" data-type="brennprozess">${status}</button>
         <div class="entry-header-amount ofen-amount">${formatInvoiceAmount(totalAmount)} (Gesamt)</div>
         <span class="entry-chevron">▼</span>
       </div>
@@ -1785,10 +1820,19 @@ function createEntryElement(entry) {
   if (toggle) {
     toggle.addEventListener('click', (e) => {
       if (e.target.closest('.entry-select-control')) return;
+      if (e.target.closest('.entry-status-badge')) return;
       const body = div.querySelector('.entry-body');
       const chevron = div.querySelector('.entry-chevron');
       const isOpen = body.classList.toggle('entry-body--open');
       chevron.style.transform = isOpen ? 'rotate(180deg)' : '';
+    });
+  }
+
+  const statusBadge = div.querySelector('.entry-status-badge');
+  if (statusBadge) {
+    statusBadge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openStatusChangeModal(entry.id, entryType);
     });
   }
 
@@ -2338,6 +2382,91 @@ function showSuccessMessage(message) {
   setTimeout(() => {
     msgElement.remove();
   }, 2000);
+}
+
+// === Status Change Functions ===
+function openStatusChangeModal(entryId, entryType) {
+  if (!statusChangeModal) return;
+  pendingStatusEntryId = entryId;
+  pendingStatusEntryType = entryType;
+
+  const cache = entryType === 'unterhalt' ? unterhaltEntriesCache : brennEntriesCache;
+  const entry = cache.find(e => e.id === entryId);
+  const currentStatus = (entry && entry.status) || 'offen';
+  const newStatus = currentStatus === 'offen' ? 'abgeschlossen' : 'offen';
+
+  if (statusChangeModalInfo) {
+    statusChangeModalInfo.textContent = `Status ändern auf: "${newStatus}"`;
+  }
+  if (statusChangePassword) statusChangePassword.value = '';
+  if (statusChangePasswordError) {
+    statusChangePasswordError.textContent = '';
+    statusChangePasswordError.classList.remove('show');
+  }
+  statusChangeModal.classList.remove('hidden');
+  modalOverlay.classList.remove('hidden');
+  if (statusChangePassword) statusChangePassword.focus();
+}
+
+function closeStatusChangeModal() {
+  if (statusChangeModal) statusChangeModal.classList.add('hidden');
+  modalOverlay.classList.add('hidden');
+  if (statusChangePassword) statusChangePassword.value = '';
+  if (statusChangePasswordError) {
+    statusChangePasswordError.textContent = '';
+    statusChangePasswordError.classList.remove('show');
+  }
+  pendingStatusEntryId = null;
+  pendingStatusEntryType = null;
+}
+
+async function confirmEntryStatusChange() {
+  if (!statusChangePassword || !pendingStatusEntryId) return;
+  const pw = statusChangePassword.value;
+  if (!pw) {
+    if (statusChangePasswordError) {
+      statusChangePasswordError.textContent = 'Kennwort erforderlich';
+      statusChangePasswordError.classList.add('show');
+    }
+    return;
+  }
+  if (pw !== ADMIN_PASSWORD) {
+    if (statusChangePasswordError) {
+      statusChangePasswordError.textContent = 'Kennwort falsch';
+      statusChangePasswordError.classList.add('show');
+    }
+    if (statusChangePassword) statusChangePassword.value = '';
+    return;
+  }
+
+  const entryId = pendingStatusEntryId;
+  const entryType = pendingStatusEntryType;
+  const table = entryType === 'unterhalt' ? SB_UNTERHALT_TABLE : SB_BRENN_TABLE;
+  const cache = entryType === 'unterhalt' ? unterhaltEntriesCache : brennEntriesCache;
+  const entry = cache.find(e => e.id === entryId);
+  if (!entry) { closeStatusChangeModal(); return; }
+
+  const newStatus = (entry.status || 'offen') === 'offen' ? 'abgeschlossen' : 'offen';
+  entry.status = newStatus;
+  persistLocalCache();
+
+  if (cloudSyncEnabled) {
+    try {
+      await patchSupabaseRecord(table, entryId, { status: newStatus });
+    } catch (err) {
+      console.warn('Status-Sync fehlgeschlagen:', err);
+    }
+  }
+
+  applyStatusToEntryBadge(entryId, entryType, newStatus);
+  closeStatusChangeModal();
+}
+
+function applyStatusToEntryBadge(entryId, entryType, newStatus) {
+  const badge = entriesList.querySelector(`.entry-status-badge[data-id="${entryId}"][data-type="${entryType}"]`);
+  if (!badge) return;
+  badge.className = `entry-status-badge entry-status-badge--${newStatus}`;
+  badge.textContent = newStatus;
 }
 
 function updateInvoiceButtonState() {
