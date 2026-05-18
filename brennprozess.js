@@ -285,6 +285,11 @@ function handleModalOverlayClick() {
 
   if (monitorTransferModal && !monitorTransferModal.classList.contains('hidden')) {
     closeMonitorTransferModal();
+    return;
+  }
+
+  if (invoiceAddressModal && !invoiceAddressModal.classList.contains('hidden')) {
+    closeInvoiceAddressModal();
   }
 }
 
@@ -2346,12 +2351,43 @@ function generateInvoicePDF() {
     alert('PDF-Bibliothek nicht geladen. Bitte Seite neu laden.');
     return;
   }
+  const recipient = getInvoiceRecipientFromSelection();
+  if (invoiceAddrVorname) invoiceAddrVorname.value = recipient.vorname;
+  if (invoiceAddrNachname) invoiceAddrNachname.value = recipient.nachname;
   // Open address dialog
   if (invoiceAddressModal) {
     invoiceAddressModal.classList.remove('hidden');
     modalOverlay.classList.remove('hidden');
     if (invoiceAddrVorname) invoiceAddrVorname.focus();
   }
+}
+
+function getInvoiceRecipientFromSelection() {
+  const selectedBrennEntries = [];
+
+  selectedEntryKeys.forEach((key) => {
+    const parsed = parseEntrySelectionKey(key);
+    if (!parsed || parsed.entryType !== 'brennprozess') return;
+    const entry = brennEntriesCache.find((item) => item.id === parsed.id);
+    if (entry) selectedBrennEntries.push(entry);
+  });
+
+  if (selectedBrennEntries.length === 0) {
+    return { vorname: '', nachname: '' };
+  }
+
+  selectedBrennEntries.sort((a, b) => {
+    const dateA = parseDate(a.datum);
+    const dateB = parseDate(b.datum);
+    if (dateA && dateB) return dateA - dateB;
+    return 0;
+  });
+
+  const responsibleEntry = selectedBrennEntries[0] || {};
+  return {
+    vorname: String(responsibleEntry.vorname || '').trim(),
+    nachname: String(responsibleEntry.nachname || '').trim()
+  };
 }
 
 function closeInvoiceAddressModal() {

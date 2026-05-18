@@ -1048,6 +1048,26 @@ body.no-scroll {
   width: 100%;
 }
 
+#invoiceAddressModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10002;
+  padding: 24px;
+  background-color: transparent;
+}
+
+#invoiceAddressModal.hidden {
+  display: none;
+}
+
+#invoiceAddressModal .modal-content {
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  border: 1px solid #cccccc;
+}
+
 .monitor-transfer-panel {
   margin: 14px 0 18px;
 }
