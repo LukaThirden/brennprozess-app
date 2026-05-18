@@ -64,6 +64,15 @@ const deletePasswordError = document.getElementById('deletePasswordError');
 // Export
 const exportButton = document.getElementById('exportButton');
 const invoiceButton = document.getElementById('invoiceButton');
+const invoiceAddressModal = document.getElementById('invoiceAddressModal');
+const invoiceAddrVorname = document.getElementById('invoiceAddrVorname');
+const invoiceAddrNachname = document.getElementById('invoiceAddrNachname');
+const invoiceAddrStrasse = document.getElementById('invoiceAddrStrasse');
+const invoiceAddrPlz = document.getElementById('invoiceAddrPlz');
+const invoiceAddrOrt = document.getElementById('invoiceAddrOrt');
+const invoiceAddressConfirm = document.getElementById('invoiceAddressConfirm');
+const invoiceAddressCancel = document.getElementById('invoiceAddressCancel');
+const invoiceAddressClose = document.getElementById('invoiceAddressClose');
 const exportModal = document.getElementById('exportModal');
 const exportModalClose = document.getElementById('exportModalClose');
 const exportPassword = document.getElementById('exportPassword');
@@ -192,6 +201,9 @@ function setupEventListeners() {
   if (invoiceButton) {
     invoiceButton.addEventListener('click', generateInvoicePDF);
   }
+  if (invoiceAddressClose) invoiceAddressClose.addEventListener('click', closeInvoiceAddressModal);
+  if (invoiceAddressCancel) invoiceAddressCancel.addEventListener('click', closeInvoiceAddressModal);
+  if (invoiceAddressConfirm) invoiceAddressConfirm.addEventListener('click', confirmInvoicePDF);
   exportModalClose.addEventListener('click', closeExportModal);
   exportCancelButton.addEventListener('click', closeExportModal);
   exportConfirmButton.addEventListener('click', handleExportConfirm);
@@ -2334,11 +2346,34 @@ function generateInvoicePDF() {
     alert('PDF-Bibliothek nicht geladen. Bitte Seite neu laden.');
     return;
   }
+  // Open address dialog
+  if (invoiceAddressModal) {
+    invoiceAddressModal.classList.remove('hidden');
+    modalOverlay.classList.remove('hidden');
+    if (invoiceAddrVorname) invoiceAddrVorname.focus();
+  }
+}
 
+function closeInvoiceAddressModal() {
+  if (invoiceAddressModal) invoiceAddressModal.classList.add('hidden');
+  modalOverlay.classList.add('hidden');
+}
+
+function confirmInvoicePDF() {
+  const vorname = invoiceAddrVorname ? invoiceAddrVorname.value.trim() : '';
+  const nachname = invoiceAddrNachname ? invoiceAddrNachname.value.trim() : '';
+  const strasse = invoiceAddrStrasse ? invoiceAddrStrasse.value.trim() : '';
+  const plz = invoiceAddrPlz ? invoiceAddrPlz.value.trim() : '';
+  const ort = invoiceAddrOrt ? invoiceAddrOrt.value.trim() : '';
+
+  closeInvoiceAddressModal();
+  buildInvoicePDF({ vorname, nachname, strasse, plz, ort });
+}
+
+function buildInvoicePDF(recipient) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-  const pageW = 210;
   const marginL = 20;
   const marginR = 190;
   let y = 20;
@@ -2373,23 +2408,33 @@ function generateInvoicePDF() {
     }
   };
 
-  // === Sender block ===
-  doc.setFont('helvetica', 'bold');
+  // === Sender block (top left) ===
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(11);
   doc.text('Verein ADW11', marginL, y);
-  doc.setFont('helvetica', 'normal');
   y += 5.5;
   doc.text('Auf dem Wolf 11', marginL, y);
   y += 5.5;
   doc.text('4052 Basel', marginL, y);
-  y += 5.5;
-  doc.text('IBAN: CH06 2349 6860 0097 9', marginL, y);
 
-  // Date top right
+  // === Recipient block (top right) ===
+  const recipientLines = [
+    `${recipient.vorname} ${recipient.nachname}`.trim(),
+    recipient.strasse,
+    `${recipient.plz} ${recipient.ort}`.trim()
+  ].filter(l => l);
+  doc.setFontSize(11);
+  let ry = 20;
+  recipientLines.forEach(line => {
+    doc.text(line, marginR, ry, { align: 'right' });
+    ry += 5.5;
+  });
+
+  // Date below recipient
   doc.setFontSize(10);
-  doc.text(`Basel, ${getCurrentDateLabel()}`, marginR, 20, { align: 'right' });
+  doc.text(`Basel, ${getCurrentDateLabel()}`, marginR, ry + 2, { align: 'right' });
 
-  y += 14;
+  y += 16;
 
   // === Title ===
   doc.setFont('helvetica', 'bold');
