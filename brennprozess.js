@@ -2,6 +2,7 @@
 const ADMIN_PASSWORD = 'admin123'; // Sollte in einer echten App verschlüsselt sein
 const STORAGE_KEY = 'brennprozess_entries';
 const UNTERHALT_STORAGE_KEY = 'unterhalt_entries';
+const MONITOR_TRANSFER_STORAGE_KEY = 'monitor_transfer_entries';
 const MONITOR_TRANSFER_KEY = 'monitor_saldo_transfer';
 const ACCESS_PASSWORD = 'ADW11';
 const ACCESS_VALID_UNTIL_KEY = 'brennprozess_access_valid_until';
@@ -110,6 +111,7 @@ const selectedEntryKeys = new Set();
 let currentEntrySelectionKeys = [];
 let brennEntriesCache = [];
 let unterhaltEntriesCache = [];
+let monitorTransferEntriesCache = [];
 let cloudSyncEnabled = false;
 let syncHealthCheckTimer = null;
 let syncHealthCheckInFlight = false;
@@ -261,19 +263,46 @@ function handleModalOverlayClick() {
 }
 
 function getMonitorTransferAmount() {
-  const raw = localStorage.getItem(MONITOR_TRANSFER_KEY);
-  const parsed = Number(raw);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
+  const entries = getMonitorTransferEntries();
+  if (entries.length === 0) {
+    return 0;
+  }
 
-function setMonitorTransferAmount(amount) {
-  localStorage.setItem(MONITOR_TRANSFER_KEY, String(amount));
+  return Number(entries[0].betrag || 0);
 }
 
 function formatSignedInvoiceAmount(amount) {
   const sign = amount >= 0 ? '+' : '-';
   const abs = Math.abs(amount);
   return `${sign}${abs.toFixed(2).replace('.', ',')} CHF`;
+}
+
+function getMonitorTransferEntries() {
+  return [...monitorTransferEntriesCache].sort((a, b) => {
+    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+    return timeB - timeA;
+  });
+}
+
+async function addMonitorTransferEntry(entry) {
+  if (cloudSyncEnabled) {
+    try {
+      const created = await createSupabaseRecord(SB_UNTERHALT_TABLE, toSupabaseMonitorTransferPayload(entry));
+      monitorTransferEntriesCache.push(normalizeMonitorTransferRecord(created));
+      persistLocalCache();
+      loadEntries();
+      return;
+    } catch (error) {
+      console.warn('Monitor-Übertrag konnte nicht in Supabase gespeichert werden.', error);
+      cloudSyncEnabled = false;
+      updateSyncStatus(false);
+    }
+  }
+
+  monitorTransferEntriesCache.push({ ...entry, type: 'monitor_transfer' });
+  persistLocalCache();
+  loadEntries();
 }
 
 function openMonitorTransferAuthModal(e) {
@@ -389,8 +418,14 @@ function saveMonitorTransfer() {
     return;
   }
 
-  setMonitorTransferAmount(amount);
-  updateMonitorSummary();
+  addMonitorTransferEntry({
+    id: Date.now().toString(),
+    datum: getCurrentDateLabel(),
+    betrag: amount,
+    bemerkungen: 'Monitor Übertrag',
+    type: 'monitor_transfer',
+    timestamp: new Date().toISOString()
+  });
   closeMonitorTransferModal();
 }
 
@@ -480,6 +515,7 @@ async function runSyncHealthCheck() {
       const remoteState = await fetchSupabaseState();
       brennEntriesCache = remoteState.brennEntries;
       unterhaltEntriesCache = remoteState.unterhaltEntries;
+      monitorTransferEntriesCache = remoteState.monitorTransferEntries;
       persistLocalCache();
       loadEntries();
       console.info('Supabase-Sync wieder aktiv.');
@@ -519,12 +555,13 @@ async function initializeDataStore() {
     cloudSyncEnabled = true;
     updateSyncStatus(true);
 
-    const hasRemoteData = remoteState.brennEntries.length > 0 || remoteState.unterhaltEntries.length > 0;
-    const hasLocalData = brennEntriesCache.length > 0 || unterhaltEntriesCache.length > 0;
+    const hasRemoteData = remoteState.brennEntries.length > 0 || remoteState.unterhaltEntries.length > 0 || remoteState.monitorTransferEntries.length > 0;
+    const hasLocalData = brennEntriesCache.length > 0 || unterhaltEntriesCache.length > 0 || monitorTransferEntriesCache.length > 0;
 
     if (hasRemoteData) {
       brennEntriesCache = remoteState.brennEntries;
       unterhaltEntriesCache = remoteState.unterhaltEntries;
+      monitorTransferEntriesCache = remoteState.monitorTransferEntries;
       persistLocalCache();
       loadEntries();
       return;
@@ -535,6 +572,7 @@ async function initializeDataStore() {
       const migratedState = await fetchSupabaseState();
       brennEntriesCache = migratedState.brennEntries;
       unterhaltEntriesCache = migratedState.unterhaltEntries;
+      monitorTransferEntriesCache = migratedState.monitorTransferEntries;
       persistLocalCache();
       loadEntries();
     }
@@ -549,18 +587,36 @@ function loadLocalCache() {
   try {
     const brennStored = localStorage.getItem(STORAGE_KEY);
     const unterhaltStored = localStorage.getItem(UNTERHALT_STORAGE_KEY);
+    const monitorTransferStored = localStorage.getItem(MONITOR_TRANSFER_STORAGE_KEY);
     brennEntriesCache = brennStored ? JSON.parse(brennStored) : [];
     unterhaltEntriesCache = unterhaltStored ? JSON.parse(unterhaltStored) : [];
+    monitorTransferEntriesCache = monitorTransferStored ? JSON.parse(monitorTransferStored) : [];
+
+    if (monitorTransferEntriesCache.length === 0) {
+      const legacyTransfer = Number(localStorage.getItem(MONITOR_TRANSFER_KEY));
+      if (Number.isFinite(legacyTransfer) && legacyTransfer !== 0) {
+        monitorTransferEntriesCache = [{
+          id: `legacy-transfer-${Date.now()}`,
+          datum: getCurrentDateLabel(),
+          betrag: legacyTransfer,
+          bemerkungen: 'Migration aus lokalem Übertrag',
+          type: 'monitor_transfer',
+          timestamp: new Date().toISOString()
+        }];
+      }
+    }
   } catch (error) {
     console.warn('Lokaler Speicher konnte nicht gelesen werden.', error);
     brennEntriesCache = [];
     unterhaltEntriesCache = [];
+    monitorTransferEntriesCache = [];
   }
 }
 
 function persistLocalCache() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(brennEntriesCache));
   localStorage.setItem(UNTERHALT_STORAGE_KEY, JSON.stringify(unterhaltEntriesCache));
+  localStorage.setItem(MONITOR_TRANSFER_STORAGE_KEY, JSON.stringify(monitorTransferEntriesCache));
 }
 
 async function supabaseRequest(table, options = {}) {
@@ -632,7 +688,18 @@ function normalizeUnterhaltRecord(record) {
     datum: record.datum || '',
     betrag: Number(record.betrag || 0),
     bemerkungen: record.bemerkungen || '',
-    type: 'unterhalt',
+    type: record.type || 'unterhalt',
+    timestamp: record.timestamp || record.created_at || new Date().toISOString()
+  };
+}
+
+function normalizeMonitorTransferRecord(record) {
+  return {
+    id: record.id,
+    datum: record.datum || getCurrentDateLabel(),
+    betrag: Number(record.betrag || 0),
+    bemerkungen: record.bemerkungen || '',
+    type: 'monitor_transfer',
     timestamp: record.timestamp || record.created_at || new Date().toISOString()
   };
 }
@@ -643,9 +710,13 @@ async function fetchSupabaseState() {
     fetchAllSupabaseRecords(SB_UNTERHALT_TABLE)
   ]);
 
+  const unterhaltItems = unterhaltRaw.filter((record) => (record.type || 'unterhalt') !== 'monitor_transfer');
+  const monitorTransferItems = unterhaltRaw.filter((record) => record.type === 'monitor_transfer');
+
   return {
     brennEntries: brennRaw.map(normalizeBrennRecord),
-    unterhaltEntries: unterhaltRaw.map(normalizeUnterhaltRecord)
+    unterhaltEntries: unterhaltItems.map(normalizeUnterhaltRecord),
+    monitorTransferEntries: monitorTransferItems.map(normalizeMonitorTransferRecord)
   };
 }
 
@@ -675,6 +746,18 @@ function toSupabaseUnterhaltPayload(entry) {
   };
 }
 
+function toSupabaseMonitorTransferPayload(entry) {
+  return {
+    vorname: '',
+    nachname: '',
+    datum: entry.datum || getCurrentDateLabel(),
+    betrag: Number(entry.betrag || 0),
+    bemerkungen: entry.bemerkungen || 'Monitor Übertrag',
+    type: 'monitor_transfer',
+    timestamp: entry.timestamp || new Date().toISOString()
+  };
+}
+
 async function createSupabaseRecord(table, payload) {
   const result = await supabaseRequest(table, { method: 'POST', body: payload });
   return Array.isArray(result) ? result[0] : result;
@@ -690,6 +773,9 @@ async function migrateLocalDataToSupabase() {
   }
   for (const entry of unterhaltEntriesCache) {
     await createSupabaseRecord(SB_UNTERHALT_TABLE, toSupabaseUnterhaltPayload(entry));
+  }
+  for (const entry of monitorTransferEntriesCache) {
+    await createSupabaseRecord(SB_UNTERHALT_TABLE, toSupabaseMonitorTransferPayload(entry));
   }
 }
 
