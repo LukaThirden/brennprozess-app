@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADW Kiln</title>
+  <script>
+    (async () => {
+      try {
+        const response = await fetch('/brennprozess.html', { cache: 'no-store' });
+        const html = await response.text();
+        const rewrittenHtml = html.includes('<base ')
+          ? html
+          : html.replace('<head>', '<head><base href="/">');
+        document.open();
+        document.write(rewrittenHtml);
+        document.close();
+      } catch (error) {
+        document.body.innerHTML = '<p>Die App konnte nicht geladen werden. <a href="/brennprozess.html">Hier öffnen</a>.</p>';
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p>Die Seite wird geladen.</p>
+</body>
+</html>
