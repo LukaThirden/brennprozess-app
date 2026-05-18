@@ -296,6 +296,22 @@ html, body {
   background-color: #d1d5db;
 }
 
+.monitor-label-button {
+  font-size: 13px;
+  color: var(--gray-700);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+
+.monitor-label-button:hover {
+  color: var(--gray-900);
+  text-decoration: underline;
+}
+
 .monitor-transfer-info {
   font-size: 13px;
   font-weight: 400;
