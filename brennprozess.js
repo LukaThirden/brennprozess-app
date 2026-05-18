@@ -200,6 +200,7 @@ function handleModalOverlayClick() {
 
 function setupFormSectionToggles() {
   const toggles = document.querySelectorAll('.form-section-toggle');
+  const sections = [];
 
   toggles.forEach((toggle) => {
     const targetId = toggle.dataset.target;
@@ -209,9 +210,32 @@ function setupFormSectionToggles() {
       return;
     }
 
+    sections.push({ toggle, body });
+
+    const closeOthers = () => {
+      sections.forEach((section) => {
+        if (section.body === body) {
+          return;
+        }
+
+        section.body.classList.remove('form-section-body--open');
+        section.toggle.setAttribute('aria-expanded', 'false');
+      });
+    };
+
     const toggleSection = () => {
-      const isOpen = body.classList.toggle('form-section-body--open');
-      toggle.setAttribute('aria-expanded', String(isOpen));
+      const isOpen = body.classList.contains('form-section-body--open');
+
+      closeOthers();
+
+      if (isOpen) {
+        body.classList.remove('form-section-body--open');
+        toggle.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      body.classList.add('form-section-body--open');
+      toggle.setAttribute('aria-expanded', 'true');
     };
 
     toggle.addEventListener('click', toggleSection);
