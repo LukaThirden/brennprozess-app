@@ -1307,6 +1307,7 @@ body.no-scroll {
   .monitor-section {
     margin-bottom: 8px;
     padding: 10px;
+    width: 100%;
   }
 
   .form-section h2,
@@ -1422,6 +1423,14 @@ body.no-scroll {
     padding-left: 2px;
   }
 
+  .entry-status-badge {
+    grid-column: 3 / 5;
+    grid-row: 2;
+    justify-self: end;
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+
   .entry-header-amount {
     grid-column: 3;
     grid-row: 1;
@@ -1513,9 +1522,8 @@ body.no-scroll {
 
   /* Entries Selection Row */
   .entries-selection-row {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
     margin-bottom: 8px;
   }
@@ -1526,9 +1534,15 @@ body.no-scroll {
     flex-shrink: 0;
   }
 
+  .entries-section-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
   .entries-section-actions {
-    width: auto;
+    width: 100%;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 6px;
     flex-shrink: 0;
   }
@@ -1578,7 +1592,8 @@ body.no-scroll {
 @media (max-width: 420px) {
   .form-section,
   .entries-section,
-  .konto-section {
+  .konto-section,
+  .monitor-section {
     width: 100%;
   }
 
