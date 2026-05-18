@@ -1352,7 +1352,7 @@ function updateMonitorSummary() {
   }
   if (monitorTransferInfo) {
     monitorTransferInfo.textContent = transferAmount !== 0
-      ? `inkl. Übertrag (${formatSignedInvoiceAmount(transferAmount)})`
+      ? `inkl. Übertrag ${formatSignedInvoiceAmount(transferAmount)}`
       : '';
   }
   if (monitorDateStamp) {
