@@ -169,7 +169,7 @@ function setupEventListeners() {
   if (selectAllEntriesCheckbox) {
     selectAllEntriesCheckbox.addEventListener('change', handleSelectAllEntriesChange);
   }
-  window.addEventListener('resize', updateDeleteSelectedButtonState);
+  window.addEventListener('resize', handleResponsiveUiUpdate);
   deletePassword.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -240,6 +240,15 @@ function setupEventListeners() {
   }
   updateMonitorSummary();
   entryPreviewConfirmButton.addEventListener('click', handleEntryPreviewConfirm);
+}
+
+function handleResponsiveUiUpdate() {
+  updateSelectionControls();
+  updateMonitorSummary();
+}
+
+function isMobileBrowser() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent || '');
 }
 
 function handleModalOverlayClick() {
@@ -1351,10 +1360,11 @@ function updateMonitorSummary() {
     monitorSaldoUnterhalt.textContent = formatInvoiceAmount(saldoUnterhalt);
     monitorSaldoUnterhalt.style.color = saldoUnterhalt < 0 ? '#dc2626' : '';
   }
-  if (monitorTransferInfo) {
-    monitorTransferInfo.textContent = transferAmount !== 0
-      ? `inkl. Übertr. (${formatSignedInvoiceAmount(transferAmount)})`
-      : '';
+    if (monitorTransferInfo) {
+      const transferLabel = 'inkl. Übertrag';
+      monitorTransferInfo.textContent = transferAmount !== 0
+        ? `${transferLabel} (${formatSignedInvoiceAmount(transferAmount)})`
+        : '';
   }
   if (monitorDateStamp) {
     monitorDateStamp.textContent = getCurrentDateLabel();
@@ -1527,7 +1537,7 @@ function updateDeleteSelectedButtonState() {
     return;
   }
 
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const isMobile = isMobileBrowser();
   const deleteLabel = isMobile ? 'Löschen' : '🗑 Einträge löschen';
   const selectedCount = selectedEntryKeys.size;
   deleteSelectedButton.disabled = selectedCount === 0;
@@ -1560,7 +1570,7 @@ function updateExportButtonState() {
     return;
   }
 
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const isMobile = isMobileBrowser();
   const exportLabel = isMobile ? 'Exportieren' : '📊 Exportieren';
   const selectedCount = selectedEntryKeys.size;
   exportButton.disabled = selectedCount === 0;
