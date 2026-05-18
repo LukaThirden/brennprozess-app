@@ -1353,6 +1353,10 @@ body.no-scroll {
     grid-row: 1;
     text-align: right;
     flex-shrink: 0;
+    justify-self: end;
+    align-self: center;
+    margin: 0;
+    line-height: 1;
   }
 
   .entry-label,
