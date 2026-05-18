@@ -1422,6 +1422,12 @@ body.no-scroll {
     min-width: 0;
   }
 
+  .monitor-label-button {
+    padding: 2px 7px;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+
   .monitor-transfer-info {
     font-size: 12px;
     font-weight: 400;
@@ -1579,6 +1585,12 @@ body.no-scroll {
 
   .monitor-label {
     font-size: 11px;
+  }
+
+  .monitor-label-button {
+    padding: 1px 6px;
+    font-size: 10px;
+    margin-left: 5px;
   }
 
   .monitor-transfer-info {
