@@ -80,15 +80,15 @@ const monitorSaldoUnterhalt = document.getElementById('monitorSaldoUnterhalt');
 const monitorDateStamp = document.getElementById('monitorDateStamp');
 const monitorTransferInfo = document.getElementById('monitorTransferInfo');
 const monitorAdminButton = document.getElementById('monitorAdminButton');
+const monitorTransferAuthModal = document.getElementById('monitorTransferAuthModal');
 const monitorTransferModal = document.getElementById('monitorTransferModal');
 const monitorTransferInput = document.getElementById('monitorTransferInput');
 const monitorTransferSave = document.getElementById('monitorTransferSave');
 const monitorTransferCancel = document.getElementById('monitorTransferCancel');
-const monitorTransferPanelCancel = document.getElementById('monitorTransferPanelCancel');
+const monitorTransferAuthCancel = document.getElementById('monitorTransferAuthCancel');
+const monitorTransferAuthClose = document.getElementById('monitorTransferAuthClose');
 const monitorTransferClose = document.getElementById('monitorTransferClose');
 const monitorTransferError = document.getElementById('monitorTransferError');
-const monitorTransferLogin = document.getElementById('monitorTransferLogin');
-const monitorTransferPanel = document.getElementById('monitorTransferPanel');
 const monitorTransferPassword = document.getElementById('monitorTransferPassword');
 const monitorTransferPasswordError = document.getElementById('monitorTransferPasswordError');
 const monitorTransferLoginButton = document.getElementById('monitorTransferLoginButton');
@@ -199,16 +199,19 @@ function setupEventListeners() {
   entryPreviewClose.addEventListener('click', closeEntryPreviewModal);
   entryPreviewCancelButton.addEventListener('click', closeEntryPreviewModal);
   if (monitorAdminButton) {
-    monitorAdminButton.addEventListener('click', openMonitorTransferModal);
+    monitorAdminButton.addEventListener('click', openMonitorTransferAuthModal);
+  }
+  if (monitorTransferAuthClose) {
+    monitorTransferAuthClose.addEventListener('click', closeMonitorTransferAuthModal);
+  }
+  if (monitorTransferAuthCancel) {
+    monitorTransferAuthCancel.addEventListener('click', closeMonitorTransferAuthModal);
   }
   if (monitorTransferClose) {
     monitorTransferClose.addEventListener('click', closeMonitorTransferModal);
   }
   if (monitorTransferCancel) {
     monitorTransferCancel.addEventListener('click', closeMonitorTransferModal);
-  }
-  if (monitorTransferPanelCancel) {
-    monitorTransferPanelCancel.addEventListener('click', closeMonitorTransferModal);
   }
   if (monitorTransferLoginButton) {
     monitorTransferLoginButton.addEventListener('click', handleMonitorTransferLogin);
@@ -247,6 +250,11 @@ function handleModalOverlayClick() {
     return;
   }
 
+  if (monitorTransferAuthModal && !monitorTransferAuthModal.classList.contains('hidden')) {
+    closeMonitorTransferAuthModal();
+    return;
+  }
+
   if (monitorTransferModal && !monitorTransferModal.classList.contains('hidden')) {
     closeMonitorTransferModal();
   }
@@ -268,21 +276,16 @@ function formatSignedInvoiceAmount(amount) {
   return `${sign}${abs.toFixed(2).replace('.', ',')} CHF`;
 }
 
-function openMonitorTransferModal(e) {
+function openMonitorTransferAuthModal(e) {
   if (e) {
     e.preventDefault();
     e.stopPropagation();
   }
 
-  if (!monitorTransferModal || !modalOverlay || !monitorTransferInput) {
+  if (!monitorTransferAuthModal || !modalOverlay || !monitorTransferPassword) {
     return;
   }
 
-  monitorTransferInput.value = getMonitorTransferAmount().toFixed(2);
-  if (monitorTransferLogin && monitorTransferPanel) {
-    monitorTransferLogin.classList.remove('hidden');
-    monitorTransferPanel.classList.add('hidden');
-  }
   if (monitorTransferPassword) {
     monitorTransferPassword.value = '';
   }
@@ -294,11 +297,42 @@ function openMonitorTransferModal(e) {
     monitorTransferError.textContent = '';
     monitorTransferError.classList.remove('show');
   }
-  monitorTransferModal.classList.remove('hidden');
+  monitorTransferAuthModal.classList.remove('hidden');
   modalOverlay.classList.remove('hidden');
   if (monitorTransferPassword) {
     monitorTransferPassword.focus();
   }
+}
+
+function closeMonitorTransferAuthModal() {
+  if (!monitorTransferAuthModal || !modalOverlay) {
+    return;
+  }
+
+  monitorTransferAuthModal.classList.add('hidden');
+  modalOverlay.classList.add('hidden');
+  if (monitorTransferPassword) {
+    monitorTransferPassword.value = '';
+  }
+  if (monitorTransferPasswordError) {
+    monitorTransferPasswordError.textContent = '';
+    monitorTransferPasswordError.classList.remove('show');
+  }
+}
+
+function openMonitorTransferModal() {
+  if (!monitorTransferModal || !modalOverlay || !monitorTransferInput) {
+    return;
+  }
+
+  monitorTransferInput.value = getMonitorTransferAmount().toFixed(2);
+  if (monitorTransferError) {
+    monitorTransferError.textContent = '';
+    monitorTransferError.classList.remove('show');
+  }
+  monitorTransferModal.classList.remove('hidden');
+  modalOverlay.classList.remove('hidden');
+  monitorTransferInput.focus();
 }
 
 function closeMonitorTransferModal() {
@@ -308,13 +342,6 @@ function closeMonitorTransferModal() {
 
   monitorTransferModal.classList.add('hidden');
   modalOverlay.classList.add('hidden');
-  if (monitorTransferPassword) {
-    monitorTransferPassword.value = '';
-  }
-  if (monitorTransferPasswordError) {
-    monitorTransferPasswordError.textContent = '';
-    monitorTransferPasswordError.classList.remove('show');
-  }
   if (monitorTransferError) {
     monitorTransferError.textContent = '';
     monitorTransferError.classList.remove('show');
@@ -322,7 +349,7 @@ function closeMonitorTransferModal() {
 }
 
 function handleMonitorTransferLogin() {
-  if (!monitorTransferPassword || !monitorTransferLogin || !monitorTransferPanel) {
+  if (!monitorTransferPassword || !monitorTransferAuthModal) {
     return;
   }
 
@@ -342,11 +369,8 @@ function handleMonitorTransferLogin() {
     monitorTransferPasswordError.classList.remove('show');
   }
 
-  monitorTransferLogin.classList.add('hidden');
-  monitorTransferPanel.classList.remove('hidden');
-  if (monitorTransferInput) {
-    monitorTransferInput.focus();
-  }
+  monitorTransferAuthModal.classList.add('hidden');
+  openMonitorTransferModal();
 }
 
 function saveMonitorTransfer() {

@@ -392,47 +392,54 @@
     </div>
   </div>
 
-  <!-- Monitor Übertrag Modal -->
-  <div id="monitorTransferModal" class="modal hidden">
+  <!-- Monitor Übertrag Kennwort Modal -->
+  <div id="monitorTransferAuthModal" class="modal hidden">
     <div class="modal-content">
+      <div class="modal-header">
+        <h2>Monitor Übertrag</h2>
+        <button type="button" class="modal-close" id="monitorTransferAuthClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Um den Übertrag zu bearbeiten, geben Sie das Kennwort ein:</p>
+        <div class="form-group">
+          <input
+            type="password"
+            id="monitorTransferPassword"
+            class="text-input"
+            placeholder="Kennwort"
+          />
+          <div id="monitorTransferPasswordError" class="error-message"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="monitorTransferLoginButton" class="submit-button">Weiter</button>
+          <button type="button" id="monitorTransferAuthCancel" class="reset-button">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitor Übertrag Eingabe Modal -->
+  <div id="monitorTransferModal" class="modal hidden">
+    <div class="modal-content preview-modal-content">
       <div class="modal-header">
         <h2>Monitor Übertrag</h2>
         <button type="button" class="modal-close" id="monitorTransferClose">&times;</button>
       </div>
       <div class="modal-body">
-        <div id="monitorTransferLogin" class="admin-login">
-          <p>Bitte Admin-Kennwort eingeben, um den Übertrag zu bearbeiten.</p>
-          <div class="form-group">
-            <input
-              type="password"
-              id="monitorTransferPassword"
-              class="text-input"
-              placeholder="Admin-Kennwort"
-            />
-            <div id="monitorTransferPasswordError" class="error-message"></div>
-          </div>
-          <div class="form-actions">
-            <button type="button" id="monitorTransferLoginButton" class="submit-button">Anmelden</button>
-            <button type="button" id="monitorTransferCancel" class="reset-button">Abbrechen</button>
-          </div>
+        <p>Übertrag für den Saldo Unterhalt setzen (positiv oder negativ).</p>
+        <div class="form-group">
+          <input
+            type="number"
+            id="monitorTransferInput"
+            class="number-input"
+            placeholder="0.00"
+            step="0.05"
+          />
+          <div id="monitorTransferError" class="error-message"></div>
         </div>
-
-        <div id="monitorTransferPanel" class="admin-panel hidden">
-          <p>Übertrag für den Saldo Unterhalt setzen (positiv oder negativ).</p>
-          <div class="form-group">
-            <input
-              type="number"
-              id="monitorTransferInput"
-              class="number-input"
-              placeholder="0.00"
-              step="0.05"
-            />
-            <div id="monitorTransferError" class="error-message"></div>
-          </div>
-          <div class="form-actions">
-            <button type="button" id="monitorTransferSave" class="submit-button">Speichern</button>
-            <button type="button" id="monitorTransferPanelCancel" class="reset-button">Abbrechen</button>
-          </div>
+        <div class="form-actions">
+          <button type="button" id="monitorTransferSave" class="submit-button">Speichern</button>
+          <button type="button" id="monitorTransferCancel" class="reset-button">Abbrechen</button>
         </div>
       </div>
     </div>
