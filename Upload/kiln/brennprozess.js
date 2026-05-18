@@ -2124,6 +2124,7 @@ function exportToExcel(selectedData = null) {
       isCurrency = true,
       topBorder = false,
       dashedTopBorder = false,
+      dashedBottomBorder = false,
       bottomBorder = false,
       valueColor = null
     } = options;
@@ -2135,6 +2136,9 @@ function exportToExcel(selectedData = null) {
     }
     if (dashedTopBorder) {
       borderStyle.top = { style: 'dashed', color: { argb: 'FF111111' } };
+    }
+    if (dashedBottomBorder) {
+      borderStyle.bottom = { style: 'dashed', color: { argb: 'FF111111' } };
     }
     if (bottomBorder) {
       borderStyle.bottom = { style: 'thin', color: { argb: 'FF111111' } };
@@ -2160,10 +2164,10 @@ function exportToExcel(selectedData = null) {
   addMonitorRow('Einnahmen aus Ofen-Nutzung', totalEinnahmen, { bold: true });
   addMonitorRow('Admingebühren (3.- pro Nutzung)', totalAdminFees);
   addMonitorRow('Stromkosten (effektiv)', totalStromkosten);
-  addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag);
-  addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag, { dashedTopBorder: true });
+  addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag, { dashedBottomBorder: true });
+  addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag);
   if (transferAmount !== 0) {
-    addMonitorRow('inkl. Übertrag', transferAmount);
+    addMonitorRow('Übertrag', transferAmount);
   }
   addMonitorRow('Ausgaben für Unterhalt', totalUnterhaltAusgaben, { bold: true, topBorder: true, bottomBorder: true });
   addMonitorRow('Saldo Unterhalt', saldoUnterhalt, {
