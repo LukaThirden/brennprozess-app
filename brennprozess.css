@@ -655,7 +655,7 @@ label {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 0;
+  min-width: 320px;
 }
 
 .entry-select-control {
@@ -806,16 +806,15 @@ label {
 }
 
 .entry-field {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 320px 1fr;
   align-items: center;
-  gap: 4px;
-  flex-wrap: nowrap;
+  column-gap: 8px;
 }
 
 .entry-label {
   font-weight: normal;
-  min-width: 240px;
+  min-width: 0;
   color: var(--gray-700);
 }
 
