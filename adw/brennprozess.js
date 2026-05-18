@@ -2151,7 +2151,7 @@ function exportToExcel(selectedData = null) {
     if (isCurrency) {
       row.getCell(2).numFmt = FMT_CHF;
     }
-    if (topBorder || bottomBorder) {
+    if (topBorder || dashedTopBorder || dashedBottomBorder || bottomBorder) {
       row.getCell(1).border = borderStyle;
       row.getCell(2).border = borderStyle;
     }
@@ -2167,7 +2167,7 @@ function exportToExcel(selectedData = null) {
   addMonitorRow('Solibeiträge (10.- pro externe Person)', totalSolibeitrag, { dashedBottomBorder: true });
   addMonitorRow('Unterhaltsbeiträge (10.- pro Nutzung)', totalUnterhaltsbeitrag);
   if (transferAmount !== 0) {
-    addMonitorRow('Übertrag', transferAmount);
+    addMonitorRow('Übertrag', transferAmount, { topBorder: true });
   }
   addMonitorRow('Ausgaben für Unterhalt', totalUnterhaltAusgaben, { bold: true, topBorder: true, bottomBorder: true });
   addMonitorRow('Saldo Unterhalt', saldoUnterhalt, {
